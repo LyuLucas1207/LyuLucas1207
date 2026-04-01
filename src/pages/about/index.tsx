@@ -1,9 +1,9 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Reveal } from '@/components/motion/Reveal'
-import { PageIntro } from '@/components/pageIntro/PageIntro'
-import { EditorialText } from '@/components/editorialText/EditorialText'
+import { Reveal } from '@/components/motion'
+import { PageIntro } from '@/components/pageIntro'
+import { EditorialText } from '@/components/editorialText'
 import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
 import { EditorialRails } from '@/elements/world/components/EditorialRails'
 import { SectionDivider } from '@/elements/world/components/SectionDivider'

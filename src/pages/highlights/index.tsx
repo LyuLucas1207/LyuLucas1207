@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Reveal } from '@/components/motion/Reveal'
-import { PageIntro } from '@/components/pageIntro/PageIntro'
+import { Reveal } from '@/components/motion'
+import { PageIntro } from '@/components/pageIntro'
 import { highlightIconMap } from '@/constants/siteContent'
 import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
