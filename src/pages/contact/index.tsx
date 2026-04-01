@@ -1,4 +1,4 @@
-﻿import { zodResolver } from '@hookform/resolvers/zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Send } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { Button, Input, Textarea } from 'nfx-ui/components'
 import { z } from 'zod'
 
-import { Reveal } from '../../components/motion/Reveal'
-import { PageIntro } from '../../components/pageIntro/PageIntro'
-import { SignalDiagram } from '../../elements/world/components/SignalDiagram'
-import { useScrollAtmosphere } from '../../elements/world/hooks/useScrollAtmosphere'
-import { useProfileQuery } from '../../hooks/useWorldQueries'
-import styles from './ContactPage.module.css'
+import { Reveal } from '@/components/motion/Reveal'
+import { PageIntro } from '@/components/pageIntro/PageIntro'
+import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
+import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
+import { useProfileQuery } from '@/hooks/useWorldQueries'
+import styles from './styles.module.css'
 
 type ContactFormValues = {
   name: string

@@ -3,10 +3,10 @@ import type { ReactNode } from 'react'
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { changeLanguage, LanguageEnum } from 'nfx-ui/languages'
 import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
 import { routeMoods } from '../../../constants/siteContent'
-import { useLocale } from '../../../hooks/useLocale'
 import { useWorldTransition } from '../../../hooks/useWorldTransition'
 import type { WorldMood } from '../../../types/site'
 import { ensureGsap } from '../../../utils/motion/gsap'
@@ -41,7 +41,7 @@ type UniverseSceneProps = {
 function UniverseScene({ activePath }: UniverseSceneProps) {
   const { t, i18n } = useTranslation(['common', 'home'])
   const navigate = useNavigate()
-  const locale = useLocale()
+  const currentLang = i18n.language
   const { themeName, setTheme } = useTheme()
   const { playWorldTransition } = useWorldTransition()
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -224,7 +224,7 @@ function UniverseScene({ activePath }: UniverseSceneProps) {
         mood: 'beacon',
         title: node.title,
         subtitle: t('home:scene.settingsGalaxy'),
-        action: () => void i18n.changeLanguage(node.id),
+        action: () => changeLanguage(node.id as LanguageEnum),
       })
       return
     }
@@ -303,7 +303,7 @@ function UniverseScene({ activePath }: UniverseSceneProps) {
             <path d="M160 56V212M90 96L228 168M90 168L228 96" className={styles.settingsAxis} data-scene-line />
           </svg>
           {settingNodes.map((node) => (
-            <OrbitPlanet key={node.id} node={node} rotation={rotation.settings} active={(node.id === locale && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'} className={styles.settingPlanet} labelClass={styles.settingLabel} onEnter={() => setFocusLabel(node.title)} onActivate={() => activateSetting(node)} />
+            <OrbitPlanet key={node.id} node={node} rotation={rotation.settings} active={(node.id === currentLang && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'} className={styles.settingPlanet} labelClass={styles.settingLabel} onEnter={() => setFocusLabel(node.title)} onActivate={() => activateSetting(node)} />
           ))}
         </GalaxyShell>
 

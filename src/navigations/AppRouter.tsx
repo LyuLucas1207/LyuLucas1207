@@ -1,15 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { useScrollToTop } from '../hooks/useScrollToTop'
-import { SiteLayout } from '../layouts/siteLayout/SiteLayout'
-import { AboutPage } from '../pages/about/AboutPage'
-import { ContactPage } from '../pages/contact/ContactPage'
-import { HighlightsPage } from '../pages/highlights/HighlightsPage'
-import { HomePage } from '../pages/home/HomePage'
-import { LifePage } from '../pages/life/LifePage'
-import { ProjectDetailPage } from '../pages/projectDetail/ProjectDetailPage'
-import { ProjectsPage } from '../pages/projects/ProjectsPage'
-import { ROUTES } from './routes'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { SiteLayout } from '@/layouts/siteLayout/SiteLayout'
+import { AboutPage } from '@/pages/about'
+import { ContactPage } from '@/pages/contact'
+import { HighlightsPage } from '@/pages/highlights'
+import { HomePage } from '@/pages/home'
+import { LifePage } from '@/pages/life'
+import { ProjectDetailPage } from '@/pages/projectDetail'
+import { ProjectsPage } from '@/pages/projects'
+import { ROUTES } from '@/navigations/routes'
 
 function ScrollManager() {
   useScrollToTop()
@@ -21,8 +21,8 @@ function AppRouter() {
     <>
       <ScrollManager />
       <Routes>
+        <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route element={<SiteLayout />}>
-          <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.ABOUT} element={<AboutPage />} />
           <Route path={ROUTES.PROJECTS} element={<ProjectsPage />} />
           <Route path={ROUTES.PROJECT_DETAIL} element={<ProjectDetailPage />} />

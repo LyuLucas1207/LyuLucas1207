@@ -53,9 +53,107 @@
   top: 1.35rem;
   left: 1.35rem;
   z-index: 4;
-  display: grid;
-  gap: 0.75rem;
   width: min(18rem, calc(100vw - 3rem));
+}
+
+.sidebarToggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.9rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--space-star-primary) 20%, transparent);
+  border-radius: 1.05rem 1.05rem 1.05rem 0.35rem;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--space-bg-2) 94%, transparent),
+      color-mix(in srgb, var(--space-bg) 88%, rgba(255, 255, 255, 0.02))
+    );
+  color: var(--space-star-primary);
+  text-align: left;
+  backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.sidebarToggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--space-star-primary) 20%, transparent), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 28%);
+  pointer-events: none;
+}
+
+.sidebarToggle::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1.2rem;
+  top: 0.72rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--space-star-primary), transparent 80%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.sidebarToggle:hover {
+  border-color: color-mix(in srgb, var(--space-star-primary) 46%, transparent);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.18),
+    0 0 0 1px color-mix(in srgb, var(--space-star-primary) 10%, transparent),
+    inset 0 0 28px color-mix(in srgb, var(--space-star-primary) 8%, transparent);
+}
+
+.sidebarToggle strong {
+  position: relative;
+  z-index: 1;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.toggleChevron {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  opacity: 0.72;
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggleChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sidebarDropdown {
+  display: grid;
+  gap: 0.55rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    max-height 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 260ms ease,
+    transform 260ms ease,
+    margin 260ms ease;
+  margin-top: 0;
+}
+
+.sidebarDropdownOpen {
+  max-height: 22rem;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 0.6rem;
 }
 
 .actionDock {
@@ -63,7 +161,7 @@
   top: 1.35rem;
   right: 1.35rem;
   z-index: 4;
-  width: min(17rem, calc(100vw - 3rem));
+  width: min(14rem, calc(100vw - 3rem));
 }
 
 .actionButton {
@@ -71,7 +169,7 @@
   width: 100%;
   display: grid;
   gap: 0.28rem;
-  padding: 1rem 1.05rem 0.95rem 1.1rem;
+  padding: 0.88rem 1.05rem;
   border: 1px solid color-mix(in srgb, var(--space-star-primary) 20%, transparent);
   border-radius: 1.05rem 1.05rem 0.35rem 1.05rem;
   background:
@@ -128,15 +226,6 @@
 .actionButton:disabled {
   opacity: 0.56;
   cursor: not-allowed;
-}
-
-.actionButtonLabel {
-  position: relative;
-  z-index: 1;
-  font-size: 0.67rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--space-star-primary) 74%, var(--space-text) 26%);
 }
 
 .actionButton strong {
@@ -235,19 +324,18 @@
 .hud {
   position: absolute;
   left: 1.6rem;
-  right: 1.6rem;
   bottom: 1.5rem;
   z-index: 3;
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.9rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: min(24rem, calc(100vw - 3.2rem));
+  padding: 1rem 1.2rem;
   border: 1px solid color-mix(in srgb, var(--space-star-primary) 16%, transparent);
   border-radius: 1rem 1rem 1rem 0.35rem;
   background:
     linear-gradient(
-      90deg,
+      135deg,
       color-mix(in srgb, var(--space-bg-2) 92%, transparent),
       color-mix(in srgb, var(--space-bg) 88%, rgba(255, 255, 255, 0.03))
     );
@@ -302,41 +390,32 @@
   color: var(--space-star-primary);
 }
 
-.hudMeta {
+.hudDescription {
   position: relative;
   z-index: 1;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--space-text) 52%, var(--space-star-highlight) 48%);
+  margin: 0.1rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--space-text) 56%, var(--space-star-secondary) 44%);
 }
 
 @media (max-width: 960px) {
   .systemSidebar {
     top: 0.85rem;
     left: 0.85rem;
-    right: 0.85rem;
-    width: auto;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .systemSidebarButton {
-    min-height: 4.7rem;
+    width: min(16rem, calc(100vw - 1.7rem));
   }
 
   .actionDock {
-    top: auto;
+    top: 0.85rem;
     right: 0.85rem;
-    left: 0.85rem;
-    bottom: 6.4rem;
     width: auto;
   }
 
   .hud {
     left: 0.85rem;
-    right: 0.85rem;
     bottom: 0.85rem;
-    grid-template-columns: 1fr;
-    align-items: start;
+    width: min(20rem, calc(100vw - 1.7rem));
   }
 }

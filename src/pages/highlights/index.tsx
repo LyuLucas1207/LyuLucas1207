@@ -1,15 +1,15 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Reveal } from '../../components/motion/Reveal'
-import { PageIntro } from '../../components/pageIntro/PageIntro'
-import { highlightIconMap } from '../../constants/siteContent'
-import { TimelineBlock } from '../../elements/portfolio/components/TimelineBlock'
-import { SignalDiagram } from '../../elements/world/components/SignalDiagram'
-import { TimelinePath } from '../../elements/world/components/TimelinePath'
-import { useScrollAtmosphere } from '../../elements/world/hooks/useScrollAtmosphere'
-import { useHighlightsQuery, useTimelineQuery } from '../../hooks/useWorldQueries'
-import styles from './HighlightsPage.module.css'
+import { Reveal } from '@/components/motion/Reveal'
+import { PageIntro } from '@/components/pageIntro/PageIntro'
+import { highlightIconMap } from '@/constants/siteContent'
+import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
+import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
+import { TimelinePath } from '@/elements/world/components/TimelinePath'
+import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
+import { useHighlightsQuery, useTimelineQuery } from '@/hooks/useWorldQueries'
+import styles from './styles.module.css'
 
 function HighlightsPage() {
   const { t } = useTranslation(['common', 'highlights'])

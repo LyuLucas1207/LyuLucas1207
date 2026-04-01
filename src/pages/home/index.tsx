@@ -1,5 +1,5 @@
 import { HomePlanetHero } from './components/HomePlanetHero'
-import styles from './HomePage.module.css'
+import styles from './styles.module.css'
 
 function HomePage() {
   return (

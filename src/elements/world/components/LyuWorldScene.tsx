@@ -2,10 +2,10 @@ import { useGSAP } from '@gsap/react'
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { changeLanguage, LanguageEnum } from 'nfx-ui/languages'
 import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
 import { routeMoods } from '../../../constants/siteContent'
-import { useLocale } from '../../../hooks/useLocale'
 import { useWorldTransition } from '../../../hooks/useWorldTransition'
 import type { WorldMood } from '../../../types/site'
 import { ensureGsap } from '../../../utils/motion/gsap'
@@ -48,7 +48,7 @@ type LyuWorldSceneProps = {
 function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
   const { t, i18n } = useTranslation(['common', 'home'])
   const navigate = useNavigate()
-  const locale = useLocale()
+  const currentLang = i18n.language
   const { themeName, setTheme } = useTheme()
   const { playWorldTransition } = useWorldTransition()
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -159,7 +159,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
             mood: 'beacon',
             title: t('common:language.zh'),
             subtitle: t('home:scene.settingsGalaxy'),
-            action: () => void i18n.changeLanguage('zh'),
+            action: () => changeLanguage(LanguageEnum.ZH),
           }),
       },
       {
@@ -173,7 +173,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
             mood: 'beacon',
             title: t('common:language.en'),
             subtitle: t('home:scene.settingsGalaxy'),
-            action: () => void i18n.changeLanguage('en'),
+            action: () => changeLanguage(LanguageEnum.EN),
           }),
       },
       {
@@ -187,7 +187,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
             mood: 'beacon',
             title: t('common:language.fr'),
             subtitle: t('home:scene.settingsGalaxy'),
-            action: () => void i18n.changeLanguage('fr'),
+            action: () => changeLanguage(LanguageEnum.FR),
           }),
       },
       {
@@ -205,7 +205,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
           }),
       },
     ],
-    [i18n, playWorldTransition, t],
+    [playWorldTransition, t],
   )
 
   useGSAP(
@@ -451,7 +451,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
             key={node.id}
             node={node}
             rotation={rotation.settings}
-            active={(node.id === locale && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'}
+            active={(node.id === currentLang && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'}
             onEnter={() => setFocusLabel(node.title)}
             onActivate={node.action}
           />

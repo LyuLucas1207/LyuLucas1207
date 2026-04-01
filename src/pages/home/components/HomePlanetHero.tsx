@@ -1,17 +1,15 @@
-import { Sparkles } from 'lucide-react'
+import { ChevronDown, Sparkles } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getLanguageDisplayName, getThemeDisplayName, LanguageEnum } from 'nfx-ui/languages'
+import { changeLanguage, getLanguageDisplayName, getThemeDisplayName, LanguageEnum } from 'nfx-ui/languages'
 import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
-import { useReducedMotion } from '../../../hooks/useReducedMotion'
-import { routeMoods } from '../../../constants/siteContent'
-import { useLocale } from '../../../hooks/useLocale'
-import { useWorldTransition } from '../../../hooks/useWorldTransition'
-import { i18n } from '../../../assets/languages'
-import { ROUTES } from '../../../navigations/routes'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { routeMoods } from '@/constants/siteContent'
+import { useWorldTransition } from '@/hooks/useWorldTransition'
+import { ROUTES } from '@/navigations/routes'
 import { createUniverseScene } from './universe/scene'
 import { readUniversePalette } from './universe/theme'
 import type { StarSystemConfig, UniversePalette } from './universe/types'
@@ -32,62 +30,27 @@ const themeOptions: ThemeEnum[] = [
 function HomePlanetHero() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { t } = useTranslation(['common'])
-  const locale = useLocale()
+  const { t } = useTranslation(['common', 'home'])
   const { themeName, setTheme } = useTheme()
   const { playWorldTransition } = useWorldTransition()
   const prefersReducedMotion = useReducedMotion()
   const sceneHostRef = useRef<HTMLDivElement | null>(null)
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
+  const sidebarRef = useRef<HTMLElement | null>(null)
   const [sessionSeed] = useState(() => Math.random())
-  const [dragging, setDragging] = useState(false)
+  const [, setDragging] = useState(false)
   const [palette, setPalette] = useState<UniversePalette>(() => readUniversePalette())
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const copy = useMemo(() => {
-    if (locale === LanguageEnum.ZH) {
-      return {
-        themeSystem: '\u4e3b\u9898\u661f\u7cfb',
-        languageSystem: '\u8bed\u8a00\u661f\u7cfb',
-        pageSystem: '\u9875\u9762\u661f\u7cfb',
-        selectedSystem: '\u5f53\u524d\u7cfb\u7edf',
-        freeNavigation: '\u81ea\u7531\u9068\u6e38',
-        planetUnit: '\u9897\u661f\u7403',
-        manualFlight: '\u624b\u52a8\u822a\u884c',
-        orbitReady: '\u8f68\u9053\u5f85\u547d',
-        reflySystem: '\u91cd\u65b0\u52a0\u8f7d World',
-        reflyIdle: '\u91cd\u65b0\u521d\u59cb\u5316\u5f53\u524d\u5b87\u5b99',
-      }
-    }
-
-    if (locale === LanguageEnum.FR) {
-      return {
-        themeSystem: 'Systeme de themes',
-        languageSystem: 'Systeme de langue',
-        pageSystem: 'Systeme de pages',
-        selectedSystem: 'Systeme actuel',
-        freeNavigation: 'Navigation libre',
-        planetUnit: 'planetes',
-        manualFlight: 'Vol manuel',
-        orbitReady: 'Orbites pretes',
-        reflySystem: 'Recharger World',
-        reflyIdle: 'Reinitialiser cet univers',
-      }
-    }
-
-    return {
-      themeSystem: 'Theme System',
-      languageSystem: 'Language System',
-      pageSystem: 'Page System',
-      selectedSystem: 'Current System',
-      freeNavigation: 'Free Navigation',
-      planetUnit: 'planets',
-      manualFlight: 'Manual Flight',
-      orbitReady: 'Orbit Ready',
-      reflySystem: 'Reload World',
-      reflyIdle: 'Reload this world view',
-    }
-  }, [locale])
+  const systemDescriptions = useMemo<Record<string, string>>(
+    () => ({
+      'theme-system': t('home:scene.themeGalaxyDescription'),
+      'language-system': t('home:scene.languageGalaxyDescription'),
+      'page-system': t('home:scene.pageGalaxyDescription'),
+    }),
+    [t],
+  )
 
   const languagePlanets = useMemo(
     () => [
@@ -142,14 +105,14 @@ function HomePlanetHero() {
     () => [
       {
         id: 'theme-system',
-        name: copy.themeSystem,
-        summary: copy.planetUnit,
+        name: t('home:scene.themeGalaxy'),
+        summary: t('home:scene.planetUnit'),
         planets: themePlanets,
       },
       {
         id: 'language-system',
-        name: copy.languageSystem,
-        summary: copy.planetUnit,
+        name: t('home:scene.languageGalaxy'),
+        summary: t('home:scene.planetUnit'),
         planets: languagePlanets.map((planet) => ({
           id: planet.id,
           label: planet.label,
@@ -161,14 +124,14 @@ function HomePlanetHero() {
               mood: 'beacon',
               title: planet.label,
               subtitle: t('labels.worldShift'),
-              action: () => void i18n.changeLanguage(planet.value),
+              action: () => changeLanguage(planet.value),
             }),
         })),
       },
       {
         id: 'page-system',
-        name: copy.pageSystem,
-        summary: copy.planetUnit,
+        name: t('home:scene.pageGalaxy'),
+        summary: t('home:scene.planetUnit'),
         planets: [
           {
             id: 'page-about',
@@ -229,7 +192,7 @@ function HomePlanetHero() {
         ],
       },
     ],
-    [copy, languagePlanets, navigate, playWorldTransition, t, themePlanets],
+    [languagePlanets, navigate, playWorldTransition, t, themePlanets],
   )
 
   const activeSystem = systems.find((system) => system.id === focusedSystemId)
@@ -279,6 +242,17 @@ function HomePlanetHero() {
     sceneControllerRef.current?.setFocusSystem(focusedSystemId)
   }, [focusedSystemId])
 
+  useEffect(() => {
+    if (!sidebarOpen) return
+    const handlePointerDown = (e: PointerEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
+        setSidebarOpen(false)
+      }
+    }
+    window.addEventListener('pointerdown', handlePointerDown)
+    return () => window.removeEventListener('pointerdown', handlePointerDown)
+  }, [sidebarOpen])
+
   return (
     <section
       className={styles.hero}
@@ -300,22 +274,40 @@ function HomePlanetHero() {
       <div className={styles.sceneCanvas} ref={sceneHostRef} />
       <div className={styles.atmosphere} aria-hidden="true" />
 
-      <aside className={styles.systemSidebar} aria-label="System navigation">
-        {systems.map((system) => (
-          <button
-            key={system.id}
-            type="button"
-            className={`${styles.systemSidebarButton} ${
-              focusedSystemId === system.id ? styles.systemSidebarButtonActive : ''
-            }`}
-            onClick={() => setFocusedSystemId(system.id)}
-          >
-            <strong>{system.name}</strong>
-            <span>
-              {system.planets.length} {system.summary}
-            </span>
-          </button>
-        ))}
+      <aside ref={sidebarRef} className={styles.systemSidebar} aria-label="System navigation">
+        <button
+          type="button"
+          className={styles.sidebarToggle}
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          <strong>{activeSystem?.name ?? t('home:scene.selectGalaxy')}</strong>
+          <ChevronDown
+            size={16}
+            className={`${styles.toggleChevron} ${sidebarOpen ? styles.toggleChevronOpen : ''}`}
+          />
+        </button>
+        <div
+          className={`${styles.sidebarDropdown} ${sidebarOpen ? styles.sidebarDropdownOpen : ''}`}
+        >
+          {systems.map((system) => (
+            <button
+              key={system.id}
+              type="button"
+              className={`${styles.systemSidebarButton} ${
+                focusedSystemId === system.id ? styles.systemSidebarButtonActive : ''
+              }`}
+              onClick={() => {
+                setFocusedSystemId(system.id)
+                setSidebarOpen(false)
+              }}
+            >
+              <strong>{system.name}</strong>
+              <span>
+                {system.planets.length} {system.summary}
+              </span>
+            </button>
+          ))}
+        </div>
       </aside>
 
       <div className={styles.actionDock}>
@@ -323,20 +315,23 @@ function HomePlanetHero() {
           type="button"
           className={styles.actionButton}
           onClick={handleReloadWorld}
-          title={copy.reflyIdle}
+          title={t('home:scene.reflyIdle')}
         >
-          <span className={styles.actionButtonLabel}>{copy.reflySystem}</span>
-          <strong>World</strong>
+          <strong>{t('home:scene.reflySystem')}</strong>
         </button>
       </div>
 
-      <div className={styles.hud}>
+      <div className={styles.hud} aria-live="polite">
         <span className={styles.hudLabel}>
           <Sparkles size={14} />
-          {copy.selectedSystem}
+          {t('home:scene.selectedSystem')}
         </span>
-        <strong>{activeSystem?.name ?? copy.freeNavigation}</strong>
-        <span className={styles.hudMeta}>{dragging ? copy.manualFlight : copy.orbitReady}</span>
+        <strong>{activeSystem?.name ?? t('home:scene.freeNavigation')}</strong>
+        <p className={styles.hudDescription}>
+          {focusedSystemId
+            ? systemDescriptions[focusedSystemId]
+            : t('home:scene.freeNavigationDesc')}
+        </p>
       </div>
     </section>
   )

@@ -32,7 +32,16 @@
     "memoryArchive": "档案",
     "memoryRitual": "仪式",
     "darkTone": "Dark Signal",
-    "darkToneDescription": "琥珀与锌灰的深夜对比、更浓缩的技术感和更收束的暗色气质。"
+    "darkToneDescription": "琥珀与锌灰的深夜对比、更浓缩的技术感和更收束的暗色气质。",
+    "languageGalaxy": "语言星系",
+    "languageGalaxyDescription": "切换语言卫星，无需离开当前场景",
+    "selectedSystem": "当前系统",
+    "freeNavigation": "自由遨游",
+    "freeNavigationDesc": "拖动星系，点击星球进入对应世界",
+    "planetUnit": "颗星球",
+    "reflySystem": "重新飞入世界",
+    "reflyIdle": "重新初始化当前宇宙",
+    "selectGalaxy": "选择星系"
   },
   "signals": {
     "premium": {

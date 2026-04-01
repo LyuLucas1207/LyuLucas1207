@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Button } from 'nfx-ui/components'
 
-import { Reveal } from '../../components/motion/Reveal'
-import { accentClassMap } from '../../constants/siteContent'
-import { useProjectsQuery } from '../../hooks/useWorldQueries'
-import styles from './ProjectDetailPage.module.css'
+import { Reveal } from '@/components/motion/Reveal'
+import { accentClassMap } from '@/constants/siteContent'
+import { useProjectsQuery } from '@/hooks/useWorldQueries'
+import styles from './styles.module.css'
 
 function ProjectDetailPage() {
   const { slug } = useParams()

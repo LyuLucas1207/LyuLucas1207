@@ -1,17 +1,17 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Reveal } from '../../components/motion/Reveal'
-import { PageIntro } from '../../components/pageIntro/PageIntro'
-import { EditorialText } from '../../components/editorialText/EditorialText'
-import { TimelineBlock } from '../../elements/portfolio/components/TimelineBlock'
-import { EditorialRails } from '../../elements/world/components/EditorialRails'
-import { SectionDivider } from '../../elements/world/components/SectionDivider'
-import { TimelinePath } from '../../elements/world/components/TimelinePath'
-import { useScrollAtmosphere } from '../../elements/world/hooks/useScrollAtmosphere'
-import { useLocale } from '../../hooks/useLocale'
-import { useProfileQuery, useTimelineQuery } from '../../hooks/useWorldQueries'
-import styles from './AboutPage.module.css'
+import { Reveal } from '@/components/motion/Reveal'
+import { PageIntro } from '@/components/pageIntro/PageIntro'
+import { EditorialText } from '@/components/editorialText/EditorialText'
+import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
+import { EditorialRails } from '@/elements/world/components/EditorialRails'
+import { SectionDivider } from '@/elements/world/components/SectionDivider'
+import { TimelinePath } from '@/elements/world/components/TimelinePath'
+import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
+import { useLocale } from '@/hooks/useLocale'
+import { useProfileQuery, useTimelineQuery } from '@/hooks/useWorldQueries'
+import styles from './styles.module.css'
 
 function AboutPage() {
   const { t } = useTranslation(['common', 'about'])

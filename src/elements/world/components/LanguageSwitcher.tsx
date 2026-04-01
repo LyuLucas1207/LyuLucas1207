@@ -1,9 +1,8 @@
 import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LanguageEnum } from 'nfx-ui/languages'
+import { changeLanguage, LanguageEnum } from 'nfx-ui/languages'
 
-import { useLocale } from '../../../hooks/useLocale'
 import { LanguageHalo } from './LanguageHalo'
 import styles from './LanguageSwitcher.module.css'
 
@@ -11,7 +10,7 @@ const languages: LanguageEnum[] = [LanguageEnum.ZH, LanguageEnum.EN, LanguageEnu
 
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation('common')
-  const locale = useLocale()
+  const currentLang = i18n.language as LanguageEnum
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement | null>(null)
 
@@ -41,7 +40,7 @@ function LanguageSwitcher() {
       >
         <span className={styles.meta}>
           <span className={styles.label}>{t('language.switcherLabel')}</span>
-          <strong>{t(`language.${locale}`)}</strong>
+          <strong>{t(`language.${currentLang}`)}</strong>
         </span>
         <ChevronDown size={16} className={styles.chevron} />
       </button>
@@ -51,9 +50,9 @@ function LanguageSwitcher() {
             <button
               key={language}
               type="button"
-              className={`${styles.option} ${locale === language ? styles.active : ''}`}
+              className={`${styles.option} ${currentLang === language ? styles.active : ''}`}
               onClick={() => {
-                void i18n.changeLanguage(language)
+                changeLanguage(language)
                 setOpen(false)
               }}
               role="menuitem"

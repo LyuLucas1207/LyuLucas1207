@@ -32,7 +32,16 @@
     "memoryArchive": "Archive",
     "memoryRitual": "Rituel",
     "darkTone": "Signal sombre",
-    "darkToneDescription": "Un contraste ambre sur zinc, une profondeur nocturne dense et une obscurité technique plus condensée."
+    "darkToneDescription": "Un contraste ambre sur zinc, une profondeur nocturne dense et une obscurité technique plus condensée.",
+    "languageGalaxy": "Galaxie des langues",
+    "languageGalaxyDescription": "Changez de langue sans quitter la scène",
+    "selectedSystem": "Système actuel",
+    "freeNavigation": "Navigation libre",
+    "freeNavigationDesc": "Faites glisser la galaxie pour explorer",
+    "planetUnit": "planètes",
+    "reflySystem": "Réentrer dans le monde",
+    "reflyIdle": "Réinitialiser cet univers",
+    "selectGalaxy": "Choisir galaxie"
   },
   "signals": {
     "premium": {
