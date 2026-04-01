@@ -9,14 +9,12 @@ import { FragmentField } from '@/elements/world/components/FragmentField'
 import { SectionDivider } from '@/elements/world/components/SectionDivider'
 import { TimelinePath } from '@/elements/world/components/TimelinePath'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
-import { useLocale } from '@/hooks/useLocale'
-import { useLifeRecordsQuery } from '@/hooks/useWorldQueries'
-import { formatLongDate } from '@/utils/formatters'
+import { useLifeRecordsQuery } from '@/hooks'
+import { formatDate } from 'nfx-ui/utils'
 import styles from './styles.module.css'
 
 function LifePage() {
   const { t } = useTranslation(['common', 'life'])
-  const locale = useLocale()
   const [type, setType] = useState('all')
   const { data: records = [] } = useLifeRecordsQuery()
   const gridRef = useRef<HTMLElement | null>(null)
@@ -76,7 +74,7 @@ function LifePage() {
                 <span>
                   {t(`lifeTypes.${record.type}`)} / {record.mood}
                 </span>
-                <strong>{formatLongDate(record.date, locale)}</strong>
+                <strong>{formatDate(record.date)}</strong>
               </div>
               <h2>{record.title}</h2>
               <p className={styles.excerpt}>{record.excerpt}</p>

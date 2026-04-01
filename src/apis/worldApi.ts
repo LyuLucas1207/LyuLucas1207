@@ -1,33 +1,34 @@
-import { httpClient } from './httpClient'
 import type {
   HighlightApiItem,
   LifeRecordApiItem,
   ProfileApi,
   ProjectApiItem,
   TimelineApiItem,
-} from '../types/site'
+} from '@/types'
 
-export async function fetchProfile() {
+import { httpClient } from './httpClient'
+
+export async function GetProfile() {
   const { data } = await httpClient.get<ProfileApi>('/profile')
   return data
 }
 
-export async function fetchProjects() {
+export async function GetProjects() {
   const { data } = await httpClient.get<ProjectApiItem[]>('/projects')
   return data
 }
 
-export async function fetchHighlights() {
+export async function GetHighlights() {
   const { data } = await httpClient.get<HighlightApiItem[]>('/highlights')
   return data
 }
 
-export async function fetchTimeline() {
+export async function GetTimeline() {
   const { data } = await httpClient.get<TimelineApiItem[]>('/timeline')
   return data
 }
 
-export async function fetchLifeRecords() {
+export async function GetLifeRecords() {
   const { data } = await httpClient.get<LifeRecordApiItem[]>('/life-records')
   return data
 }

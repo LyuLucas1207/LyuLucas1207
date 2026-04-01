@@ -1,9 +1,9 @@
 import { useGSAP } from '@gsap/react'
 import { useRef } from 'react'
 
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { WorldMood } from '@/types/site'
-import { ensureGsap } from '@/utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import type { WorldMood } from '@/types'
+import gsap from 'gsap'
 import styles from './styles.module.css'
 
 type WorldAtmosphereProps = {
@@ -22,7 +22,6 @@ function WorldAtmosphere({ mood, pageKey }: WorldAtmosphereProps) {
         return
       }
 
-      const { gsap } = ensureGsap()
       const lines = node.querySelectorAll<SVGGeometryElement>('[data-atmos-line]')
       const dots = node.querySelectorAll<SVGElement>('[data-atmos-dot]')
       const floats = node.querySelectorAll<SVGElement>('[data-atmos-float]')

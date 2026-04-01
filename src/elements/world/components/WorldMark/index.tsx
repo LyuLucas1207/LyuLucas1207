@@ -1,8 +1,8 @@
 import { useGSAP } from '@gsap/react'
 import { useRef } from 'react'
 
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { ensureGsap } from '@/utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import gsap from 'gsap'
 import styles from './styles.module.css'
 
 type WorldMarkProps = {
@@ -15,11 +15,10 @@ function WorldMark({ className }: WorldMarkProps) {
 
   useGSAP(
     (context) => {
-      if (reducedMotion) {
-        return
-      }
+      if (reducedMotion) return
 
-      const { gsap } = ensureGsap()
+
+
       const rings = context.selector?.('[data-orbit-ring]')
       const dots = context.selector?.('[data-orbit-dot]')
       const core = context.selector?.('[data-mark-core]')

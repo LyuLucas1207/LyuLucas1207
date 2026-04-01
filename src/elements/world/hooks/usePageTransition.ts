@@ -1,9 +1,9 @@
 import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
 
-import { useReducedMotion } from '../../../hooks/useReducedMotion'
-import type { WorldMood } from '../../../types/site'
-import { ensureGsap } from '../../../utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import type { WorldMood } from '@/types'
+import gsap from 'gsap'
 
 export function usePageTransition(
   ref: RefObject<HTMLElement | null>,
@@ -20,7 +20,6 @@ export function usePageTransition(
         return
       }
 
-      const { gsap } = ensureGsap()
       const targets = node.querySelectorAll<HTMLElement>('[data-page-chunk]')
       const transitionMap: Record<
         WorldMood,

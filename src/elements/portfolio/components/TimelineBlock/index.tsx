@@ -1,4 +1,4 @@
-import type { TimelineItem } from '@/types/site'
+import type { TimelineItem } from '@/types'
 
 import styles from './styles.module.css'
 

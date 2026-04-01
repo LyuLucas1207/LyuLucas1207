@@ -9,7 +9,7 @@ import { ProjectCard } from '@/elements/portfolio/components/ProjectCard'
 import { SectionDivider } from '@/elements/world/components/SectionDivider'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
-import { useProjectsQuery } from '@/hooks/useWorldQueries'
+import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function ProjectsPage() {

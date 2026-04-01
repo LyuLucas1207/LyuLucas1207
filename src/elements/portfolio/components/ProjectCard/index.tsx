@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from 'nfx-ui/components'
 
 import { accentClassMap } from '@/constants/siteContent'
-import type { ProjectItem } from '@/types/site'
+import type { ProjectItem } from '@/types'
 import styles from './styles.module.css'
 
 type ProjectCardProps = {

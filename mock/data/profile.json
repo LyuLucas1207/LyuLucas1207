@@ -1,0 +1,137 @@
+{
+  "id": "lyu-profile",
+  "name": {
+    "zh": "Lyu Lucas",
+    "en": "Lyu Lucas",
+    "fr": "Lyu Lucas"
+  },
+  "worldName": {
+    "zh": "Lyu World",
+    "en": "Lyu World",
+    "fr": "Lyu World"
+  },
+  "headline": {
+    "zh": "计算机工程的思维，软件工程的手艺，一个由结构与品味共同构建的数字世界。",
+    "en": "Computer engineering mind. Software engineering craft. A digital world built with structure and taste.",
+    "fr": "Un esprit d'ingénierie informatique. Un savoir-faire en ingénierie logicielle. Un monde numérique construit avec structure et sens du détail."
+  },
+  "status": {
+    "zh": "正在设计更有分寸的产品体验与更高级的 Web 前端。",
+    "en": "Designing thoughtful products and premium web experiences.",
+    "fr": "Concevoir des produits réfléchis et des expériences web haut de gamme."
+  },
+  "location": {
+    "zh": "温哥华 / 互联网",
+    "en": "Vancouver / Internet",
+    "fr": "Vancouver / Internet"
+  },
+  "intro": {
+    "zh": "我做的软件，既要在运动中显得有分寸，也要在结构上站得住，同时保留个人语气。",
+    "en": "I build software that feels intentional in motion, credible in structure, and personal in tone.",
+    "fr": "Je conçois des logiciels qui paraissent intentionnels dans le mouvement, crédibles dans la structure et personnels dans le ton."
+  },
+  "heroStatement": {
+    "zh": "Lyu World 不是一页简历，而是一个由身份、作品、记录与氛围共同构成的设计系统。",
+    "en": "Lyu World is not a resume page. It is a designed system of identity, work, records, and atmosphere.",
+    "fr": "Lyu World n'est pas une page de CV. C'est un système conçu d'identité, de travail, de traces et d'atmosphère."
+  },
+  "focusAreas": {
+    "zh": ["前端架构", "设计系统", "编辑感 Web 体验", "产品工程", "动效与交互"],
+    "en": ["Frontend architecture", "Design systems", "Editorial web experiences", "Product engineering", "Motion and interaction"],
+    "fr": ["Architecture frontend", "Systèmes de design", "Expériences web éditoriales", "Ingénierie produit", "Animation et interaction"]
+  },
+  "metrics": [
+    {
+      "value": "8+",
+      "label": {
+        "zh": "软件构建经验",
+        "en": "Years building software",
+        "fr": "Années de développement logiciel"
+      },
+      "detail": {
+        "zh": "跨越产品、平台与高级前端系统。",
+        "en": "Across products, platforms, and premium frontend systems.",
+        "fr": "Sur des produits, des plateformes et des systèmes frontend avancés."
+      }
+    },
+    {
+      "value": "24",
+      "label": {
+        "zh": "重要上线项目",
+        "en": "Major launches",
+        "fr": "Lancements majeurs"
+      },
+      "detail": {
+        "zh": "从平台工具到产品改版，再到 Web 叙事体验。",
+        "en": "From platform tooling to product redesigns and web storytelling.",
+        "fr": "Des outils de plateforme aux refontes produit et aux récits web."
+      }
+    },
+    {
+      "value": "5",
+      "label": {
+        "zh": "世界支柱",
+        "en": "World pillars",
+        "fr": "Piliers du monde"
+      },
+      "detail": {
+        "zh": "身份、工作、经历、记录与联系。",
+        "en": "Identity, work, experience, records, and contact.",
+        "fr": "Identité, travail, parcours, traces et contact."
+      }
+    }
+  ],
+  "worldview": {
+    "zh": [
+      "软件不应该只有功能完成度，也应该带着情绪上的清晰。",
+      "层级、节奏与质地，与正确性同样重要。",
+      "最好的前端系统既能让未来更容易推进，也不会长得像模板。"
+    ],
+    "en": [
+      "Software should carry emotional clarity, not just functional completion.",
+      "Hierarchy, pacing, and texture matter as much as correctness.",
+      "The best frontend systems make future work easier without looking generic."
+    ],
+    "fr": [
+      "Un logiciel doit offrir une clarté émotionnelle, pas seulement une complétude fonctionnelle.",
+      "La hiérarchie, le rythme et la texture comptent autant que l'exactitude.",
+      "Les meilleurs systèmes frontend facilitent le travail futur sans avoir l'air génériques."
+    ]
+  },
+  "aboutPrelude": {
+    "zh": "我的背景扎根于技术，但我最在意的工作，通常发生在系统与表达交界的地方。",
+    "en": "I come from a technically grounded background, but the work I care about most lives at the edge between systems and expression.",
+    "fr": "Mon parcours est ancré dans la technique, mais ce qui me motive le plus se situe à la frontière entre systèmes et expression."
+  },
+  "aboutBody": {
+    "zh": [
+      "这通常意味着要带着纪律去做界面：更清楚的信息架构、更干净的组件边界、更有分寸的 motion，以及真正统一的主题系统。",
+      "它也意味着在意一个网站\u201c感觉如何\u201d。它是否会呼吸，是否尊重注意力，是否留下一个观点，而不是只留下一套模板。"
+    ],
+    "en": [
+      "That usually means building interfaces with discipline: stronger information architecture, cleaner component boundaries, more thoughtful motion, and real theme coherence.",
+      "It also means caring about how a site feels. Whether it breathes correctly. Whether it respects attention. Whether it leaves behind a point of view instead of a template."
+    ],
+    "fr": [
+      "Cela veut souvent dire construire des interfaces avec rigueur : architecture de l'information plus nette, limites de composants plus claires, animation plus mesurée et cohérence thématique réelle.",
+      "Cela signifie aussi se soucier de la sensation qu'un site procure. S'il respire correctement. S'il respecte l'attention. S'il laisse une vision plutôt qu'un modèle toute fait."
+    ]
+  },
+  "contactMethods": [
+    {
+      "label": { "zh": "邮箱", "en": "Email", "fr": "E-mail" },
+      "value": { "zh": "hello@lyulucas.dev", "en": "hello@lyulucas.dev", "fr": "hello@lyulucas.dev" },
+      "href": "mailto:hello@lyulucas.dev"
+    },
+    {
+      "label": { "zh": "GitHub", "en": "GitHub", "fr": "GitHub" },
+      "value": { "zh": "github.com/lyulucas1207", "en": "github.com/lyulucas1207", "fr": "github.com/lyulucas1207" },
+      "href": "https://github.com/lyulucas1207"
+    },
+    {
+      "label": { "zh": "LinkedIn", "en": "LinkedIn", "fr": "LinkedIn" },
+      "value": { "zh": "linkedin.com/in/lyulucas", "en": "linkedin.com/in/lyulucas", "fr": "linkedin.com/in/lyulucas" },
+      "href": "https://linkedin.com/in/lyulucas"
+    }
+  ]
+}

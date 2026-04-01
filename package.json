@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "mock": "json-server --watch mock/db.json --port 3001",
+    "mock": "json-server --watch mock/db.cjs --port 3001",
     "preview": "vite preview"
   },
   "dependencies": {

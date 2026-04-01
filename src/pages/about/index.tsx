@@ -9,8 +9,8 @@ import { EditorialRails } from '@/elements/world/components/EditorialRails'
 import { SectionDivider } from '@/elements/world/components/SectionDivider'
 import { TimelinePath } from '@/elements/world/components/TimelinePath'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
-import { useLocale } from '@/hooks/useLocale'
-import { useProfileQuery, useTimelineQuery } from '@/hooks/useWorldQueries'
+import { LanguageEnum } from 'nfx-ui/languages'
+import { useLocale, useProfileQuery, useTimelineQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function AboutPage() {
@@ -41,9 +41,9 @@ function AboutPage() {
             text={profile?.aboutPrelude ?? ''}
             className={styles.editorial}
             font={
-              locale === 'zh' ? '600 30px "Noto Serif SC"' : '600 34px "Cormorant Garamond"'
+              locale === LanguageEnum.ZH ? '600 30px "Noto Serif SC"' : '600 34px "Cormorant Garamond"'
             }
-            lineHeight={locale === 'zh' ? 50 : 44}
+            lineHeight={locale === LanguageEnum.ZH ? 50 : 44}
           />
         </section>
       </Reveal>

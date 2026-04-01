@@ -1,9 +1,9 @@
 import { useGSAP } from '@gsap/react'
 import { useRef } from 'react'
 
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { WorldMood } from '@/types/site'
-import { ensureGsap } from '@/utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import type { WorldMood } from '@/types'
+import gsap from 'gsap'
 import styles from './styles.module.css'
 
 type TransitionRequest = {
@@ -34,7 +34,6 @@ function WorldTransitionOverlay({
         return
       }
 
-      const { gsap } = ensureGsap()
       const shell = node.querySelector<HTMLElement>('[data-overlay-shell]')
       const veil = node.querySelector<HTMLElement>('[data-overlay-veil]')
       const paths = node.querySelectorAll<SVGGeometryElement>('[data-overlay-draw]')

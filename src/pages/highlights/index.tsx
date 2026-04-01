@@ -8,7 +8,7 @@ import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { TimelinePath } from '@/elements/world/components/TimelinePath'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
-import { useHighlightsQuery, useTimelineQuery } from '@/hooks/useWorldQueries'
+import { useHighlightsQuery, useTimelineQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function HighlightsPage() {

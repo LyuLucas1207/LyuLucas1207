@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { useScrollToTop } from '@/hooks'
 import { SiteLayout } from '@/layouts/siteLayout'
 import { AboutPage } from '@/pages/about'
 import { ContactPage } from '@/pages/contact'

@@ -1,0 +1,71 @@
+[
+  {
+    "id": "night-walk-interface",
+    "title": { "zh": "夜路散步，顺便想界面", "en": "Night walk, interface notes", "fr": "Promenade nocturne, notes d'interface" },
+    "type": "note",
+    "date": "2026-03-09",
+    "place": { "zh": "温哥华", "en": "Vancouver", "fr": "Vancouver" },
+    "mood": { "zh": "安静专注", "en": "quiet focus", "fr": "concentration tranquille" },
+    "excerpt": {
+      "zh": "很多最好的布局决定，往往不是坐在屏幕前得出来的。",
+      "en": "Some of the best layout decisions arrive away from the screen.",
+      "fr": "Les meilleurs choix de mise en page naissent souvent loin de l'écran."
+    },
+    "body": {
+      "zh": "再次提醒自己：当我暂时离开实现细节，去想一页内容应该怎样呼吸时，节奏与层级往往会突然变得清楚。",
+      "en": "A reminder that pacing and hierarchy often become obvious when I stop staring at the implementation and think about how the page should breathe.",
+      "fr": "Rappel : le rythme et la hiérarchie deviennent souvent évidents quand je lâche le détail d'implémentation et que je réfléchis à la respiration de la page."
+    },
+    "tags": {
+      "zh": ["设计", "过程", "笔记"],
+      "en": ["design", "process", "notes"],
+      "fr": ["design", "processus", "notes"]
+    }
+  },
+  {
+    "id": "keyboard-and-rain",
+    "title": { "zh": "键盘、雨声、一个修好的 bug", "en": "Keyboard, rain, one solved bug", "fr": "Clavier, pluie, un bug résolu" },
+    "type": "snapshot",
+    "date": "2026-02-18",
+    "place": { "zh": "家里的书桌", "en": "Home desk", "fr": "Bureau à la maison" },
+    "mood": { "zh": "收拢", "en": "contained", "fr": "recueilli" },
+    "excerpt": {
+      "zh": "一个很小的技术修复，也足以重新校准整天的情绪温度。",
+      "en": "A tiny technical fix can reset the emotional temperature of a whole day.",
+      "fr": "Une minuscule correction technique peut recalibrer toute la journée."
+    },
+    "body": {
+      "zh": "追到了一个状态同步问题，它让某条流程一直比应该的样子更沉重。代码层面很小，体验层面却影响很大。",
+      "en": "Tracked down a state sync issue that had been making a flow feel heavier than it should. It was minor in code and major in experience.",
+      "fr": "J'ai traqué un problème de synchronisation d'état qui alourdissait un flux au-delà du nécessaire. Peu de code, beaucoup d'impact sur l'expérience."
+    },
+    "tags": {
+      "zh": ["工程", "调试", "日常"],
+      "en": ["engineering", "debugging", "daily"],
+      "fr": ["ingénierie", "débogage", "quotidien"]
+    }
+  },
+  {
+    "id": "museum-color-study",
+    "title": { "zh": "美术馆配色研究", "en": "Museum color study", "fr": "Étude de couleurs au musée" },
+    "type": "moment",
+    "date": "2026-01-27",
+    "place": { "zh": "画廊", "en": "Gallery", "fr": "Galerie" },
+    "mood": { "zh": "沉浸", "en": "absorbed", "fr": "absorbé" },
+    "excerpt": {
+      "zh": "实体空间仍然能教会数字界面很多关于克制的事。",
+      "en": "Physical spaces still teach digital interfaces a lot about restraint.",
+      "fr": "Les espaces physiques enseignent encore beaucoup aux interfaces numériques sur la retenue."
+    },
+    "body": {
+      "zh": "那天我花在作品之间留白上的时间，比看作品本身还多。好的策展会留出足够的空间，让观看者自己抵达。",
+      "en": "Spent more time looking at spacing between works than the works themselves. Good curation leaves enough room for the viewer to arrive.",
+      "fr": "Ce jour-là, j'ai passé plus de temps sur les espaces entre les œuvres que sur les œuvres elles-mêmes. Une bonne exposition laisse au spectateur la place d'arriver lui-même."
+    },
+    "tags": {
+      "zh": ["审美", "空间", "世界"],
+      "en": ["aesthetics", "space", "world"],
+      "fr": ["esthétique", "espace", "monde"]
+    }
+  }
+]

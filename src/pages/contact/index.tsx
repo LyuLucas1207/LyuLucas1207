@@ -10,7 +10,7 @@ import { Reveal } from '@/animations'
 import { PageIntro } from '@/components/pageIntro'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
-import { useProfileQuery } from '@/hooks/useWorldQueries'
+import { useProfileQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 type ContactFormValues = {

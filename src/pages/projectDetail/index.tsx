@@ -5,7 +5,7 @@ import { Button } from 'nfx-ui/components'
 
 import { Reveal } from '@/animations'
 import { accentClassMap } from '@/constants/siteContent'
-import { useProjectsQuery } from '@/hooks/useWorldQueries'
+import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function ProjectDetailPage() {

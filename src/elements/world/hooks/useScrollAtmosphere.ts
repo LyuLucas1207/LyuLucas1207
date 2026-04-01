@@ -1,9 +1,10 @@
 import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
 
-import { useReducedMotion } from '../../../hooks/useReducedMotion'
-import type { WorldMood } from '../../../types/site'
-import { ensureGsap } from '../../../utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import type { WorldMood } from '@/types'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 type UseScrollAtmosphereOptions = {
   selector?: string
@@ -25,7 +26,6 @@ export function useScrollAtmosphere(
         return
       }
 
-      const { gsap, ScrollTrigger } = ensureGsap()
       const mood = options.mood ?? 'entry'
       const targets = options.selector
         ? node.querySelectorAll<HTMLElement>(options.selector)

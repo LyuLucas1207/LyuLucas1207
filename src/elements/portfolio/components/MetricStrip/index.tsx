@@ -1,4 +1,4 @@
-import type { MetricItem } from '@/types/site'
+import type { MetricItem } from '@/types'
 
 import styles from './styles.module.css'
 

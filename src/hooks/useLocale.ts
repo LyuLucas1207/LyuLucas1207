@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { LANGUAGE_VALUES, LanguageEnum } from 'nfx-ui/languages'
 
-import type { Locale } from '../types/site'
-
-function normalizeLanguage(language: string | undefined): Locale {
+function normalizeLanguage(language: string | undefined): LanguageEnum {
   const normalized = (language ?? '').split('-')[0] as LanguageEnum
   return (LANGUAGE_VALUES as string[]).includes(normalized) ? normalized : LanguageEnum.ZH
 }

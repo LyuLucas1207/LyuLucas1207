@@ -14,7 +14,7 @@ import { SectionDivider } from '@/elements/world/components/SectionDivider'
 import { WorldAtmosphere } from '@/elements/world/components/WorldAtmosphere'
 import { WorldMark } from '@/elements/world/components/WorldMark'
 import { usePageTransition } from '@/elements/world/hooks/usePageTransition'
-import { useWorldTransition } from '@/hooks/useWorldTransition'
+import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
 import styles from './styles.module.css'
 

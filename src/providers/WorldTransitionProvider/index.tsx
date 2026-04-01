@@ -1,8 +1,9 @@
 import type { PropsWithChildren } from 'react'
-import { createContext, useCallback, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 
-import { WorldTransitionOverlay } from '../../elements/world/components/WorldTransitionOverlay'
-import type { WorldMood } from '../../types/site'
+import type { WorldMood } from '@/types'
+
+import { WorldTransitionOverlay } from './components'
 
 type TransitionRequest = {
   id: number
@@ -70,4 +71,14 @@ function WorldTransitionProvider({ children }: PropsWithChildren) {
   )
 }
 
-export { WorldTransitionContext, WorldTransitionProvider }
+function useWorldTransition() {
+  const context = useContext(WorldTransitionContext)
+
+  if (!context) {
+    throw new Error('useWorldTransition must be used within WorldTransitionProvider')
+  }
+
+  return context
+}
+
+export { useWorldTransition, WorldTransitionProvider }

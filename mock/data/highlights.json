@@ -1,0 +1,38 @@
+[
+  {
+    "id": "systems-first",
+    "title": { "zh": "系统优先的思考方式", "en": "Systems-first thinking", "fr": "Une pensée système d'abord" },
+    "subtitle": { "zh": "先有结构，再有修饰", "en": "Structure before flourish", "fr": "La structure avant l'ornement" },
+    "description": {
+      "zh": "我更偏爱那些表层像被认真设计过、底层又能被继续组合的产品。",
+      "en": "I prefer products that feel authored on the surface and composable underneath.",
+      "fr": "Je préfère les produits qui paraissent travaillés en surface et composables en profondeur."
+    },
+    "stat": { "zh": "架构", "en": "Architecture", "fr": "Architecture" },
+    "icon": "Orbit"
+  },
+  {
+    "id": "tasteful-motion",
+    "title": { "zh": "克制而有品味的动效", "en": "Tasteful motion", "fr": "Animation avec goût" },
+    "subtitle": { "zh": "节奏，而不是噪音", "en": "Rhythm, not noise", "fr": "Le rythme, pas le bruit" },
+    "description": {
+      "zh": "动画应该服务于阅读顺序、空间连续性与触感清晰，而不是炫耀自己。",
+      "en": "Animation should support reading order, continuity, and tactile clarity.",
+      "fr": "L'animation doit servir l'ordre de lecture, la continuité spatiale et la clarté tactile, pas se mettre en avant."
+    },
+    "stat": { "zh": "动效", "en": "Motion", "fr": "Mouvement" },
+    "icon": "Sparkles"
+  },
+  {
+    "id": "cross-discipline",
+    "title": { "zh": "跨学科的工作带宽", "en": "Cross-discipline range", "fr": "Une amplitude transversale" },
+    "subtitle": { "zh": "设计与工程相遇", "en": "Design meets engineering", "fr": "Quand le design rencontre l'ingénierie" },
+    "description": {
+      "zh": "可以在界面评审、实现细节与产品逻辑之间自然切换。",
+      "en": "Comfortable moving between interface review, implementation detail, and product logic.",
+      "fr": "À l'aise pour passer de la revue d'interface au détail d'implémentation et à la logique produit."
+    },
+    "stat": { "zh": "范围", "en": "Range", "fr": "Champ" },
+    "icon": "Radar"
+  }
+]

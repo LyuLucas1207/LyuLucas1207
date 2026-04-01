@@ -1,8 +1,8 @@
 import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
 
-import { useReducedMotion } from '../../../hooks/useReducedMotion'
-import { ensureGsap } from '../../../utils/motion/gsap'
+import { useReducedMotion } from '@/hooks'
+import gsap from 'gsap'
 
 type UseSvgDrawMotionOptions = {
   dependencies?: unknown[]
@@ -22,7 +22,6 @@ export function useSvgDrawMotion(
         return
       }
 
-      const { gsap } = ensureGsap()
       const paths = node.querySelectorAll<SVGGeometryElement>('[data-draw]')
       const points = node.querySelectorAll<HTMLElement>('[data-pulse]')
 

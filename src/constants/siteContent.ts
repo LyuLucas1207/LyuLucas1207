@@ -11,7 +11,7 @@ import type { LucideIcon } from 'lucide-react'
 import { DashboardBackgroundEnum } from 'nfx-ui/preference'
 
 import { ROUTES } from '../navigations/routes'
-import type { NavigationItem, WorldMood } from '../types/site'
+import type { NavigationItem, WorldMood } from '@/types'
 
 export const navigationItems: NavigationItem[] = [
   { labelKey: 'navigation.world', path: ROUTES.HOME },
