@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-import { useSvgDrawMotion } from '../../hooks/useSvgDrawMotion'
+import { useSvgDrawMotion } from '@/elements/world/hooks/useSvgDrawMotion'
 import styles from './styles.module.css'
 
 type SectionDividerProps = {

@@ -17,8 +17,6 @@ function WorldMark({ className }: WorldMarkProps) {
     (context) => {
       if (reducedMotion) return
 
-
-
       const rings = context.selector?.('[data-orbit-ring]')
       const dots = context.selector?.('[data-orbit-dot]')
       const core = context.selector?.('[data-mark-core]')

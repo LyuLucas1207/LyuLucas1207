@@ -2,11 +2,12 @@ import { ChevronDown, Sparkles } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { changeLanguage, LanguageEnum, useThemeLabel } from 'nfx-ui/languages'
 import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
 import { useReducedMotion } from '@/hooks'
+import { routerEventEmitter } from '@/events/router'
 import { routeMoods } from '@/constants/siteContent'
 import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
@@ -29,7 +30,6 @@ const themeOptions: ThemeEnum[] = [
 ]
 
 function HomePlanetHero() {
-  const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation(['common', 'home'])
   const { currentTheme, setTheme } = useTheme()
@@ -146,7 +146,7 @@ function HomePlanetHero() {
                 mood: routeMoods[ROUTES.ABOUT],
                 title: t('navigation.about'),
                 subtitle: t('labels.worldShift'),
-                action: () => navigate(ROUTES.ABOUT),
+                action: () => routerEventEmitter.navigateToAbout(),
               }),
           },
           {
@@ -160,7 +160,7 @@ function HomePlanetHero() {
                 mood: routeMoods[ROUTES.PROJECTS],
                 title: t('navigation.projects'),
                 subtitle: t('labels.worldShift'),
-                action: () => navigate(ROUTES.PROJECTS),
+                action: () => routerEventEmitter.navigateToProjects(),
               }),
           },
           {
@@ -174,7 +174,7 @@ function HomePlanetHero() {
                 mood: routeMoods[ROUTES.LIFE],
                 title: t('navigation.life'),
                 subtitle: t('labels.worldShift'),
-                action: () => navigate(ROUTES.LIFE),
+                action: () => routerEventEmitter.navigateToLife(),
               }),
           },
           {
@@ -188,13 +188,13 @@ function HomePlanetHero() {
                 mood: routeMoods[ROUTES.CONTACT],
                 title: t('navigation.contact'),
                 subtitle: t('labels.worldShift'),
-                action: () => navigate(ROUTES.CONTACT),
+                action: () => routerEventEmitter.navigateToContact(),
               }),
           },
         ],
       },
     ],
-    [languagePlanets, navigate, playWorldTransition, t, themePlanets],
+    [languagePlanets, playWorldTransition, t, themePlanets],
   )
 
   const activeSystem = systems.find((system) => system.id === focusedSystemId)

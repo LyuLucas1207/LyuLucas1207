@@ -1,8 +1,8 @@
 import { ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 import { Button } from 'nfx-ui/components'
 
+import { routerEventEmitter } from '@/events/router'
 import { accentClassMap } from '@/constants/siteContent'
 import type { ProjectItem } from '@/types'
 import styles from './styles.module.css'
@@ -12,7 +12,6 @@ type ProjectCardProps = {
 }
 
 function ProjectCard({ project }: ProjectCardProps) {
-  const navigate = useNavigate()
   const { t } = useTranslation('common')
 
   return (
@@ -39,7 +38,7 @@ function ProjectCard({ project }: ProjectCardProps) {
           variant="ghost"
           rightIcon={<ArrowRight size={16} />}
           className={styles.cta}
-          onClick={() => navigate(`/projects/${project.slug}`)}
+          onClick={() => routerEventEmitter.navigate({ to: `/projects/${project.slug}` })}
         >
           {t('actions.viewCaseStudy')}
         </Button>

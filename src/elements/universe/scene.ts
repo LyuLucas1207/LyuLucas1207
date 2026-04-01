@@ -253,6 +253,8 @@ export function createUniverseScene({
     backward: false,
     left: false,
     right: false,
+    up: false,
+    down: false,
   }
   const raycaster = new THREE.Raycaster()
   const interactiveObjects = systemRuntimes.flatMap((runtime) => runtime.interactiveObjects)
@@ -386,7 +388,7 @@ export function createUniverseScene({
   const onKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase()
 
-    if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
+    if (key === 'w' || key === 'a' || key === 's' || key === 'd' || key === 'q' || key === 'e') {
       if (followFocusedSystem || focusedSystem) {
         clearFocus()
       }
@@ -394,6 +396,8 @@ export function createUniverseScene({
       if (key === 's') keys.backward = true
       if (key === 'a') keys.left = true
       if (key === 'd') keys.right = true
+      if (key === 'q') keys.up = true
+      if (key === 'e') keys.down = true
     }
   }
 
@@ -404,6 +408,8 @@ export function createUniverseScene({
     if (key === 's') keys.backward = false
     if (key === 'a') keys.left = false
     if (key === 'd') keys.right = false
+    if (key === 'q') keys.up = false
+    if (key === 'e') keys.down = false
   }
 
   host.addEventListener('pointerdown', onPointerDown)
@@ -450,6 +456,8 @@ export function createUniverseScene({
       if (keys.backward) moveVector.addScaledVector(forward, -1)
       if (keys.left) moveVector.addScaledVector(strafe, -1)
       if (keys.right) moveVector.add(strafe)
+      if (keys.up) moveVector.add(worldUp)
+      if (keys.down) moveVector.addScaledVector(worldUp, -1)
 
       if (moveVector.lengthSq() > 0) {
         moveVector.normalize()

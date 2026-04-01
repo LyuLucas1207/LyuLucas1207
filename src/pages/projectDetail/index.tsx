@@ -1,16 +1,16 @@
 import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { Button } from 'nfx-ui/components'
 
 import { Reveal } from '@/animations'
+import { routerEventEmitter } from '@/events/router'
 import { accentClassMap } from '@/constants/siteContent'
 import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function ProjectDetailPage() {
   const { slug } = useParams()
-  const navigate = useNavigate()
   const { t } = useTranslation('common')
   const { data: projects = [] } = useProjectsQuery()
   const project = projects.find((item) => item.slug === slug)
@@ -22,7 +22,7 @@ function ProjectDetailPage() {
   return (
     <article className={styles.page}>
       <Reveal>
-        <Button variant="ghost" leftIcon={<ArrowLeft size={16} />} onClick={() => navigate('/projects')}>
+        <Button variant="ghost" leftIcon={<ArrowLeft size={16} />} onClick={() => routerEventEmitter.navigateToProjects()}>
           {t('actions.backToProjects')}
         </Button>
       </Reveal>

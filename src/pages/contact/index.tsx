@@ -7,7 +7,7 @@ import { Button, Input, Textarea } from 'nfx-ui/components'
 import { z } from 'zod'
 
 import { Reveal } from '@/animations'
-import { PageIntro } from '@/components/pageIntro'
+import { PageIntro } from '@/components'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
 import { useProfileQuery } from '@/hooks'

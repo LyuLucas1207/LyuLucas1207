@@ -1,6 +1,8 @@
-import { createRouter, defineRouter } from 'nfx-ui/navigations'
+import type { RouteKey as RouteKeyGeneric, RoutePath as RoutePathGeneric } from "nfx-ui/navigations";
 
-const routeDefinition = defineRouter({
+import { createRouter, defineRouter } from "nfx-ui/navigations";
+
+const routeMap = defineRouter({
   HOME: '/',
   ABOUT: '/about',
   PROJECTS: '/projects',
@@ -10,7 +12,8 @@ const routeDefinition = defineRouter({
   CONTACT: '/contact',
 })
 
-const router = createRouter(routeDefinition)
+const { ROUTES, matchRoute, isActiveRoute, getRouteByKey } = createRouter(routeMap);
+type RouteKey = RouteKeyGeneric<typeof routeMap>;
+type RoutePath = RoutePathGeneric<typeof routeMap>;
 
-export const ROUTES = router.ROUTES
-export const routeUtils = router
+export { ROUTES, matchRoute, isActiveRoute, getRouteByKey, type RouteKey, type RoutePath };

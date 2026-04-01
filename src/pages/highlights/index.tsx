@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Reveal } from '@/animations'
-import { PageIntro } from '@/components/pageIntro'
+import { PageIntro } from '@/components'
 import { highlightIconMap } from '@/constants/siteContent'
 import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'

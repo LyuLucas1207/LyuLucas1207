@@ -1,7 +1,7 @@
 import { Menu } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTheme } from 'nfx-ui/themes'
 
 import {
@@ -10,17 +10,17 @@ import {
   socialLinks,
   worldPillars,
 } from '@/constants/siteContent'
-import { SectionDivider } from '@/elements/world/components/SectionDivider'
+import { SectionDivider } from '@/components'
 import { WorldAtmosphere } from '@/elements/world/components/WorldAtmosphere'
 import { WorldMark } from '@/elements/world/components/WorldMark'
 import { usePageTransition } from '@/elements/world/hooks/usePageTransition'
 import { useWorldTransition } from '@/providers/WorldTransitionProvider'
+import { routerEventEmitter } from '@/events/router'
 import { ROUTES } from '@/navigations/routes'
 import styles from './styles.module.css'
 
 function SiteLayout() {
   const location = useLocation()
-  const navigate = useNavigate()
   const { t } = useTranslation(['common', 'home'])
   const [menuOpen, setMenuOpen] = useState(false)
   const mainRef = useRef<HTMLElement | null>(null)
@@ -44,7 +44,7 @@ function SiteLayout() {
       title: t(labelKey),
       subtitle: t('labels.worldShift'),
       action: () => {
-        navigate(path)
+        routerEventEmitter.navigate({ to: path })
         setMenuOpen(false)
       },
     })
