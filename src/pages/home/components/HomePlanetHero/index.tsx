@@ -11,6 +11,7 @@ import { routeMoods } from '@/constants/siteContent'
 import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
 import { createUniverseScene } from '../universe/scene'
+import { loadUniverseShaders } from '../universe/shaders'
 import { buildUniversePalette } from '../universe/theme'
 import type { StarSystemConfig } from '../universe/types'
 import styles from './styles.module.css'
@@ -208,24 +209,30 @@ function HomePlanetHero() {
 
   useEffect(() => {
     const host = sceneHostRef.current
-    if (!host) {
-      return
-    }
+    if (!host) return
 
-    const controller = createUniverseScene({
-      host,
-      palette,
-      prefersReducedMotion,
-      onDraggingChange: setDragging,
-      systems,
-      sessionSeed,
-      onFocusSystemChange: setFocusedSystemId,
+    let cancelled = false
+
+    loadUniverseShaders().then((shaders) => {
+      if (cancelled) return
+
+      const controller = createUniverseScene({
+        host,
+        palette,
+        shaders,
+        prefersReducedMotion,
+        onDraggingChange: setDragging,
+        systems,
+        sessionSeed,
+        onFocusSystemChange: setFocusedSystemId,
+      })
+      sceneControllerRef.current = controller
     })
-    sceneControllerRef.current = controller
 
     return () => {
+      cancelled = true
+      sceneControllerRef.current?.destroy()
       sceneControllerRef.current = null
-      controller.destroy()
     }
   }, [palette, prefersReducedMotion, sessionSeed, systems, location.pathname])
 

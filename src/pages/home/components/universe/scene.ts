@@ -17,13 +17,18 @@ import {
 import { asThreeColor } from './color'
 import { buildStreamGeometry, buildVortexGeometry } from './geometry'
 import { createNebulaSprites } from './nebula'
-import { starfieldFragmentShader } from './shaders/starfieldFragment'
-import { starfieldVertexShader } from './shaders/starfieldVertex'
+import type { UniverseShaders } from './shaders'
 import { createUniverseColors } from './theme'
 import { createStarSystem, createSystemAnchors } from './systems'
 import type { StarSystemConfig, UniversePalette } from './types'
 
-function buildStarMaterial(baseSize: number, opacity: number, isLight: boolean) {
+function buildStarMaterial(
+  baseSize: number,
+  opacity: number,
+  isLight: boolean,
+  vertexShader: string,
+  fragmentShader: string,
+) {
   return new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
@@ -35,12 +40,12 @@ function buildStarMaterial(baseSize: number, opacity: number, isLight: boolean) 
       uBaseSize: { value: baseSize },
       uOpacity: { value: opacity },
     },
-    vertexShader: starfieldVertexShader,
-    fragmentShader: starfieldFragmentShader,
+    vertexShader,
+    fragmentShader,
   })
 }
 
-function createCoreStar(palette: UniversePalette) {
+function createCoreStar(palette: UniversePalette, shellVertexShader: string, shellFragmentShader: string) {
   const group = new THREE.Group()
   const primaryColor = asThreeColor(palette.primary)
   const lightColor = asThreeColor(palette.primaryLight)
@@ -72,28 +77,8 @@ function createCoreStar(palette: UniversePalette) {
         uColor: { value: lightColor },
         uOpacity: { value: palette.isLight ? 0.34 : 0.46 },
       },
-      vertexShader: `
-        varying vec3 vNormal;
-        varying vec3 vView;
-
-        void main() {
-          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-          vNormal = normalize(mat3(modelMatrix) * normal);
-          vView = normalize(cameraPosition - worldPosition.xyz);
-          gl_Position = projectionMatrix * viewMatrix * worldPosition;
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vNormal;
-        varying vec3 vView;
-        uniform vec3 uColor;
-        uniform float uOpacity;
-
-        void main() {
-          float fresnel = pow(1.0 - max(dot(normalize(vNormal), normalize(vView)), 0.0), 2.4);
-          gl_FragColor = vec4(uColor, fresnel * uOpacity);
-        }
-      `,
+      vertexShader: shellVertexShader,
+      fragmentShader: shellFragmentShader,
     }),
   )
 
@@ -130,6 +115,7 @@ function createCoreStar(palette: UniversePalette) {
 type CreateSceneOptions = {
   host: HTMLDivElement
   palette: UniversePalette
+  shaders: UniverseShaders
   prefersReducedMotion: boolean
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
@@ -145,6 +131,7 @@ export type UniverseSceneController = {
 export function createUniverseScene({
   host,
   palette,
+  shaders,
   prefersReducedMotion,
   onDraggingChange,
   systems,
@@ -202,6 +189,8 @@ export function createUniverseScene({
       UNIVERSE_STAR_MATERIAL.vortexBaseSize,
       palette.isLight ? UNIVERSE_STAR_MATERIAL.vortexOpacityLight : UNIVERSE_STAR_MATERIAL.vortexOpacityDark,
       palette.isLight,
+      shaders.starfieldVertex,
+      shaders.starfieldFragment,
     ),
   )
 
@@ -219,6 +208,8 @@ export function createUniverseScene({
         UNIVERSE_STAR_MATERIAL.streamBaseSize,
         palette.isLight ? UNIVERSE_STAR_MATERIAL.streamOpacityLight : UNIVERSE_STAR_MATERIAL.streamOpacityDark,
         palette.isLight,
+        shaders.starfieldVertex,
+        shaders.starfieldFragment,
       ),
     )
     streamGroup.add(stream)
@@ -226,7 +217,7 @@ export function createUniverseScene({
   }
 
   const galaxyCore = new THREE.Group()
-  const coreStar = createCoreStar(palette)
+  const coreStar = createCoreStar(palette, shaders.coreShellVertex, shaders.coreShellFragment)
   galaxyCore.add(vortex, streamGroup, coreStar)
 
   const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
