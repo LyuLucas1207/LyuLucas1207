@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { asThreeColor, pickColor, randomBetween } from './color'
+import { pickColor, randomBetween } from './color'
 import type { StreamGeometryOptions, VortexGeometryOptions } from './types'
 
 function applyGeometryAttributes(
@@ -32,7 +32,7 @@ export function buildVortexGeometry({ count, colors, isLight }: VortexGeometryOp
     const arm = index % armCount
     const radius = progress * progress * 148 + progress * 18 + randomBetween(-2.8, 2.8)
     const angle = progress * 11.4 + (Math.PI * 2 * arm) / armCount + randomBetween(-0.1, 0.1)
-    const color = asThreeColor(pickColor(colors.all))
+    const color = new THREE.Color(pickColor(colors.all))
     const stride = index * 3
 
     positions[stride] = Math.cos(angle) * radius
@@ -64,7 +64,7 @@ export function buildStreamGeometry({ pathIndex, colors, isLight }: StreamGeomet
     const progress = index / (count - 1)
     const radius = 336 - progress * 288 + randomBetween(-2.8, 2.8)
     const angle = baseAngle + progress * 3.8 + Math.sin(progress * 6.4 + pathIndex) * 0.14
-    const color = asThreeColor(pickColor(streamPool))
+    const color = new THREE.Color(pickColor(streamPool))
     const stride = index * 3
 
     positions[stride] = Math.cos(angle) * radius

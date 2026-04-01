@@ -1,6 +1,8 @@
 import type { ColorVariables } from 'nfx-ui/themes'
 
-import { buildColorPool, luminance, toRgba } from './color'
+import { toRgbaWithAlpha } from 'nfx-ui/utils'
+
+import { buildColorPool, luminance } from './color'
 import type { UniversePalette } from './types'
 
 export function buildUniversePalette(vars: ColorVariables): UniversePalette {
@@ -15,7 +17,7 @@ export function buildUniversePalette(vars: ColorVariables): UniversePalette {
     fgHighlight: vars.fgHighlight,
     fgHeading: vars.fgHeading,
     border2: vars.border2,
-    overlay: vars.overlay || toRgba(vars.bg, 0.68, vars.bg),
+    overlay: vars.overlay || toRgbaWithAlpha(vars.bg, 0.68),
     isLight: luminance(vars.bg) > 0.42,
   }
 }

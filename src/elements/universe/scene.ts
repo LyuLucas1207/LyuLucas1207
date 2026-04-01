@@ -16,7 +16,7 @@ import {
 import { buildStreamGeometry, buildVortexGeometry } from './geometry'
 import { createNebulaSprites } from './nebula'
 import type { UniverseShaders } from './shaders'
-import { CORE_STAR_PRESET, Stellar } from './stellar'
+import { Stellar, StellarBuilder } from './stellar'
 import { createStarSystem, createSystemAnchors } from './systems'
 import { createUniverseColors } from './theme'
 import type { StarSystemConfig, UniversePalette } from './types'
@@ -147,10 +147,12 @@ export function createUniverseScene({
   }
 
   const galaxyCore = new THREE.Group()
-  const coreStarInstance = new Stellar(CORE_STAR_PRESET, palette, {
-    vertex: shaders.coreShellVertex,
-    fragment: shaders.coreShellFragment,
-  })
+  const coreStarInstance = new Stellar(
+    new StellarBuilder().coreStar()
+      .palette(palette)
+      .shellShaders({ vertex: shaders.coreShellVertex, fragment: shaders.coreShellFragment })
+      .done(),
+  )
   const coreStar = coreStarInstance.group
   galaxyCore.add(vortex, streamGroup, coreStar)
 
@@ -429,6 +431,8 @@ export function createUniverseScene({
         const targetScale = hovered ? planet.baseScale * 1.2 : planet.baseScale
         planet.body.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.18)
       })
+      runtime.satellites.forEach((sat) => sat.update())
+      runtime.stellar.update(elapsed)
     })
 
     nebula.children.forEach((child, index) => {

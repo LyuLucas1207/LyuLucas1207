@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 
-import { pickColor, randomBetween, toRgba } from './color'
+import { toRgbaWithAlpha } from 'nfx-ui/utils'
+
+import { pickColor, randomBetween } from './color'
 import type { UniverseColorPool, UniversePalette } from './types'
 
 function createNebulaTexture(color: string) {
@@ -14,9 +16,9 @@ function createNebulaTexture(color: string) {
   }
 
   const gradient = context.createRadialGradient(160, 160, 0, 160, 160, 160)
-  gradient.addColorStop(0, toRgba(color, 0.9))
-  gradient.addColorStop(0.3, toRgba(color, 0.28))
-  gradient.addColorStop(1, toRgba(color, 0))
+  gradient.addColorStop(0, toRgbaWithAlpha(color, 0.9))
+  gradient.addColorStop(0.3, toRgbaWithAlpha(color, 0.28))
+  gradient.addColorStop(1, toRgbaWithAlpha(color, 0))
   context.fillStyle = gradient
   context.fillRect(0, 0, 320, 320)
 

@@ -48,3 +48,5 @@ export type StreamGeometryOptions = {
   colors: UniverseColorPool
   isLight: boolean
 }
+
+export type ThemeValue = { light: number; dark: number }
