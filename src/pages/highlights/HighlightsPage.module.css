@@ -1,0 +1,85 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: min(1320px, calc(100vw - 3rem));
+  margin: 0 auto;
+}
+
+.band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.2rem;
+}
+
+.leadPanel,
+.pillar {
+  border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
+  background: var(--panel-bg);
+}
+
+.leadPanel {
+  padding: 1.8rem;
+  border-radius: 1.8rem;
+}
+
+.leadPanel h2 {
+  margin: 0;
+  color: var(--color-fg-heading);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.leadPanel p {
+  margin: 0.9rem 0 0;
+  line-height: 1.8;
+  color: var(--color-fg-text);
+}
+
+.signalWrap {
+  margin-top: 1.2rem;
+}
+
+.pillarGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pillar {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-height: 8rem;
+  padding: 1.3rem;
+  border-radius: 1.35rem;
+  text-align: center;
+  color: var(--color-fg-heading);
+}
+
+.pillar span {
+  color: var(--color-fg-highlight);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pillar strong {
+  font-size: 1.05rem;
+}
+
+.pillar p {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--color-fg-text);
+}
+
+@media (max-width: 960px) {
+  .page {
+    width: calc(100vw - 1.4rem);
+  }
+
+  .band,
+  .pillarGrid {
+    grid-template-columns: 1fr;
+  }
+}

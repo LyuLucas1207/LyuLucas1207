@@ -1,0 +1,19 @@
+.halo {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-primary) 36%, rgba(255, 255, 255, 0.42));
+  stroke-width: 1.4;
+}
+
+.core {
+  fill: rgba(var(--color-primary-rgb), 0.12);
+}
+
+.point {
+  fill: var(--color-primary);
+}

@@ -1,0 +1,18 @@
+.rails {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 0.92;
+}
+
+.line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-primary) 34%, rgba(255, 255, 255, 0.74));
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.note {
+  fill: rgba(var(--color-primary-rgb), 0.14);
+  stroke: rgba(255, 255, 255, 0.18);
+}

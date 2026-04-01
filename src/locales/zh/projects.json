@@ -1,0 +1,12 @@
+{
+  "intro": {
+    "eyebrow": "项目",
+    "title": "GitHub 项目被组织成一份策展清单，而不是卡片堆砌。",
+    "description": "精选项目、系统型工作与实验性构建被有意识地分开，让页面能扩展而不失去层次。"
+  },
+  "copy": {
+    "featuredTitle": "带有明确立场的系统作品。",
+    "featuredDescription": "这一页更像一份作品索引，而不是一个模板式项目墙。",
+    "searchPlaceholder": "按标题、技术栈或关注点搜索..."
+  }
+}

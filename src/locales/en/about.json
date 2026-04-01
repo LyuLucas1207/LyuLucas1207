@@ -1,0 +1,10 @@
+{
+  "intro": {
+    "eyebrow": "About / Resume",
+    "description": "This page tries to hold both sides together: technical credibility and a more living sense of voice, taste, process, and worldview.",
+    "titleTemplate": "{{name}}, presented as a person before a checklist."
+  },
+  "copy": {
+    "panelTitle": "I like products that feel composed rather than assembled."
+  }
+}

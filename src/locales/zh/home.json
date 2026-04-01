@@ -1,0 +1,73 @@
+{
+  "copy": {
+    "manifestoBody": "这个网站被组织成一个“世界”，而不是一页宣传册。每条路由都有自己的角色、节奏与氛围，但最后都会回到同一个身份中心。",
+    "featureTitle": "结构清晰、气氛完整、技术上站得住的作品。",
+    "featureDescription": "这里的精选项目被呈现为世界中的作品实体，而不是普通的卡片列表。",
+    "ctaTitle": "可承接产品设计工程、前端系统建设，以及高质感 Web 体验。"
+  },
+  "galaxy": {
+    "eyebrow": "星系导航",
+    "title": "一个可以被拖动、旋转并进入的个人世界星系。",
+    "description": "拖动整个星系，等待它自行旋转，再通过每个星球进入不同的世界，而不是阅读一排静态栏目。",
+    "dragHint": "拖动星系，点击星球进入对应世界。"
+  },
+  "scene": {
+    "eyebrow": "Lyu World 场景",
+    "title": "一个由主题、页面与设置共同组成的活体世界系统。",
+    "description": "最外层星系控制整个世界的语调与氛围；内层轨道控制页面与语言。拖动整个场域，让它旋转，再通过运动进入，而不是看一个静态首页。",
+    "dragHint": "拖动来旋转整个场域。最外层是主题星系。",
+    "themeGalaxy": "主题星系",
+    "themeGalaxyTag": "世界气质控制",
+    "themeGalaxyDescription": "这些星球决定整个世界的氛围、配色与转场行为。",
+    "pageGalaxy": "页面星系",
+    "pageGalaxyTag": "页面入口导航",
+    "pageGalaxyDescription": "这些内层卫星负责进入当前世界中的具体页面。",
+    "settingsGalaxy": "设置星系",
+    "settingsGalaxyTag": "语言与重进入",
+    "settingsGalaxyDescription": "这些小型卫星负责语言与重新进入，不需要离开当前场景。",
+    "memoryGalaxy": "记忆星系",
+    "memoryGalaxyTag": "生活纹理背景层",
+    "memoryGalaxyDescription": "这片背景星系承载回声、档案碎片与日常仪式，让整个宇宙更像一个活着的世界。",
+    "memoryEcho": "回声",
+    "memoryArchive": "档案",
+    "memoryRitual": "仪式",
+    "darkTone": "Dark Signal",
+    "darkToneDescription": "琥珀与锌灰的深夜对比、更浓缩的技术感和更收束的暗色气质。"
+  },
+  "signals": {
+    "premium": {
+      "title": "高级，但不失个人性",
+      "description": "不是把作品包装成营销页面，而是把语气、记忆与系统感编织成一个完整世界。"
+    },
+    "editorial": {
+      "title": "编辑感与技术感并存",
+      "description": "长文本叙事、清晰层级与实现细节生活在同一套系统里。"
+    },
+    "layered": {
+      "title": "分层，而不拥挤",
+      "description": "每个页面都有自己的职责和情绪，在更大的个人世界里占据清楚的位置。"
+    }
+  },
+  "pillars": {
+    "identity": {
+      "title": "身份",
+      "description": "我是谁、我学什么、我如何思考，以及作品背后的语气。"
+    },
+    "work": {
+      "title": "工作",
+      "description": "被策展过的项目系统、精选构建，以及它们背后的工程方法。"
+    },
+    "records": {
+      "title": "记录",
+      "description": "片段、笔记、瞬间，以及技术生活周围更有人味的纹理。"
+    },
+    "experience": {
+      "title": "经历",
+      "description": "被提炼过的轨迹、结果与支撑这个世界的可信度结构。"
+    },
+    "contact": {
+      "title": "联系",
+      "description": "当一个 brief 值得被认真对待时，这里是开始对话的地方。"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.mark {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.halo {
+  fill: url(#worldMarkGlow);
+  opacity: 0.7;
+}
+
+.ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-border-4) 65%, var(--color-primary) 35%);
+  stroke-width: 1.5;
+}
+
+.ringStrong {
+  stroke: color-mix(in srgb, var(--color-primary) 55%, white 45%);
+}
+
+.core {
+  fill: color-mix(in srgb, var(--color-primary) 72%, white 28%);
+}
+
+.coreSecondary {
+  fill: color-mix(in srgb, var(--color-bg) 12%, var(--color-primary) 88%);
+}
+
+.node {
+  fill: var(--color-fg-heading);
+}
+
+.nodeGlow {
+  fill: color-mix(in srgb, var(--color-primary) 48%, white 52%);
+}
+
+.line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.62);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}

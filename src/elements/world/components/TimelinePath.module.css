@@ -1,0 +1,23 @@
+.path {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-primary) 42%, rgba(255, 255, 255, 0.8));
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.node {
+  fill: var(--color-primary);
+}
+
+.label {
+  fill: var(--color-fg-muted);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

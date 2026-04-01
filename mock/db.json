@@ -1,0 +1,573 @@
+{
+  "profile": {
+    "id": "lyu-profile",
+    "name": {
+      "zh": "Lyu Lucas",
+      "en": "Lyu Lucas"
+    },
+    "worldName": {
+      "zh": "Lyu World",
+      "en": "Lyu World"
+    },
+    "headline": {
+      "zh": "计算机工程的思维，软件工程的手艺，一个由结构与品味共同构建的数字世界。",
+      "en": "Computer engineering mind. Software engineering craft. A digital world built with structure and taste."
+    },
+    "status": {
+      "zh": "正在设计更有分寸的产品体验与更高级的 Web 前端。",
+      "en": "Designing thoughtful products and premium web experiences."
+    },
+    "location": {
+      "zh": "温哥华 / 互联网",
+      "en": "Vancouver / Internet"
+    },
+    "intro": {
+      "zh": "我做的软件，既要在运动中显得有分寸，也要在结构上站得住，同时保留个人语气。",
+      "en": "I build software that feels intentional in motion, credible in structure, and personal in tone."
+    },
+    "heroStatement": {
+      "zh": "Lyu World 不是一页简历，而是一个由身份、作品、记录与氛围共同构成的设计系统。",
+      "en": "Lyu World is not a resume page. It is a designed system of identity, work, records, and atmosphere."
+    },
+    "focusAreas": {
+      "zh": ["前端架构", "设计系统", "编辑感 Web 体验", "产品工程", "动效与交互"],
+      "en": ["Frontend architecture", "Design systems", "Editorial web experiences", "Product engineering", "Motion and interaction"]
+    },
+    "metrics": [
+      {
+        "value": "8+",
+        "label": {
+          "zh": "软件构建经验",
+          "en": "Years building software"
+        },
+        "detail": {
+          "zh": "跨越产品、平台与高级前端系统。",
+          "en": "Across products, platforms, and premium frontend systems."
+        }
+      },
+      {
+        "value": "24",
+        "label": {
+          "zh": "重要上线项目",
+          "en": "Major launches"
+        },
+        "detail": {
+          "zh": "从平台工具到产品改版，再到 Web 叙事体验。",
+          "en": "From platform tooling to product redesigns and web storytelling."
+        }
+      },
+      {
+        "value": "5",
+        "label": {
+          "zh": "世界支柱",
+          "en": "World pillars"
+        },
+        "detail": {
+          "zh": "身份、工作、经历、记录与联系。",
+          "en": "Identity, work, experience, records, and contact."
+        }
+      }
+    ],
+    "worldview": {
+      "zh": [
+        "软件不应该只有功能完成度，也应该带着情绪上的清晰。",
+        "层级、节奏与质地，与正确性同样重要。",
+        "最好的前端系统既能让未来更容易推进，也不会长得像模板。"
+      ],
+      "en": [
+        "Software should carry emotional clarity, not just functional completion.",
+        "Hierarchy, pacing, and texture matter as much as correctness.",
+        "The best frontend systems make future work easier without looking generic."
+      ]
+    },
+    "aboutPrelude": {
+      "zh": "我的背景扎根于技术，但我最在意的工作，通常发生在系统与表达交界的地方。",
+      "en": "I come from a technically grounded background, but the work I care about most lives at the edge between systems and expression."
+    },
+    "aboutBody": {
+      "zh": [
+        "这通常意味着要带着纪律去做界面：更清楚的信息架构、更干净的组件边界、更有分寸的 motion，以及真正统一的主题系统。",
+        "它也意味着在意一个网站“感觉如何”。它是否会呼吸，是否尊重注意力，是否留下一个观点，而不是只留下一套模板。"
+      ],
+      "en": [
+        "That usually means building interfaces with discipline: stronger information architecture, cleaner component boundaries, more thoughtful motion, and real theme coherence.",
+        "It also means caring about how a site feels. Whether it breathes correctly. Whether it respects attention. Whether it leaves behind a point of view instead of a template."
+      ]
+    },
+    "contactMethods": [
+      {
+        "label": {
+          "zh": "邮箱",
+          "en": "Email"
+        },
+        "value": {
+          "zh": "hello@lyulucas.dev",
+          "en": "hello@lyulucas.dev"
+        },
+        "href": "mailto:hello@lyulucas.dev"
+      },
+      {
+        "label": {
+          "zh": "GitHub",
+          "en": "GitHub"
+        },
+        "value": {
+          "zh": "github.com/lyulucas1207",
+          "en": "github.com/lyulucas1207"
+        },
+        "href": "https://github.com/lyulucas1207"
+      },
+      {
+        "label": {
+          "zh": "LinkedIn",
+          "en": "LinkedIn"
+        },
+        "value": {
+          "zh": "linkedin.com/in/lyulucas",
+          "en": "linkedin.com/in/lyulucas"
+        },
+        "href": "https://linkedin.com/in/lyulucas"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "nebula-control",
+      "slug": "nebula-control",
+      "title": {
+        "zh": "Nebula Control",
+        "en": "Nebula Control"
+      },
+      "year": "2026",
+      "category": "Platform",
+      "group": "featured",
+      "featured": true,
+      "summary": {
+        "zh": "一个面向基础设施团队的命令与观测工作台，在高压场景中仍然追求清晰。",
+        "en": "A command-and-observability workspace for infrastructure teams that needed clarity under pressure."
+      },
+      "impact": {
+        "zh": "关键流程重构后，值班交接时间减少了 34%。",
+        "en": "Cut operator handoff time by 34% after redesigning critical flows."
+      },
+      "role": {
+        "zh": "负责前端架构、设计语言与核心仪表板交付。",
+        "en": "Led frontend architecture, design language, and core dashboard delivery."
+      },
+      "stack": ["React", "TypeScript", "TanStack Query", "GSAP", "Recharts"],
+      "accent": "rose",
+      "repositoryUrl": "https://github.com/lyulucas1207",
+      "liveUrl": "",
+      "challenge": {
+        "zh": "原有工作台虽然功能强大，却把真正有用的信号埋在了密集的界面里。",
+        "en": "The original workspace exposed a lot of power but buried the useful signal inside dense UI."
+      },
+      "outcome": {
+        "zh": "最终形成了更冷静的命令界面、更清楚的语义层级，以及可复用的数据原语。",
+        "en": "Introduced a calmer command surface, stronger semantic hierarchy, and reusable data primitives."
+      },
+      "details": {
+        "zh": [
+          "构建了可扩展到 dashboard 级别的路由与布局模型。",
+          "通过渐进揭示与更清楚的分组降低 panel 杂乱度。",
+          "定义了可迁移到其他内部工具的表层模式。"
+        ],
+        "en": [
+          "Built a composable route and layout model for dashboard-scale growth.",
+          "Reduced panel clutter with progressive disclosure and clearer grouping.",
+          "Defined reusable surface patterns that informed other internal tools."
+        ]
+      }
+    },
+    {
+      "id": "signal-canvas",
+      "slug": "signal-canvas",
+      "title": {
+        "zh": "Signal Canvas",
+        "en": "Signal Canvas"
+      },
+      "year": "2025",
+      "category": "Experience",
+      "group": "featured",
+      "featured": true,
+      "summary": {
+        "zh": "一个为创意工程工作室打造的沉浸式多页网站，承载大量研究型内容。",
+        "en": "An immersive portfolio-style product site for a research-heavy creative engineering studio."
+      },
+      "impact": {
+        "zh": "在保持鲜明品牌气质的前提下，提高了高质量线索转化。",
+        "en": "Improved qualified inbound conversion while preserving a highly distinctive brand feel."
+      },
+      "role": {
+        "zh": "独立完成整体视觉方向与多页前端体验实现。",
+        "en": "Designed and implemented the full multi-page frontend experience."
+      },
+      "stack": ["Vite", "React", "Motion", "CSS Modules", "GSAP"],
+      "accent": "cosmic",
+      "repositoryUrl": "https://github.com/lyulucas1207",
+      "liveUrl": "",
+      "challenge": {
+        "zh": "团队想要“高级且难忘”的结果，但不能滑向过度设计的噪音。",
+        "en": "The team wanted something premium and memorable without slipping into over-designed noise."
+      },
+      "outcome": {
+        "zh": "最终形成了一套更有编辑感的布局语言，以及更克制却更完整的动态叙事。",
+        "en": "Created an editorial layout system with restrained animation and a cleaner content narrative."
+      },
+      "details": {
+        "zh": [
+          "把站点组织成多页叙事，而不是一页式长页面。",
+          "在桌面与移动端之间平衡了表现力与可读性。",
+          "让 motion 服务于层级与连续性，而不是表面装饰。"
+        ],
+        "en": [
+          "Structured the site around multi-page storytelling instead of one long page.",
+          "Balanced expressive typography with high scanability on mobile and desktop.",
+          "Used motion to support hierarchy and continuity rather than decoration."
+        ]
+      }
+    },
+    {
+      "id": "forge-ops",
+      "slug": "forge-ops",
+      "title": {
+        "zh": "Forge Ops",
+        "en": "Forge Ops"
+      },
+      "year": "2024",
+      "category": "Product",
+      "group": "systems",
+      "featured": false,
+      "summary": {
+        "zh": "一套面向工程管理者的内部运营工具，用来协调发布、人员与质量门槛。",
+        "en": "An internal operations suite for engineering managers coordinating releases, staffing, and quality gates."
+      },
+      "impact": {
+        "zh": "把零散表格替换为统一界面，并被管理层按周使用。",
+        "en": "Replaced fragmented spreadsheets with a shared operational surface used weekly by leadership."
+      },
+      "role": {
+        "zh": "负责前端领域模型、应用骨架与共享组件模式。",
+        "en": "Owned the frontend domain model, app shell, and shared component patterns."
+      },
+      "stack": ["React Router", "Zustand", "Axios", "Zod", "Headless UI"],
+      "accent": "amber",
+      "repositoryUrl": "https://github.com/lyulucas1207",
+      "liveUrl": "",
+      "challenge": {
+        "zh": "团队决策速度被分散数据和不一致工具拖慢。",
+        "en": "Decision-making was slowed by scattered data and inconsistent tooling across teams."
+      },
+      "outcome": {
+        "zh": "最终把报表、任务可见性与发布准备度收束到同一个结构化界面中。",
+        "en": "Unified reporting, task visibility, and release readiness into a single structured workspace."
+      },
+      "details": {
+        "zh": [
+          "为流程密集型输入构建了稳定的表单与校验体验。",
+          "设计了可复用的摘要卡片与时间线组件。",
+          "留下了便于后续模块继续扩展的结构基础。"
+        ],
+        "en": [
+          "Built reliable form and validation flows for process-heavy operational input.",
+          "Designed reusable summary cards and timelines for status-heavy interfaces.",
+          "Left behind structure that made future modules easier to add."
+        ]
+      }
+    },
+    {
+      "id": "low-level-playground",
+      "slug": "low-level-playground",
+      "title": {
+        "zh": "Low-level Playground",
+        "en": "Low-level Playground"
+      },
+      "year": "2024",
+      "category": "Platform",
+      "group": "experimental",
+      "featured": false,
+      "summary": {
+        "zh": "一个个人实验环境，用来探索系统想法、渲染、性能与实现层面的实验。",
+        "en": "A personal environment for exploring systems ideas, rendering, performance, and implementation experiments."
+      },
+      "impact": {
+        "zh": "把技术实验变成一个可以反复回到其中检验交互与架构想法的空间。",
+        "en": "Created a reusable place for testing interaction and architecture ideas before product adoption."
+      },
+      "role": {
+        "zh": "独立完成实验工程与界面原型。",
+        "en": "Solo experimental engineering and UI prototyping."
+      },
+      "stack": ["Three.js", "Postprocessing", "React", "TypeScript"],
+      "accent": "forest",
+      "repositoryUrl": "https://github.com/lyulucas1207",
+      "liveUrl": "",
+      "challenge": {
+        "zh": "需要一个不受产品约束的空间，用来验证更锋利的技术与体验想法。",
+        "en": "Needed a safe space for technically sharp experiments without product constraints."
+      },
+      "outcome": {
+        "zh": "把松散的探索转化为可反哺正式产品的直觉与方法。",
+        "en": "Turned loose technical exploration into reusable product intuition."
+      },
+      "details": {
+        "zh": [
+          "尝试了不同的动画节奏、着色器式氛围与界面深度。",
+          "用原型去压力测试设计与技术判断。",
+          "把实验归档成未来可以回看的参考，而不是一次性 demo。"
+        ],
+        "en": [
+          "Explored animation timing, shader-like atmospheres, and interface depth.",
+          "Used prototypes to pressure-test design and technical ideas.",
+          "Kept experiments archived as future references instead of one-off demos."
+        ]
+      }
+    }
+  ],
+  "highlights": [
+    {
+      "id": "systems-first",
+      "title": {
+        "zh": "系统优先的思考方式",
+        "en": "Systems-first thinking"
+      },
+      "subtitle": {
+        "zh": "先有结构，再有修饰",
+        "en": "Structure before flourish"
+      },
+      "description": {
+        "zh": "我更偏爱那些表层像被认真设计过、底层又能被继续组合的产品。",
+        "en": "I prefer products that feel authored on the surface and composable underneath."
+      },
+      "stat": {
+        "zh": "架构",
+        "en": "Architecture"
+      },
+      "icon": "Orbit"
+    },
+    {
+      "id": "tasteful-motion",
+      "title": {
+        "zh": "克制而有品味的动效",
+        "en": "Tasteful motion"
+      },
+      "subtitle": {
+        "zh": "节奏，而不是噪音",
+        "en": "Rhythm, not noise"
+      },
+      "description": {
+        "zh": "动画应该服务于阅读顺序、空间连续性与触感清晰，而不是炫耀自己。",
+        "en": "Animation should support reading order, continuity, and tactile clarity."
+      },
+      "stat": {
+        "zh": "动效",
+        "en": "Motion"
+      },
+      "icon": "Sparkles"
+    },
+    {
+      "id": "cross-discipline",
+      "title": {
+        "zh": "跨学科的工作带宽",
+        "en": "Cross-discipline range"
+      },
+      "subtitle": {
+        "zh": "设计与工程相遇",
+        "en": "Design meets engineering"
+      },
+      "description": {
+        "zh": "可以在界面评审、实现细节与产品逻辑之间自然切换。",
+        "en": "Comfortable moving between interface review, implementation detail, and product logic."
+      },
+      "stat": {
+        "zh": "范围",
+        "en": "Range"
+      },
+      "icon": "Radar"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "present",
+      "period": {
+        "zh": "2023 - 现在",
+        "en": "2023 - Now"
+      },
+      "title": {
+        "zh": "高级前端 / 产品工程师",
+        "en": "Senior Frontend / Product Engineer"
+      },
+      "company": {
+        "zh": "独立合作 + 产品团队",
+        "en": "Independent + product teams"
+      },
+      "summary": {
+        "zh": "为有野心的软件产品交付高质量界面与前端系统。",
+        "en": "Shipping high-quality interfaces and frontend systems for ambitious software products."
+      },
+      "achievements": {
+        "zh": [
+          "主导多页 Web 体验从方向到上线的全过程。",
+          "构建可扩展代码库的共享 UI 原语与路由架构。",
+          "在视觉方向与实现细节之间承担桥梁角色。"
+        ],
+        "en": [
+          "Led multi-page web experiences from direction to production readiness.",
+          "Built shared UI primitives and route architecture for scaling codebases.",
+          "Acted as the bridge between visual direction and implementation detail."
+        ]
+      }
+    },
+    {
+      "id": "platform",
+      "period": {
+        "zh": "2020 - 2023",
+        "en": "2020 - 2023"
+      },
+      "title": {
+        "zh": "前端工程师",
+        "en": "Frontend Engineer"
+      },
+      "company": {
+        "zh": "平台与 SaaS 环境",
+        "en": "Platform and SaaS environments"
+      },
+      "summary": {
+        "zh": "参与数据密集型应用，重点关注可靠性、响应性与可维护性。",
+        "en": "Worked on data-rich applications with a focus on reliability, responsiveness, and maintainability."
+      },
+      "achievements": {
+        "zh": [
+          "通过更好的层级与状态处理提升 dashboard 可用性。",
+          "推进内部设计系统与组件一致性的落地。",
+          "在提升性能的同时减少回归风险。"
+        ],
+        "en": [
+          "Improved dashboard usability through better hierarchy and state handling.",
+          "Contributed to internal design-system adoption and component consistency.",
+          "Reduced regressions while improving page performance."
+        ]
+      }
+    },
+    {
+      "id": "early",
+      "period": {
+        "zh": "2017 - 2020",
+        "en": "2017 - 2020"
+      },
+      "title": {
+        "zh": "软件工程师",
+        "en": "Software Engineer"
+      },
+      "company": {
+        "zh": "早期团队",
+        "en": "Early-stage teams"
+      },
+      "summary": {
+        "zh": "在全栈特性交付中逐步形成对前端手艺的强烈偏好。",
+        "en": "Built features across the stack while developing a strong bias for frontend craft."
+      },
+      "achievements": {
+        "zh": [
+          "从 API 集成到客户端行为打磨，完整负责功能交付。",
+          "学会在不提前过度设计的情况下保持架构弹性。",
+          "把模糊的产品需求转译成清楚的界面结构。"
+        ],
+        "en": [
+          "Owned full feature delivery from API integration to polished client behavior.",
+          "Learned to keep architecture flexible without over-engineering it.",
+          "Built the habit of turning ambiguous product asks into clear interfaces."
+        ]
+      }
+    }
+  ],
+  "lifeRecords": [
+    {
+      "id": "night-walk-interface",
+      "title": {
+        "zh": "夜路散步，顺便想界面",
+        "en": "Night walk, interface notes"
+      },
+      "type": "note",
+      "date": "2026-03-09",
+      "place": {
+        "zh": "温哥华",
+        "en": "Vancouver"
+      },
+      "mood": {
+        "zh": "安静专注",
+        "en": "quiet focus"
+      },
+      "excerpt": {
+        "zh": "很多最好的布局决定，往往不是坐在屏幕前得出来的。",
+        "en": "Some of the best layout decisions arrive away from the screen."
+      },
+      "body": {
+        "zh": "再次提醒自己：当我暂时离开实现细节，去想一页内容应该怎样呼吸时，节奏与层级往往会突然变得清楚。",
+        "en": "A reminder that pacing and hierarchy often become obvious when I stop staring at the implementation and think about how the page should breathe."
+      },
+      "tags": {
+        "zh": ["设计", "过程", "笔记"],
+        "en": ["design", "process", "notes"]
+      }
+    },
+    {
+      "id": "keyboard-and-rain",
+      "title": {
+        "zh": "键盘、雨声、一个修好的 bug",
+        "en": "Keyboard, rain, one solved bug"
+      },
+      "type": "snapshot",
+      "date": "2026-02-18",
+      "place": {
+        "zh": "家里的书桌",
+        "en": "Home desk"
+      },
+      "mood": {
+        "zh": "收拢",
+        "en": "contained"
+      },
+      "excerpt": {
+        "zh": "一个很小的技术修复，也足以重新校准整天的情绪温度。",
+        "en": "A tiny technical fix can reset the emotional temperature of a whole day."
+      },
+      "body": {
+        "zh": "追到了一个状态同步问题，它让某条流程一直比应该的样子更沉重。代码层面很小，体验层面却影响很大。",
+        "en": "Tracked down a state sync issue that had been making a flow feel heavier than it should. It was minor in code and major in experience."
+      },
+      "tags": {
+        "zh": ["工程", "调试", "日常"],
+        "en": ["engineering", "debugging", "daily"]
+      }
+    },
+    {
+      "id": "museum-color-study",
+      "title": {
+        "zh": "美术馆配色研究",
+        "en": "Museum color study"
+      },
+      "type": "moment",
+      "date": "2026-01-27",
+      "place": {
+        "zh": "画廊",
+        "en": "Gallery"
+      },
+      "mood": {
+        "zh": "沉浸",
+        "en": "absorbed"
+      },
+      "excerpt": {
+        "zh": "实体空间仍然能教会数字界面很多关于克制的事。",
+        "en": "Physical spaces still teach digital interfaces a lot about restraint."
+      },
+      "body": {
+        "zh": "那天我花在作品之间留白上的时间，比看作品本身还多。好的策展会留出足够的空间，让观看者自己抵达。",
+        "en": "Spent more time looking at spacing between works than the works themselves. Good curation leaves enough room for the viewer to arrive."
+      },
+      "tags": {
+        "zh": ["审美", "空间", "世界"],
+        "en": ["aesthetics", "space", "world"]
+      }
+    }
+  ]
+}

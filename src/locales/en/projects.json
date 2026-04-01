@@ -1,0 +1,12 @@
+{
+  "intro": {
+    "eyebrow": "Projects",
+    "title": "GitHub projects, structured like a curated collection rather than a card dump.",
+    "description": "Featured builds, systems work, and experiments are separated intentionally so the page can scale without becoming visually flat."
+  },
+  "copy": {
+    "featuredTitle": "Systems with a strong point of view.",
+    "featuredDescription": "A project page that reads like a collection index instead of a template gallery.",
+    "searchPlaceholder": "Search by title, stack, or focus..."
+  }
+}

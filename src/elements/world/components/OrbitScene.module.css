@@ -1,0 +1,55 @@
+.scene {
+  position: relative;
+  min-height: 17rem;
+  border-radius: 2rem;
+  border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(var(--color-primary-rgb), 0.22), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 30%),
+    var(--panel-bg);
+  overflow: hidden;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+}
+
+.copy {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.copy span {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-fg-highlight);
+}
+
+.copy strong {
+  max-width: 14ch;
+  color: var(--color-fg-heading);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1;
+}
+
+.mark {
+  position: absolute;
+  inset: 1.4rem auto auto 1.4rem;
+  width: min(14rem, 48%);
+}
+
+.accent {
+  position: absolute;
+  inset: auto 1.5rem 1.5rem auto;
+  width: min(12rem, 38%);
+  height: auto;
+}

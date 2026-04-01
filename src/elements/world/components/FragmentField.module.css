@@ -1,0 +1,21 @@
+.field {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-primary) 24%, rgba(255, 255, 255, 0.56));
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.leaf {
+  fill: rgba(var(--color-primary-rgb), 0.18);
+  stroke: rgba(255, 255, 255, 0.18);
+}
+
+.dot {
+  fill: color-mix(in srgb, var(--color-primary) 52%, white 48%);
+}

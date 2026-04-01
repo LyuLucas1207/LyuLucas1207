@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700&display=swap');
+
+:root {
+  --font-body-latin: 'Instrument Sans', 'Segoe UI', sans-serif;
+  --font-body-cjk: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display-latin: 'Cormorant Garamond', Georgia, serif;
+  --font-display-cjk: 'Noto Serif SC', 'Songti SC', serif;
+  --font-body: var(--font-body-latin);
+  --font-display: var(--font-display-latin);
+  --page-width: 1200px;
+  --panel-bg: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.015)
+    ),
+    color-mix(in srgb, var(--color-bg-2) 92%, black 8%);
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+html:lang(zh) {
+  --font-body: var(--font-body-cjk);
+  --font-display: var(--font-display-cjk);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-fg-text);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' fill='%23141C33'/%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' stroke='%235E8CFF' stroke-width='1.6'/%3E%3Ccircle cx='24' cy='15' r='2.3' fill='%2393C5FD'/%3E%3Cpath d='M16 28l-2 5 5-2' stroke='%235E8CFF' stroke-width='1.4' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E")
+      8 8,
+    auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a,
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+a,
+button,
+[role='button'] {
+  cursor:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' fill='%23141C33'/%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' stroke='%235E8CFF' stroke-width='1.6'/%3E%3Ccircle cx='24' cy='15' r='2.3' fill='%2393C5FD'/%3E%3Cpath d='M16 28l-2 5 5-2' stroke='%235E8CFF' stroke-width='1.4' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E")
+      8 8,
+    pointer;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--color-primary-transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
