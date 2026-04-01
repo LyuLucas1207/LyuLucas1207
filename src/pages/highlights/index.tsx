@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Reveal } from '@/components/motion'
+import { Reveal } from '@/animations'
 import { PageIntro } from '@/components/pageIntro'
 import { highlightIconMap } from '@/constants/siteContent'
 import { TimelineBlock } from '@/elements/portfolio/components/TimelineBlock'

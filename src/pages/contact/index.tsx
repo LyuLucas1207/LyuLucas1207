@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, Input, Textarea } from 'nfx-ui/components'
 import { z } from 'zod'
 
-import { Reveal } from '@/components/motion'
+import { Reveal } from '@/animations'
 import { PageIntro } from '@/components/pageIntro'
 import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'

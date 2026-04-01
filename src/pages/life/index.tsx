@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dropdown } from 'nfx-ui/components'
 
-import { Reveal } from '@/components/motion'
+import { Reveal } from '@/animations'
 import { PageIntro } from '@/components/pageIntro'
 import { lifeTypes } from '@/constants/siteContent'
 import { FragmentField } from '@/elements/world/components/FragmentField'

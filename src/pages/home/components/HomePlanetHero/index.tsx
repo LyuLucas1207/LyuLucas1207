@@ -11,8 +11,8 @@ import { routeMoods } from '@/constants/siteContent'
 import { useWorldTransition } from '@/hooks/useWorldTransition'
 import { ROUTES } from '@/navigations/routes'
 import { createUniverseScene } from '../universe/scene'
-import { readUniversePalette } from '../universe/theme'
-import type { StarSystemConfig, UniversePalette } from '../universe/types'
+import { buildUniversePalette } from '../universe/theme'
+import type { StarSystemConfig } from '../universe/types'
 import styles from './styles.module.css'
 
 const themeOptions: ThemeEnum[] = [
@@ -31,7 +31,7 @@ function HomePlanetHero() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation(['common', 'home'])
-  const { themeName, setTheme } = useTheme()
+  const { currentTheme, setTheme } = useTheme()
   const { getThemeDisplayName } = useThemeLabel()
   const { playWorldTransition } = useWorldTransition()
   const prefersReducedMotion = useReducedMotion()
@@ -40,7 +40,7 @@ function HomePlanetHero() {
   const sidebarRef = useRef<HTMLElement | null>(null)
   const [sessionSeed] = useState(() => Math.random())
   const [, setDragging] = useState(false)
-  const [palette, setPalette] = useState<UniversePalette>(() => readUniversePalette())
+  const palette = useMemo(() => buildUniversePalette(currentTheme.colors.variables), [currentTheme])
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -205,16 +205,6 @@ function HomePlanetHero() {
       action: () => window.location.reload(),
     })
   }
-
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      setPalette(readUniversePalette())
-    })
-
-    return () => {
-      window.cancelAnimationFrame(frameId)
-    }
-  }, [themeName])
 
   useEffect(() => {
     const host = sceneHostRef.current
