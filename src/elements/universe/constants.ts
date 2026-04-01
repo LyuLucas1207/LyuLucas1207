@@ -24,22 +24,6 @@ export const UNIVERSE_LIGHT_INTENSITY = {
   glowAccentDark: 24,
 }
 
-export const UNIVERSE_CORE_STAR = {
-  radius: 8,
-  shellRadius: 9.8,
-  emissiveIntensityLight: 2.8,
-  emissiveIntensityDark: 4.2,
-  haloRadius: 13.5,
-  haloOpacityLight: 0.18,
-  haloOpacityDark: 0.24,
-  keyLightDistance: 96,
-  keyLightIntensityLight: 26,
-  keyLightIntensityDark: 36,
-  rimLightDistance: 120,
-  rimLightIntensityLight: 8,
-  rimLightIntensityDark: 14,
-}
-
 export const UNIVERSE_ROTATION_SPEED = {
   coreLight: 0.00055,
   coreDark: 0.0008,

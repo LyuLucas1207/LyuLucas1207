@@ -4,7 +4,6 @@ import {
   UNIVERSE_CAMERA_LIMITS,
   UNIVERSE_CAMERA_POSITION,
   UNIVERSE_CAMERA_DRIFT,
-  UNIVERSE_CORE_STAR,
   UNIVERSE_FOG,
   UNIVERSE_LIGHT_INTENSITY,
   UNIVERSE_LOOK_AT,
@@ -14,12 +13,12 @@ import {
   UNIVERSE_SYSTEM_FOCUS,
   UNIVERSE_VORTEX_COUNT,
 } from './constants'
-import { asThreeColor } from './color'
 import { buildStreamGeometry, buildVortexGeometry } from './geometry'
 import { createNebulaSprites } from './nebula'
 import type { UniverseShaders } from './shaders'
-import { createUniverseColors } from './theme'
+import { CORE_STAR_PRESET, Stellar } from './stellar'
 import { createStarSystem, createSystemAnchors } from './systems'
+import { createUniverseColors } from './theme'
 import type { StarSystemConfig, UniversePalette } from './types'
 
 function buildStarMaterial(
@@ -45,73 +44,6 @@ function buildStarMaterial(
   })
 }
 
-function createCoreStar(palette: UniversePalette, shellVertexShader: string, shellFragmentShader: string) {
-  const group = new THREE.Group()
-  const primaryColor = asThreeColor(palette.primary)
-  const lightColor = asThreeColor(palette.primaryLight)
-  const highlightColor = asThreeColor(palette.fgHighlight)
-
-  const star = new THREE.Mesh(
-    new THREE.SphereGeometry(UNIVERSE_CORE_STAR.radius, 48, 48),
-    new THREE.MeshPhysicalMaterial({
-      color: primaryColor,
-      emissive: primaryColor,
-      emissiveIntensity: palette.isLight
-        ? UNIVERSE_CORE_STAR.emissiveIntensityLight
-        : UNIVERSE_CORE_STAR.emissiveIntensityDark,
-      roughness: 0.18,
-      metalness: 0.02,
-      clearcoat: 0.72,
-      clearcoatRoughness: 0.16,
-    }),
-  )
-
-  const shell = new THREE.Mesh(
-    new THREE.SphereGeometry(UNIVERSE_CORE_STAR.shellRadius, 48, 48),
-    new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      side: THREE.BackSide,
-      uniforms: {
-        uColor: { value: lightColor },
-        uOpacity: { value: palette.isLight ? 0.34 : 0.46 },
-      },
-      vertexShader: shellVertexShader,
-      fragmentShader: shellFragmentShader,
-    }),
-  )
-
-  const halo = new THREE.Mesh(
-    new THREE.SphereGeometry(UNIVERSE_CORE_STAR.haloRadius, 48, 48),
-    new THREE.MeshBasicMaterial({
-      color: lightColor,
-      transparent: true,
-      opacity: palette.isLight ? UNIVERSE_CORE_STAR.haloOpacityLight : UNIVERSE_CORE_STAR.haloOpacityDark,
-      depthWrite: false,
-    }),
-  )
-
-  const keyLight = new THREE.PointLight(
-    highlightColor,
-    palette.isLight ? UNIVERSE_CORE_STAR.keyLightIntensityLight : UNIVERSE_CORE_STAR.keyLightIntensityDark,
-    UNIVERSE_CORE_STAR.keyLightDistance,
-    2,
-  )
-  keyLight.position.set(10, 7, 14)
-
-  const rimLight = new THREE.PointLight(
-    lightColor,
-    palette.isLight ? UNIVERSE_CORE_STAR.rimLightIntensityLight : UNIVERSE_CORE_STAR.rimLightIntensityDark,
-    UNIVERSE_CORE_STAR.rimLightDistance,
-    2,
-  )
-  rimLight.position.set(-16, -10, -18)
-
-  group.add(star, shell, halo, keyLight, rimLight)
-  return group
-}
-
 type CreateSceneOptions = {
   host: HTMLDivElement
   palette: UniversePalette
@@ -119,7 +51,6 @@ type CreateSceneOptions = {
   prefersReducedMotion: boolean
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
-  sessionSeed: number
   onFocusSystemChange?: (systemId?: string) => void
 }
 
@@ -135,7 +66,6 @@ export function createUniverseScene({
   prefersReducedMotion,
   onDraggingChange,
   systems,
-  sessionSeed,
   onFocusSystemChange,
 }: CreateSceneOptions) {
   const colors = createUniverseColors(palette)
@@ -217,12 +147,16 @@ export function createUniverseScene({
   }
 
   const galaxyCore = new THREE.Group()
-  const coreStar = createCoreStar(palette, shaders.coreShellVertex, shaders.coreShellFragment)
+  const coreStarInstance = new Stellar(CORE_STAR_PRESET, palette, {
+    vertex: shaders.coreShellVertex,
+    fragment: shaders.coreShellFragment,
+  })
+  const coreStar = coreStarInstance.group
   galaxyCore.add(vortex, streamGroup, coreStar)
 
   const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
   const systemRuntimes = systems.slice(0, 3).map((system, index) =>
-    createStarSystem(system, palette, colors, systemAnchors[index] ?? new THREE.Vector3(), sessionSeed + index),
+    createStarSystem(system, palette, colors, systemAnchors[index] ?? new THREE.Vector3()),
   )
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime] as const))
   systemRuntimes.forEach((runtime) => {
@@ -430,6 +364,8 @@ export function createUniverseScene({
   const animate = () => {
     timer.update()
     const elapsed = timer.getElapsed()
+
+    coreStarInstance.update(elapsed)
 
     if (focusedSystem && followFocusedSystem) {
       focusedSystem.group.getWorldPosition(focusTarget)

@@ -39,7 +39,6 @@ function HomePlanetHero() {
   const sceneHostRef = useRef<HTMLDivElement | null>(null)
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
   const sidebarRef = useRef<HTMLElement | null>(null)
-  const [sessionSeed] = useState(() => Math.random())
   const [, setDragging] = useState(false)
   const palette = useMemo(() => buildUniversePalette(currentTheme.colors.variables), [currentTheme])
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
@@ -223,7 +222,6 @@ function HomePlanetHero() {
         prefersReducedMotion,
         onDraggingChange: setDragging,
         systems,
-        sessionSeed,
         onFocusSystemChange: setFocusedSystemId,
       })
       sceneControllerRef.current = controller
@@ -234,7 +232,7 @@ function HomePlanetHero() {
       sceneControllerRef.current?.destroy()
       sceneControllerRef.current = null
     }
-  }, [palette, prefersReducedMotion, sessionSeed, systems, location.pathname])
+  }, [palette, prefersReducedMotion, systems, location.pathname])
 
   useEffect(() => {
     sceneControllerRef.current?.setFocusSystem(focusedSystemId)
