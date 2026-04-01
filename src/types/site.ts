@@ -3,7 +3,7 @@ export type NavigationItem = {
   path: string
 }
 
-export type Locale = 'zh' | 'en'
+export type Locale = 'zh' | 'en' | 'fr'
 
 export type WorldMood =
   | 'entry'

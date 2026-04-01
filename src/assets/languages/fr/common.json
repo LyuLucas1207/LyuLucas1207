@@ -1,0 +1,132 @@
+{
+  "navigation": {
+    "world": "Monde",
+    "about": "À propos",
+    "projects": "Projets",
+    "life": "Vie",
+    "highlights": "Parcours",
+    "contact": "Contact"
+  },
+  "actions": {
+    "enterContact": "Entrer dans le contact",
+    "reenterWorld": "Rentrer dans Lyu World",
+    "exploreProjects": "Voir tous les projets",
+    "getInTouch": "Prendre contact",
+    "viewCaseStudy": "Voir l'étude de cas",
+    "backToProjects": "Retour aux projets",
+    "sendInquiry": "Envoyer le message"
+  },
+  "labels": {
+    "themeSystem": "Système de thèmes",
+    "worldTone": "Tonalité du monde",
+    "base": "Base",
+    "worldShift": "Transition du monde",
+    "worldMap": "Carte du monde",
+    "selectedBuilds": "Sélections",
+    "signals": "Signaux",
+    "worldFragments": "Fragments du monde",
+    "openToThoughtfulWork": "Ouvert aux projets exigeants",
+    "worldStatement": "Déclaration du monde",
+    "reachOutDirectly": "Contacter directement",
+    "approach": "Approche",
+    "focusAreas": "Axes principaux",
+    "experienceArc": "Trajectoire",
+    "featuredArtifact": "Artefact principal",
+    "lifeRecords": "Vie / Archives",
+    "contact": "Contact",
+    "challenge": "Défi",
+    "outcome": "Résultat",
+    "implementationDetails": "Détails d'implémentation",
+    "role": "Rôle",
+    "impact": "Impact",
+    "stack": "Stack",
+    "caseStudyPreview": "Aperçu du cas"
+  },
+  "filters": {
+    "allRecords": "Tous les éléments",
+    "notes": "Notes",
+    "moments": "Moments",
+    "snapshots": "Instantanés",
+    "rituals": "Rituels",
+    "allProjects": "Tous les projets",
+    "featured": "Sélection",
+    "systems": "Systèmes",
+    "experimental": "Expérimental"
+  },
+  "lifeTypes": {
+    "note": "Note",
+    "moment": "Moment",
+    "snapshot": "Instantané",
+    "ritual": "Rituel"
+  },
+  "projectCategories": {
+    "Platform": "Plateforme",
+    "Product": "Produit",
+    "Experience": "Expérience"
+  },
+  "footer": {
+    "title": "Un monde numérique personnel organisé autour de l'identité, du travail, des archives et de l'artisanat technique.",
+    "description": "Construit avec React, TypeScript, CSS Modules, nfx-ui@0.8.0, i18next, GSAP et une couche mock API typée.",
+    "signalTitle": "Un système vivant qui change de ton par le mouvement, pas seulement par la couleur.",
+    "signalDescription": "Chaque route change son atmosphère, son glyph de transition et son rythme spatial tout en restant dans un seul Lyu World."
+  },
+  "brand": {
+    "subtitle": "Lyu Lucas. Une atmosphère pensée comme un système."
+  },
+  "language": {
+    "switcherLabel": "Langue",
+    "zh": "Chinois",
+    "en": "Anglais",
+    "fr": "Français"
+  },
+  "accessibility": {
+    "toggleNavigation": "Basculer la navigation"
+  },
+  "contactForm": {
+    "name": "Nom",
+    "email": "Email",
+    "company": "Équipe / Société",
+    "message": "Détails du projet",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "nom@entreprise.com",
+    "companyPlaceholder": "Optionnel",
+    "messagePlaceholder": "Que construisez-vous et quel niveau d'expérience front souhaitez-vous atteindre ?",
+    "success": "Message enregistré localement pour le moment. Remplacez plus tard par votre vrai endpoint.",
+    "errors": {
+      "name": "Veuillez saisir votre nom.",
+      "email": "Veuillez saisir une adresse email valide.",
+      "message": "Un peu plus de contexte aiderait."
+    }
+  },
+  "empty": {
+    "projects": "Aucun projet ne correspond au filtre actuel.",
+    "lifeRecords": "Aucun élément ne correspond à la vue sélectionnée."
+  },
+  "social": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "mail": "Mail"
+  },
+  "worldTones": {
+    "corporate": {
+      "title": "Ciel corporate",
+      "description": "Une lumière bleue plus ouverte, un mouvement fluide et un contraste directionnel plus net."
+    },
+    "forest": {
+      "title": "Canopée",
+      "description": "Une profondeur organique, un air plus vert et des transitions plus respirantes."
+    },
+    "wine": {
+      "title": "Éditorial vin",
+      "description": "Une chaleur rouge plus dense, des reflets plus courbes et une retenue plus cinématographique."
+    },
+    "cosmic": {
+      "title": "Champ cosmique",
+      "description": "Un contraste nocturne plus profond, des signaux orbitaux et une spatialité plus dramatique."
+    },
+    "wheat": {
+      "title": "Archive blé",
+      "description": "Une lumière papier plus chaude, un contraste plus calme et une ambiance de lecture plus archivistique."
+    }
+  }
+}

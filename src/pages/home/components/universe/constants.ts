@@ -43,8 +43,13 @@ export const UNIVERSE_CORE_STAR = {
 export const UNIVERSE_ROTATION_SPEED = {
   coreLight: 0.00055,
   coreDark: 0.0008,
-  driftLight: 0.00008,
-  driftDark: 0.00014,
+  driftLight: 0,
+  driftDark: 0,
+}
+
+export const UNIVERSE_CAMERA_DRIFT = {
+  xAmplitude: 0,
+  yAmplitude: 0,
 }
 
 export const UNIVERSE_MOTION = {
@@ -54,6 +59,16 @@ export const UNIVERSE_MOTION = {
   wheelClamp: 7.5,
   thrustDecay: 0.84,
   velocityDecay: 0.92,
+  keyAcceleration: 0.1,
+  keyVerticalAcceleration: 0.068,
+  keyMaxSpeed: 2.8,
+}
+
+export const UNIVERSE_CAMERA_LIMITS = {
+  x: 260,
+  yMin: -50,
+  yMax: 100,
+  z: 320,
 }
 
 export const UNIVERSE_VORTEX_COUNT = {
@@ -68,4 +83,15 @@ export const UNIVERSE_STAR_MATERIAL = {
   vortexOpacityDark: 0.82,
   streamOpacityLight: 0.88,
   streamOpacityDark: 0.6,
+}
+
+export const UNIVERSE_SYSTEM_LAYOUT = {
+  radius: 92,
+  startAngle: -Math.PI / 2,
+}
+
+export const UNIVERSE_SYSTEM_FOCUS = {
+  heightOffset: 19,
+  distanceOffset: 26,
+  lerp: 0.08,
 }

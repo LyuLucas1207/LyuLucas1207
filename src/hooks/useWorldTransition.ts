@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { WorldTransitionContext } from '../providers/worldTransition'
+import { WorldTransitionContext } from '../providers/WorldTransitionProvider'
 
 function useWorldTransition() {
   const context = useContext(WorldTransitionContext)

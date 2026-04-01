@@ -2,25 +2,27 @@
   width: 100%;
   height: auto;
   overflow: visible;
+  filter: drop-shadow(0 10px 24px rgba(var(--color-primary-rgb), 0.14));
+  transform-origin: center;
 }
 
 .halo {
   fill: url(#worldMarkGlow);
-  opacity: 0.7;
+  opacity: 0.78;
 }
 
 .ring {
   fill: none;
-  stroke: color-mix(in srgb, var(--color-border-4) 65%, var(--color-primary) 35%);
-  stroke-width: 1.5;
+  stroke: color-mix(in srgb, var(--color-border-4) 52%, var(--color-primary) 48%);
+  stroke-width: 1.35;
 }
 
 .ringStrong {
-  stroke: color-mix(in srgb, var(--color-primary) 55%, white 45%);
+  stroke: color-mix(in srgb, var(--color-primary) 62%, white 38%);
 }
 
 .core {
-  fill: color-mix(in srgb, var(--color-primary) 72%, white 28%);
+  fill: color-mix(in srgb, var(--color-primary) 78%, white 22%);
 }
 
 .coreSecondary {
@@ -28,16 +30,17 @@
 }
 
 .node {
-  fill: var(--color-fg-heading);
+  fill: color-mix(in srgb, var(--color-primary) 56%, var(--color-fg-heading) 44%);
 }
 
 .nodeGlow {
-  fill: color-mix(in srgb, var(--color-primary) 48%, white 52%);
+  fill: color-mix(in srgb, var(--color-primary) 42%, white 58%);
 }
 
 .line {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.62);
-  stroke-width: 1.6;
+  stroke: rgba(var(--color-primary-rgb), 0.58);
+  stroke-width: 1.25;
   stroke-linecap: round;
+  stroke-linejoin: round;
 }

@@ -12,7 +12,6 @@ import {
   socialLinks,
   worldPillars,
 } from '../../constants/siteContent'
-import { ReentryBeacon } from '../../elements/world/components/ReentryBeacon'
 import { SectionDivider } from '../../elements/world/components/SectionDivider'
 import { WorldAtmosphere } from '../../elements/world/components/WorldAtmosphere'
 import { WorldMark } from '../../elements/world/components/WorldMark'
@@ -37,7 +36,7 @@ function SiteLayout() {
   usePageTransition(mainRef, location.pathname, mood)
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !isHomePage) {
       return
     }
 
@@ -51,22 +50,24 @@ function SiteLayout() {
       title: 'Lyu World',
       subtitle: t('brand.subtitle'),
     })
-  }, [mood, playWorldTransition, t])
+  }, [isHomePage, mood, playWorldTransition, t])
 
   const handleNavigate = (path: string, labelKey: string) => {
+    if (path === location.pathname) {
+      setMenuOpen(false)
+      return
+    }
+
     const targetMood = routeMoods[path] ?? mood
 
     playWorldTransition({
       mood: targetMood,
-      title: path === location.pathname ? t('actions.reenterWorld') : t(labelKey),
-      subtitle: path === location.pathname ? t('brand.subtitle') : t('labels.worldShift'),
-      action:
-        path === location.pathname
-          ? () => window.scrollTo({ top: 0, behavior: 'auto' })
-          : () => {
-              navigate(path)
-              setMenuOpen(false)
-            },
+      title: t(labelKey),
+      subtitle: t('labels.worldShift'),
+      action: () => {
+        navigate(path)
+        setMenuOpen(false)
+      },
     })
   }
 
@@ -85,66 +86,46 @@ function SiteLayout() {
         <div className={styles.frame} />
 
         {isHomePage ? null : (
-          <div className={styles.floatingBeacon}>
-            <ReentryBeacon
-              onActivate={() =>
-                playWorldTransition({
-                  mood: 'entry',
-                  title: t('actions.reenterWorld'),
-                  subtitle: t('brand.subtitle'),
-                  action: () => {
-                    if (location.pathname !== '/') {
-                      navigate('/')
-                      return
-                    }
+          <header className={styles.header}>
+            <NavLink to="/" className={styles.brand}>
+              <span className={styles.brandMark}>
+                <WorldMark />
+              </span>
+              <span className={styles.brandCopy}>
+                <strong>Lyu World</strong>
+              </span>
+            </NavLink>
 
-                    window.scrollTo({ top: 0, behavior: 'auto' })
-                  },
-                })
-              }
-            />
-          </div>
+            <nav className={styles.nav} aria-label="Primary">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.path}
+                  type="button"
+                  className={`${styles.navLink} ${
+                    location.pathname === item.path ? styles.activeLink : ''
+                  }`}
+                  onClick={() => handleNavigate(item.path, item.labelKey)}
+                >
+                  {t(item.labelKey)}
+                </button>
+              ))}
+            </nav>
+
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.menuButton}
+                onClick={() => setMenuOpen((value) => !value)}
+                aria-expanded={menuOpen}
+                aria-label={t('accessibility.toggleNavigation')}
+              >
+                <Menu size={20} />
+              </button>
+            </div>
+          </header>
         )}
 
-        <header className={styles.header}>
-          <NavLink to="/" className={styles.brand}>
-            <span className={styles.brandMark}>
-              <WorldMark />
-            </span>
-            <span className={styles.brandCopy}>
-              <strong>Lyu World</strong>
-            </span>
-          </NavLink>
-
-          <nav className={styles.nav} aria-label="Primary">
-            {navigationItems.map((item) => (
-              <button
-                key={item.path}
-                type="button"
-                className={`${styles.navLink} ${
-                  location.pathname === item.path ? styles.activeLink : ''
-                }`}
-                onClick={() => handleNavigate(item.path, item.labelKey)}
-              >
-                {t(item.labelKey)}
-              </button>
-            ))}
-          </nav>
-
-          <div className={styles.actions}>
-            <button
-              type="button"
-              className={styles.menuButton}
-              onClick={() => setMenuOpen((value) => !value)}
-              aria-expanded={menuOpen}
-              aria-label={t('accessibility.toggleNavigation')}
-            >
-              <Menu size={20} />
-            </button>
-          </div>
-        </header>
-
-        {menuOpen ? (
+        {!isHomePage && menuOpen ? (
           <div className={styles.mobileMenu}>
             {navigationItems.map((item) => (
               <button

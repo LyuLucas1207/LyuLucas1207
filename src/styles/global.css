@@ -19,6 +19,8 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 html:lang(zh) {
@@ -35,10 +37,19 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   cursor:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' fill='%23141C33'/%3E%3Cpath d='M8 23c7-10 13-14 18-12 3 1 5 3 6 6 1 5-2 11-12 18l-2-5-5-2z' stroke='%235E8CFF' stroke-width='1.6'/%3E%3Ccircle cx='24' cy='15' r='2.3' fill='%2393C5FD'/%3E%3Cpath d='M16 28l-2 5 5-2' stroke='%235E8CFF' stroke-width='1.4' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E")
       8 8,
     auto;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 *,

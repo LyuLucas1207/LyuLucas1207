@@ -1,7 +1,9 @@
 import * as THREE from 'three'
 
 import {
+  UNIVERSE_CAMERA_LIMITS,
   UNIVERSE_CAMERA_POSITION,
+  UNIVERSE_CAMERA_DRIFT,
   UNIVERSE_CORE_STAR,
   UNIVERSE_FOG,
   UNIVERSE_LIGHT_INTENSITY,
@@ -9,6 +11,7 @@ import {
   UNIVERSE_MOTION,
   UNIVERSE_ROTATION_SPEED,
   UNIVERSE_STAR_MATERIAL,
+  UNIVERSE_SYSTEM_FOCUS,
   UNIVERSE_VORTEX_COUNT,
 } from './constants'
 import { asThreeColor } from './color'
@@ -17,7 +20,8 @@ import { createNebulaSprites } from './nebula'
 import { starfieldFragmentShader } from './shaders/starfieldFragment'
 import { starfieldVertexShader } from './shaders/starfieldVertex'
 import { createUniverseColors } from './theme'
-import type { UniversePalette } from './types'
+import { createStarSystem, createSystemAnchors } from './systems'
+import type { StarSystemConfig, UniversePalette } from './types'
 
 function buildStarMaterial(baseSize: number, opacity: number, isLight: boolean) {
   return new THREE.ShaderMaterial({
@@ -128,6 +132,14 @@ type CreateSceneOptions = {
   palette: UniversePalette
   prefersReducedMotion: boolean
   onDraggingChange: (dragging: boolean) => void
+  systems: StarSystemConfig[]
+  sessionSeed: number
+  onFocusSystemChange?: (systemId?: string) => void
+}
+
+export type UniverseSceneController = {
+  destroy: () => void
+  setFocusSystem: (systemId?: string) => void
 }
 
 export function createUniverseScene({
@@ -135,6 +147,9 @@ export function createUniverseScene({
   palette,
   prefersReducedMotion,
   onDraggingChange,
+  systems,
+  sessionSeed,
+  onFocusSystemChange,
 }: CreateSceneOptions) {
   const colors = createUniverseColors(palette)
   const renderer = new THREE.WebGLRenderer({
@@ -214,10 +229,23 @@ export function createUniverseScene({
   const coreStar = createCoreStar(palette)
   galaxyCore.add(vortex, streamGroup, coreStar)
 
+  const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
+  const systemRuntimes = systems.slice(0, 3).map((system, index) =>
+    createStarSystem(system, palette, colors, systemAnchors[index] ?? new THREE.Vector3(), sessionSeed + index),
+  )
+  const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime] as const))
+  systemRuntimes.forEach((runtime) => {
+    runtime.star.userData.focusSystem = runtime
+    galaxyCore.add(runtime.group)
+  })
+
   const nebula = createNebulaSprites(palette, colors)
   scene.add(nebula, galaxyCore)
 
   const forward = new THREE.Vector3()
+  const strafe = new THREE.Vector3()
+  const worldUp = new THREE.Vector3(0, 1, 0)
+  const moveVector = new THREE.Vector3()
   const movement = {
     yaw: camera.rotation.y,
     pitch: camera.rotation.x,
@@ -227,6 +255,44 @@ export function createUniverseScene({
     thrust: 0,
   }
   const drag = { active: false, x: 0, y: 0 }
+  const dragStart = { x: 0, y: 0 }
+  const pointer = new THREE.Vector2()
+  const keys = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+  }
+  const raycaster = new THREE.Raycaster()
+  const interactiveObjects = systemRuntimes.flatMap((runtime) => runtime.interactiveObjects)
+  let hoveredPlanet: THREE.Object3D | null = null
+  let focusedSystem: ReturnType<typeof systemRuntimeMap.get> | null = null
+  let followFocusedSystem = false
+  const desiredCameraPosition = new THREE.Vector3()
+  const focusTarget = new THREE.Vector3()
+  const focusOffset = new THREE.Vector3()
+
+  const clearFocus = () => {
+    focusedSystem = null
+    followFocusedSystem = false
+    onFocusSystemChange?.(undefined)
+  }
+
+  const setFocusSystem = (systemId?: string) => {
+    if (!systemId) {
+      clearFocus()
+      return
+    }
+
+    const runtime = systemRuntimeMap.get(systemId) ?? null
+    focusedSystem = runtime
+    followFocusedSystem = Boolean(runtime)
+    if (runtime) {
+      movement.velocity.set(0, 0, 0)
+      movement.thrust = 0
+      onFocusSystemChange?.(runtime.group.userData.systemId as string | undefined)
+    }
+  }
 
   const rotateCamera = () => {
     camera.rotation.order = 'YXZ'
@@ -234,16 +300,48 @@ export function createUniverseScene({
     camera.rotation.x = movement.pitch
   }
 
+  const applyLookAt = (position: THREE.Vector3, target: THREE.Vector3) => {
+    const direction = target.clone().sub(position).normalize()
+    movement.targetYaw = Math.atan2(-direction.x, -direction.z)
+    movement.targetPitch = Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))
+  }
+
+  const clampCameraPosition = (position: THREE.Vector3) => {
+    position.x = THREE.MathUtils.clamp(position.x, -UNIVERSE_CAMERA_LIMITS.x, UNIVERSE_CAMERA_LIMITS.x)
+    position.y = THREE.MathUtils.clamp(position.y, UNIVERSE_CAMERA_LIMITS.yMin, UNIVERSE_CAMERA_LIMITS.yMax)
+    position.z = THREE.MathUtils.clamp(position.z, -UNIVERSE_CAMERA_LIMITS.z, UNIVERSE_CAMERA_LIMITS.z)
+  }
+
+  const updateHoverState = (clientX: number, clientY: number) => {
+    const bounds = host.getBoundingClientRect()
+    pointer.x = ((clientX - bounds.left) / bounds.width) * 2 - 1
+    pointer.y = -((clientY - bounds.top) / bounds.height) * 2 + 1
+    raycaster.setFromCamera(pointer, camera)
+    const hit = raycaster.intersectObjects(interactiveObjects, false)[0]?.object ?? null
+
+    if (hoveredPlanet !== hit) {
+      if (hoveredPlanet) hoveredPlanet.userData.hovered = false
+      hoveredPlanet = hit
+      if (hoveredPlanet) hoveredPlanet.userData.hovered = true
+      host.style.cursor = hoveredPlanet ? 'pointer' : 'default'
+    }
+  }
+
   const onPointerDown = (event: PointerEvent) => {
     event.preventDefault()
     drag.active = true
     drag.x = event.clientX
     drag.y = event.clientY
+    dragStart.x = event.clientX
+    dragStart.y = event.clientY
+    updateHoverState(event.clientX, event.clientY)
     host.setPointerCapture?.(event.pointerId)
     onDraggingChange(true)
   }
 
   const onPointerMove = (event: PointerEvent) => {
+    updateHoverState(event.clientX, event.clientY)
+
     if (!drag.active) {
       return
     }
@@ -253,21 +351,40 @@ export function createUniverseScene({
     drag.x = event.clientX
     drag.y = event.clientY
 
+    if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+      if (followFocusedSystem || focusedSystem) {
+        clearFocus()
+      }
+    }
+
     movement.targetYaw -= dx * 0.0024
     movement.targetPitch -= dy * 0.0021
     movement.targetPitch = THREE.MathUtils.clamp(movement.targetPitch, -1.45, 1.45)
   }
 
   const onPointerUp = (event?: PointerEvent) => {
+    const clickDistance = Math.hypot((event?.clientX ?? dragStart.x) - dragStart.x, (event?.clientY ?? dragStart.y) - dragStart.y)
+    const shouldActivate = clickDistance < 6 && hoveredPlanet && typeof hoveredPlanet.userData.action === 'function'
+    const shouldFocus = clickDistance < 6 && hoveredPlanet && hoveredPlanet.userData.focusSystem
     drag.active = false
     if (event) {
       host.releasePointerCapture?.(event.pointerId)
     }
     onDraggingChange(false)
+    if (shouldActivate && hoveredPlanet) {
+      hoveredPlanet.userData.action()
+    }
+    if (shouldFocus && hoveredPlanet) {
+      const runtime = hoveredPlanet.userData.focusSystem as (typeof focusedSystem)
+      setFocusSystem(runtime?.group.userData.systemId as string | undefined)
+    }
   }
 
   const onWheel = (event: WheelEvent) => {
     event.preventDefault()
+    if (followFocusedSystem || focusedSystem) {
+      clearFocus()
+    }
     movement.thrust += THREE.MathUtils.clamp(
       event.deltaY * UNIVERSE_MOTION.wheelForce,
       -UNIVERSE_MOTION.wheelClamp,
@@ -275,11 +392,36 @@ export function createUniverseScene({
     )
   }
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase()
+
+    if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
+      if (followFocusedSystem || focusedSystem) {
+        clearFocus()
+      }
+      if (key === 'w') keys.forward = true
+      if (key === 's') keys.backward = true
+      if (key === 'a') keys.left = true
+      if (key === 'd') keys.right = true
+    }
+  }
+
+  const onKeyUp = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase()
+
+    if (key === 'w') keys.forward = false
+    if (key === 's') keys.backward = false
+    if (key === 'a') keys.left = false
+    if (key === 'd') keys.right = false
+  }
+
   host.addEventListener('pointerdown', onPointerDown)
   window.addEventListener('pointermove', onPointerMove)
   window.addEventListener('pointerup', onPointerUp)
   window.addEventListener('pointercancel', onPointerUp)
   host.addEventListener('wheel', onWheel, { passive: false })
+  window.addEventListener('keydown', onKeyDown)
+  window.addEventListener('keyup', onKeyUp)
 
   const timer = new THREE.Timer()
   timer.connect(document)
@@ -292,23 +434,67 @@ export function createUniverseScene({
     timer.update()
     const elapsed = timer.getElapsed()
 
+    if (focusedSystem && followFocusedSystem) {
+      focusedSystem.group.getWorldPosition(focusTarget)
+      focusOffset.set(0, UNIVERSE_SYSTEM_FOCUS.heightOffset, focusedSystem.maxOrbitRadius * 1.5)
+      desiredCameraPosition.copy(focusedSystem.group.localToWorld(focusOffset.clone()))
+      clampCameraPosition(desiredCameraPosition)
+      camera.position.lerp(desiredCameraPosition, UNIVERSE_SYSTEM_FOCUS.lerp)
+      applyLookAt(camera.position, focusTarget)
+    }
+
     movement.yaw = THREE.MathUtils.lerp(movement.yaw, movement.targetYaw, UNIVERSE_MOTION.yawLerp)
     movement.pitch = THREE.MathUtils.lerp(movement.pitch, movement.targetPitch, UNIVERSE_MOTION.pitchLerp)
     rotateCamera()
 
-    camera.getWorldDirection(forward)
-    movement.velocity.addScaledVector(forward, -movement.thrust * 0.014)
-    movement.thrust *= UNIVERSE_MOTION.thrustDecay
-    movement.velocity.multiplyScalar(UNIVERSE_MOTION.velocityDecay)
-    camera.position.add(movement.velocity)
+    if (followFocusedSystem) {
+      movement.velocity.multiplyScalar(0.76)
+      movement.thrust = 0
+    } else {
+      camera.getWorldDirection(forward)
+      strafe.crossVectors(forward, worldUp).normalize()
+      moveVector.set(0, 0, 0)
+
+      if (keys.forward) moveVector.add(forward)
+      if (keys.backward) moveVector.addScaledVector(forward, -1)
+      if (keys.left) moveVector.addScaledVector(strafe, -1)
+      if (keys.right) moveVector.add(strafe)
+
+      if (moveVector.lengthSq() > 0) {
+        moveVector.normalize()
+        movement.velocity.addScaledVector(moveVector, UNIVERSE_MOTION.keyAcceleration)
+        movement.velocity.y += moveVector.y * UNIVERSE_MOTION.keyVerticalAcceleration
+        movement.velocity.clampLength(0, UNIVERSE_MOTION.keyMaxSpeed)
+      }
+
+      movement.velocity.addScaledVector(forward, -movement.thrust * 0.014)
+      movement.thrust *= UNIVERSE_MOTION.thrustDecay
+      movement.velocity.multiplyScalar(UNIVERSE_MOTION.velocityDecay)
+      camera.position.add(movement.velocity)
+      clampCameraPosition(camera.position)
+    }
 
     if (!prefersReducedMotion && !drag.active) {
       movement.targetYaw += palette.isLight ? UNIVERSE_ROTATION_SPEED.driftLight : UNIVERSE_ROTATION_SPEED.driftDark
-      camera.position.x += Math.sin(elapsed * 0.16) * 0.01
-      camera.position.y += Math.cos(elapsed * 0.13) * 0.008
+      camera.position.x += Math.sin(elapsed * 0.16) * UNIVERSE_CAMERA_DRIFT.xAmplitude
+      camera.position.y += Math.cos(elapsed * 0.13) * UNIVERSE_CAMERA_DRIFT.yAmplitude
+      clampCameraPosition(camera.position)
     }
 
     galaxyCore.rotation.y += palette.isLight ? UNIVERSE_ROTATION_SPEED.coreLight : UNIVERSE_ROTATION_SPEED.coreDark
+    systemRuntimes.forEach((runtime) => {
+      const starHovered = Boolean(runtime.star.userData.hovered)
+      runtime.star.scale.lerp(
+        new THREE.Vector3(starHovered ? 1.08 : 1, starHovered ? 1.08 : 1, starHovered ? 1.08 : 1),
+        0.18,
+      )
+      runtime.planets.forEach((planet) => {
+        planet.orbitCarrier.rotation.z += planet.speed
+        const hovered = Boolean(planet.mesh.userData.hovered)
+        const targetScale = hovered ? planet.baseScale * 1.2 : planet.baseScale
+        planet.body.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.18)
+      })
+    })
 
     nebula.children.forEach((child, index) => {
       child.position.x += Math.sin(elapsed * 0.08 + index) * 0.014
@@ -336,7 +522,7 @@ export function createUniverseScene({
 
   resizeObserver.observe(host)
 
-  return () => {
+  const destroy = () => {
     window.cancelAnimationFrame(frameId)
     resizeObserver.disconnect()
     timer.dispose()
@@ -345,6 +531,9 @@ export function createUniverseScene({
     window.removeEventListener('pointerup', onPointerUp)
     window.removeEventListener('pointercancel', onPointerUp)
     host.removeEventListener('wheel', onWheel)
+    window.removeEventListener('keydown', onKeyDown)
+    window.removeEventListener('keyup', onKeyUp)
+    host.style.cursor = 'default'
     scene.traverse((child) => {
       const target = child as THREE.Mesh | THREE.Points | THREE.Sprite
       if ('geometry' in target && target.geometry) {
@@ -363,4 +552,9 @@ export function createUniverseScene({
     renderer.dispose()
     host.replaceChildren()
   }
+
+  return {
+    destroy,
+    setFocusSystem,
+  } satisfies UniverseSceneController
 }

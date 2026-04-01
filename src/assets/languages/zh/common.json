@@ -76,7 +76,8 @@
   "language": {
     "switcherLabel": "语言",
     "zh": "中文",
-    "en": "English"
+    "en": "English",
+    "fr": "æ³•è¯­"
   },
   "accessibility": {
     "toggleNavigation": "切换导航"

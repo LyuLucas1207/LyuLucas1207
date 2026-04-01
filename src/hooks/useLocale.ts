@@ -1,13 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { LANGUAGE_VALUES, LanguageEnum } from 'nfx-ui/languages'
 
 import type { Locale } from '../types/site'
 
 function normalizeLanguage(language: string | undefined): Locale {
-  if (language?.toLowerCase().startsWith('en')) {
-    return 'en'
-  }
-
-  return 'zh'
+  const normalized = (language ?? '').split('-')[0] as LanguageEnum
+  return (LANGUAGE_VALUES as string[]).includes(normalized) ? normalized : LanguageEnum.ZH
 }
 
 export function useLocale() {

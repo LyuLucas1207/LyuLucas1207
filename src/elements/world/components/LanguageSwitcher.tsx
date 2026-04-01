@@ -1,12 +1,13 @@
 import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { LanguageEnum } from 'nfx-ui/languages'
 
 import { useLocale } from '../../../hooks/useLocale'
 import { LanguageHalo } from './LanguageHalo'
 import styles from './LanguageSwitcher.module.css'
 
-const languages = ['zh', 'en'] as const
+const languages: LanguageEnum[] = [LanguageEnum.ZH, LanguageEnum.EN, LanguageEnum.FR]
 
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation('common')

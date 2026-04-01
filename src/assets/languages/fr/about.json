@@ -1,0 +1,10 @@
+{
+  "intro": {
+    "eyebrow": "À propos / CV",
+    "description": "Cette page essaie de tenir ensemble deux choses: la crédibilité technique et une voix plus vivante faite de goût, de méthode et de vision.",
+    "titleTemplate": "{{name}}, présenté comme une personne avant une checklist."
+  },
+  "copy": {
+    "panelTitle": "J'aime les produits qui paraissent composés plutôt qu'assemblés."
+  }
+}

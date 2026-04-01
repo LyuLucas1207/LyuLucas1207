@@ -30,13 +30,13 @@ export function buildVortexGeometry({ count, colors, isLight }: VortexGeometryOp
   for (let index = 0; index < count; index += 1) {
     const progress = index / count
     const arm = index % armCount
-    const radius = progress * progress * 112 + randomBetween(-2.2, 2.2)
-    const angle = progress * 16 + (Math.PI * 2 * arm) / armCount + randomBetween(-0.12, 0.12)
+    const radius = progress * progress * 148 + progress * 18 + randomBetween(-2.8, 2.8)
+    const angle = progress * 11.4 + (Math.PI * 2 * arm) / armCount + randomBetween(-0.1, 0.1)
     const color = asThreeColor(pickColor(colors.all))
     const stride = index * 3
 
     positions[stride] = Math.cos(angle) * radius
-    positions[stride + 1] = Math.sin(progress * 14 + arm) * 2.2 + randomBetween(-1.8, 1.8)
+    positions[stride + 1] = Math.sin(progress * 9.5 + arm) * 2.4 + randomBetween(-1.6, 1.6)
     positions[stride + 2] = Math.sin(angle) * radius
 
     tint[stride] = color.r
@@ -51,7 +51,7 @@ export function buildVortexGeometry({ count, colors, isLight }: VortexGeometryOp
 }
 
 export function buildStreamGeometry({ pathIndex, colors, isLight }: StreamGeometryOptions) {
-  const count = isLight ? 170 : 140
+  const count = isLight ? 260 : 220
   const positions = new Float32Array(count * 3)
   const tint = new Float32Array(count * 3)
   const sizes = new Float32Array(count)
@@ -62,13 +62,13 @@ export function buildStreamGeometry({ pathIndex, colors, isLight }: StreamGeomet
 
   for (let index = 0; index < count; index += 1) {
     const progress = index / (count - 1)
-    const radius = 260 - progress * 228 + randomBetween(-2.4, 2.4)
-    const angle = baseAngle + progress * 5.6 + Math.sin(progress * 8 + pathIndex) * 0.18
+    const radius = 336 - progress * 288 + randomBetween(-2.8, 2.8)
+    const angle = baseAngle + progress * 3.8 + Math.sin(progress * 6.4 + pathIndex) * 0.14
     const color = asThreeColor(pickColor(streamPool))
     const stride = index * 3
 
     positions[stride] = Math.cos(angle) * radius
-    positions[stride + 1] = Math.sin(progress * 10 + pathIndex) * 2.8 + (0.5 - progress) * 4
+    positions[stride + 1] = Math.sin(progress * 7.4 + pathIndex) * 2.8 + (0.5 - progress) * 4.8
     positions[stride + 2] = Math.sin(angle) * radius
 
     tint[stride] = color.r

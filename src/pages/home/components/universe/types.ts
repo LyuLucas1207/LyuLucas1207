@@ -20,6 +20,23 @@ export type UniverseColorPool = {
   all: string[]
 }
 
+export type StarSystemPlanetOption = {
+  id: string
+  label: string
+  accent?: string
+  orbitRadius: number
+  planetRadius: number
+  orbitSpeed: number
+  onSelect: () => void
+}
+
+export type StarSystemConfig = {
+  id: string
+  name: string
+  summary: string
+  planets: StarSystemPlanetOption[]
+}
+
 export type VortexGeometryOptions = {
   count: number
   colors: UniverseColorPool

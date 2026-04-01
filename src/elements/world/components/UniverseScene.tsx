@@ -78,6 +78,7 @@ function UniverseScene({ activePath }: UniverseSceneProps) {
     () => [
       { id: 'zh', title: t('common:language.zh'), orbitX: 72, orbitY: 40, angle: 38, size: 42, design: 'language' },
       { id: 'en', title: t('common:language.en'), orbitX: 78, orbitY: 42, angle: 176, size: 42, design: 'language' },
+      { id: 'fr', title: t('common:language.fr'), orbitX: 84, orbitY: 44, angle: 264, size: 42, design: 'language' },
       { id: 'reenter', title: t('common:actions.reenterWorld'), orbitX: 86, orbitY: 46, angle: 302, size: 48, design: 'return' },
     ],
     [t],
@@ -218,7 +219,7 @@ function UniverseScene({ activePath }: UniverseSceneProps) {
 
   const activateSetting = (node: OrbitNode) => {
     setFocusLabel(node.title)
-    if (node.id === 'zh' || node.id === 'en') {
+    if (node.id === 'zh' || node.id === 'en' || node.id === 'fr') {
       playWorldTransition({
         mood: 'beacon',
         title: node.title,
@@ -302,7 +303,7 @@ function UniverseScene({ activePath }: UniverseSceneProps) {
             <path d="M160 56V212M90 96L228 168M90 168L228 96" className={styles.settingsAxis} data-scene-line />
           </svg>
           {settingNodes.map((node) => (
-            <OrbitPlanet key={node.id} node={node} rotation={rotation.settings} active={(node.id === locale && (node.id === 'zh' || node.id === 'en')) || node.id === 'reenter'} className={styles.settingPlanet} labelClass={styles.settingLabel} onEnter={() => setFocusLabel(node.title)} onActivate={() => activateSetting(node)} />
+            <OrbitPlanet key={node.id} node={node} rotation={rotation.settings} active={(node.id === locale && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'} className={styles.settingPlanet} labelClass={styles.settingLabel} onEnter={() => setFocusLabel(node.title)} onActivate={() => activateSetting(node)} />
           ))}
         </GalaxyShell>
 

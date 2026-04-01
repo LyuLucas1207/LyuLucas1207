@@ -76,7 +76,8 @@
   "language": {
     "switcherLabel": "Language",
     "zh": "中文",
-    "en": "English"
+    "en": "English",
+    "fr": "French"
   },
   "accessibility": {
     "toggleNavigation": "Toggle navigation"

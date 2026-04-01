@@ -177,6 +177,20 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
           }),
       },
       {
+        id: 'fr',
+        title: t('common:language.fr'),
+        orbit: 110,
+        angle: 266,
+        size: 42,
+        action: () =>
+          playWorldTransition({
+            mood: 'beacon',
+            title: t('common:language.fr'),
+            subtitle: t('home:scene.settingsGalaxy'),
+            action: () => void i18n.changeLanguage('fr'),
+          }),
+      },
+      {
         id: 'reenter',
         title: t('common:actions.reenterWorld'),
         orbit: 112,
@@ -437,7 +451,7 @@ function LyuWorldScene({ activePath }: LyuWorldSceneProps) {
             key={node.id}
             node={node}
             rotation={rotation.settings}
-            active={(node.id === locale && (node.id === 'zh' || node.id === 'en')) || node.id === 'reenter'}
+            active={(node.id === locale && (node.id === 'zh' || node.id === 'en' || node.id === 'fr')) || node.id === 'reenter'}
             onEnter={() => setFocusLabel(node.title)}
             onActivate={node.action}
           />
