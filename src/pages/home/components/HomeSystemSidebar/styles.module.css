@@ -1,0 +1,158 @@
+.systemSidebar {
+  position: absolute;
+  top: 1.35rem;
+  left: 1.35rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sidebarToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem 0.5rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-primary);
+  backdrop-filter: blur(24px) saturate(1.15);
+  cursor: pointer;
+  transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+}
+
+.sidebarToggle:hover,
+.sidebarToggleOpen {
+  border-color: color-mix(in srgb, var(--color-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.toggleIndicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--color-primary) 50%, transparent);
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.toggleChevron {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebarToggleOpen .toggleChevron {
+  transform: rotate(180deg);
+}
+
+.sidebarPanel {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  backdrop-filter: blur(28px) saturate(1.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+  transform-origin: top left;
+  pointer-events: none;
+  transition:
+    max-height 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebarPanelOpen {
+  max-height: 16rem;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.galaxyOption {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-fg-heading);
+  text-align: left;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.galaxyOption:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.galaxyOptionActive {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.galaxyOptionActive .galaxyDot {
+  background: var(--color-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  transform: scale(1.3);
+}
+
+.galaxyDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-fg-heading) 36%, transparent);
+  flex-shrink: 0;
+  transition: background 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.galaxyOption:hover .galaxyDot {
+  background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+}
+
+.galaxyInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.galaxyInfo strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-primary) 85%, var(--color-fg-heading));
+}
+
+.galaxyOptionActive .galaxyInfo strong {
+  color: var(--color-primary);
+}
+
+.galaxyInfo span {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-fg-heading) 40%, transparent);
+}
+
+@media (max-width: 960px) {
+  .systemSidebar {
+    top: 0.85rem;
+    left: 0.85rem;
+  }
+}
+

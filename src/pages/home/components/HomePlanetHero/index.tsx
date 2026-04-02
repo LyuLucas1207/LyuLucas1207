@@ -1,5 +1,3 @@
-import { ChevronDown, Sparkles } from 'lucide-react'
-import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -18,6 +16,10 @@ import { loadUniverseShaders } from '@/elements/universe/utils/shaders'
 import { buildUniversePalette } from '@/elements/universe/theme'
 import type { StarSystemConfig } from '@/elements/universe/types'
 import styles from './styles.module.css'
+import { HomeSystemSidebar } from '../HomeSystemSidebar'
+import { HomeActionDock } from '../HomeActionDock'
+import { HomeHud } from '../HomeHud'
+import { HomeHoverTooltip } from '../HomeHoverTooltip'
 
 const themeOptions: ThemeEnum[] = [
   ThemeEnum.DEFAULT,
@@ -40,7 +42,6 @@ function HomePlanetHero() {
   const prefersReducedMotion = useReducedMotion()
   const sceneHostRef = useRef<HTMLDivElement | null>(null)
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
-  const sidebarRef = useRef<HTMLElement | null>(null)
   const [, setDragging] = useState(false)
   const palette = useMemo(
     () => buildUniversePalette(currentTheme.colors.name as ThemeEnum, currentTheme.colors.variables),
@@ -245,100 +246,34 @@ function HomePlanetHero() {
     sceneControllerRef.current?.setFocusSystem(focusedSystemId)
   }, [focusedSystemId])
 
-  useEffect(() => {
-    if (!sidebarOpen) return
-    const handlePointerDown = (e: PointerEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
-        setSidebarOpen(false)
-      }
-    }
-    window.addEventListener('pointerdown', handlePointerDown)
-    return () => window.removeEventListener('pointerdown', handlePointerDown)
-  }, [sidebarOpen])
-
   return (
-    <section
-      className={styles.hero}
-      style={
-        {
-          // Keep the CSS background in sync with WebGL.
-          '--space-bg': palette.sceneBg,
-          '--space-bg-2': palette.sceneFogColor,
-        } as CSSProperties
-      }
-    >
+    <section className={styles.hero}>
       <div className={styles.sceneCanvas} ref={sceneHostRef} />
       <div className={styles.atmosphere} aria-hidden="true" />
 
-      <aside ref={sidebarRef} className={styles.systemSidebar} aria-label="System navigation">
-        <button
-          type="button"
-          className={`${styles.sidebarToggle} ${sidebarOpen ? styles.sidebarToggleOpen : ''}`}
-          onClick={() => setSidebarOpen((prev) => !prev)}
-        >
-          <span className={styles.toggleIndicator} />
-          <span className={styles.toggleLabel}>
-            {activeSystem?.name ?? t('home:scene.selectGalaxy')}
-          </span>
-          <ChevronDown size={14} className={styles.toggleChevron} />
-        </button>
-        <nav
-          className={`${styles.sidebarPanel} ${sidebarOpen ? styles.sidebarPanelOpen : ''}`}
-        >
-          {systems.map((system) => (
-            <button
-              key={system.id}
-              type="button"
-              className={`${styles.galaxyOption} ${focusedSystemId === system.id ? styles.galaxyOptionActive : ''
-                }`}
-              onClick={() => {
-                setFocusedSystemId(system.id)
-                setSidebarOpen(false)
-              }}
-            >
-              <span className={styles.galaxyDot} />
-              <span className={styles.galaxyInfo}>
-                <strong>{system.name}</strong>
-                <span>{system.planets.length} {system.summary}</span>
-              </span>
-            </button>
-          ))}
-        </nav>
-      </aside>
+      <HomeSystemSidebar
+        systems={systems}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        focusedSystemId={focusedSystemId}
+        setFocusedSystemId={setFocusedSystemId}
+        activeSystemName={activeSystem?.name}
+        selectGalaxyLabel={t('home:scene.selectGalaxy')}
+      />
 
-      <div className={styles.actionDock}>
-        <button
-          type="button"
-          className={styles.actionButton}
-          onClick={handleReloadWorld}
-          title={t('home:scene.reflyIdle')}
-        >
-          <strong>{t('home:scene.reflySystem')}</strong>
-        </button>
-      </div>
+      <HomeActionDock
+        onReload={handleReloadWorld}
+        buttonTitle={t('home:scene.reflyIdle')}
+        buttonLabel={t('home:scene.reflySystem')}
+      />
 
-      <div className={styles.hud} aria-live="polite">
-        <span className={styles.hudLabel}>
-          <Sparkles size={14} />
-          {t('home:scene.selectedSystem')}
-        </span>
-        <strong>{activeSystem?.name ?? t('home:scene.freeNavigation')}</strong>
-        <p className={styles.hudDescription}>
-          {focusedSystemId
-            ? systemDescriptions[focusedSystemId]
-            : t('home:scene.freeNavigationDesc')}
-        </p>
-      </div>
+      <HomeHud
+        label={t('home:scene.selectedSystem')}
+        title={activeSystem?.name ?? t('home:scene.freeNavigation')}
+        description={focusedSystemId ? systemDescriptions[focusedSystemId] : t('home:scene.freeNavigationDesc')}
+      />
 
-      <div
-        className={`${styles.hoverTooltip} ${hoverInfo ? styles.hoverTooltipVisible : ''}`}
-        aria-live="polite"
-      >
-        <span className={styles.hoverSystem}>{hoverInfo?.systemName}</span>
-        {hoverInfo && hoverInfo.label !== hoverInfo.systemName && (
-          <strong className={styles.hoverLabel}>{hoverInfo.label}</strong>
-        )}
-      </div>
+      <HomeHoverTooltip hoverInfo={hoverInfo} />
     </section>
   )
 }
