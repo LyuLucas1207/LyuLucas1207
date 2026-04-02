@@ -99,9 +99,14 @@ export function createUniverseScene({
   galaxyCore.add(vortex.points, stream.group, coreStarInstance.group)
 
   const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
-  const systemRuntimes = systems.slice(0, 3).map((system, index) =>
-    createStarSystem(system, palette, systemAnchors[index] ?? new THREE.Vector3()),
-  )
+  // The 3 visible "galaxy systems" felt a bit too small visually, so we
+  // slightly scale up the whole group (planets, orbits, label sprites, etc.).
+  const SYSTEM_GROUP_SCALE = 1.98
+  const systemRuntimes = systems.slice(0, 3).map((system, index) => {
+    const runtime = createStarSystem(system, palette, systemAnchors[index] ?? new THREE.Vector3())
+    runtime.group.scale.multiplyScalar(SYSTEM_GROUP_SCALE)
+    return runtime
+  })
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime]))
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
