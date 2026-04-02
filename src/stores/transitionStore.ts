@@ -1,7 +1,8 @@
+import type { LanguageEnum } from 'nfx-ui/languages'
 import { makeStore } from 'nfx-ui/stores'
 import type { ThemeEnum } from 'nfx-ui/themes'
 
-export type TransitionType = 'theme' | 'page'
+export type TransitionType = 'theme' | 'page' | 'language'
 
 type PageKey = string
 
@@ -21,7 +22,15 @@ type PageTransitionRequest = {
   id: number
 }
 
-export type TransitionRequest = ThemeTransitionRequest | PageTransitionRequest
+type LanguageTransitionRequest = {
+  type: 'language'
+  language: LanguageEnum
+  title?: string
+  subtitle?: string
+  id: number
+}
+
+export type TransitionRequest = ThemeTransitionRequest | PageTransitionRequest | LanguageTransitionRequest
 
 type BaseTransitionOptions = {
   title?: string
@@ -37,6 +46,10 @@ export type PlayWorldTransitionOptions =
   | (BaseTransitionOptions & {
       type: 'page'
       page: PageKey
+    })
+  | (BaseTransitionOptions & {
+      type: 'language'
+      language: LanguageEnum
     })
 
 type TransitionState = {
@@ -71,6 +84,19 @@ const { store: TransitionStore, useStore: useTransitionStore } = makeStore<Trans
             id,
             type: 'theme',
             theme: options.theme,
+            title: options.title,
+            subtitle: options.subtitle,
+          },
+        })
+        return
+      }
+
+      if (options.type === 'language') {
+        set({
+          request: {
+            id,
+            type: 'language',
+            language: options.language,
             title: options.title,
             subtitle: options.subtitle,
           },

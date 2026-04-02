@@ -5,7 +5,9 @@ const DEFAULT_PALETTE: VortexPalette = {
 }
 
 const DEFAULTS: VortexConfig = {
-  particleCount: 2050,
+  denseAtCore: true,
+  coneBaseRadius: 12,
+  particleCount: 5050,
   armCount: 5,
   baseSize: 450,
   opacity: 0.82,
@@ -21,6 +23,16 @@ export class VortexBuilder {
 
   constructor() {
     this.config = { ...DEFAULTS }
+  }
+
+  denseAtCore(value: boolean) {
+    this.config.denseAtCore = value
+    return this
+  }
+
+  coneBaseRadius(value: number) {
+    this.config.coneBaseRadius = value
+    return this
   }
 
   particleCount(value: number) {

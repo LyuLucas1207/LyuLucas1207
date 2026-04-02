@@ -73,12 +73,6 @@
   "brand": {
     "subtitle": "Lyu Lucas. Une atmosphère pensée comme un système."
   },
-  "language": {
-    "switcherLabel": "Langue",
-    "zh": "Chinois",
-    "en": "Anglais",
-    "fr": "Français"
-  },
   "accessibility": {
     "toggleNavigation": "Basculer la navigation"
   },

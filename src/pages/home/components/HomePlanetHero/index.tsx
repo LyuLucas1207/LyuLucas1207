@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import { changeLanguage, LanguageEnum, useThemeLabel } from 'nfx-ui/languages'
+import { changeLanguage, LanguageEnum, useLanguageLabel, useThemeLabel } from 'nfx-ui/languages'
 import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
 import { useReducedMotion } from '@/hooks'
@@ -34,9 +34,10 @@ const themeOptions: ThemeEnum[] = [
 
 function HomePlanetHero() {
   const location = useLocation()
-  const { t } = useTranslation(['common', 'home'])
+  const { t, i18n } = useTranslation(['common', 'home'])
   const { currentTheme, setTheme } = useTheme()
   const { getThemeDisplayName } = useThemeLabel()
+  const { getLanguageDisplayName } = useLanguageLabel()
   const prefersReducedMotion = useReducedMotion()
   const sceneHostRef = useRef<HTMLDivElement | null>(null)
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
@@ -63,7 +64,7 @@ function HomePlanetHero() {
       {
         id: `lang-${LanguageEnum.ZH}`,
         value: LanguageEnum.ZH,
-        label: t(`language.${LanguageEnum.ZH}`),
+        label: getLanguageDisplayName(LanguageEnum.ZH),
         orbitRadius: 11,
         planetRadius: 1.5,
         orbitSpeed: 0.0085,
@@ -71,7 +72,7 @@ function HomePlanetHero() {
       {
         id: `lang-${LanguageEnum.EN}`,
         value: LanguageEnum.EN,
-        label: t(`language.${LanguageEnum.EN}`),
+        label: getLanguageDisplayName(LanguageEnum.EN),
         orbitRadius: 18,
         planetRadius: 1.5,
         orbitSpeed: 0.0055,
@@ -79,13 +80,13 @@ function HomePlanetHero() {
       {
         id: `lang-${LanguageEnum.FR}`,
         value: LanguageEnum.FR,
-        label: t(`language.${LanguageEnum.FR}`),
+        label: getLanguageDisplayName(LanguageEnum.FR),
         orbitRadius: 25,
         planetRadius: 1.45,
         orbitSpeed: 0.0044,
       },
     ],
-    [t],
+    [getLanguageDisplayName, i18n.language],
   )
 
   const themePlanets = useMemo(
@@ -128,8 +129,8 @@ function HomePlanetHero() {
           orbitSpeed: planet.orbitSpeed,
           onSelect: () =>
             playWorldTransition({
-              type: 'page',
-              page: ROUTES.HOME,
+              type: 'language',
+              language: planet.value,
               title: planet.label,
               subtitle: t('labels.worldShift'),
               action: () => changeLanguage(planet.value),

@@ -9,6 +9,8 @@ export interface VortexShaders {
 }
 
 export interface VortexConfig {
+  denseAtCore: boolean
+  coneBaseRadius: number
   particleCount: number
   armCount: number
   baseSize: number

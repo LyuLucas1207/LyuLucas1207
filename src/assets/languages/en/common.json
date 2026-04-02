@@ -73,12 +73,6 @@
   "brand": {
     "subtitle": "Lyu Lucas. Engineered atmosphere."
   },
-  "language": {
-    "switcherLabel": "Language",
-    "zh": "中文",
-    "en": "English",
-    "fr": "French"
-  },
   "accessibility": {
     "toggleNavigation": "Toggle navigation"
   },

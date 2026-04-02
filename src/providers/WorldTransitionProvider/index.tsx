@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 
 import { useTransitionStore } from '@/stores/transitionStore'
-import { PageTransitionOverlay, ThemeTransitionOverlay } from './components'
+import { LanguageTransitionOverlay, PageTransitionOverlay, ThemeTransitionOverlay } from './components'
 
 function WorldTransitionProvider({ children }: PropsWithChildren) {
   const request = useTransitionStore((s) => s.request)
@@ -13,6 +13,7 @@ function WorldTransitionProvider({ children }: PropsWithChildren) {
       {children}
       <ThemeTransitionOverlay request={request} onMidpoint={handleMidpoint} onComplete={handleComplete} />
       <PageTransitionOverlay request={request} onMidpoint={handleMidpoint} onComplete={handleComplete} />
+      <LanguageTransitionOverlay request={request} onMidpoint={handleMidpoint} onComplete={handleComplete} />
     </>
   )
 }
