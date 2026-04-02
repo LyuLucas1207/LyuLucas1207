@@ -55,19 +55,6 @@ export const UNIVERSE_CAMERA_LIMITS = {
   z: 320,
 }
 
-export const UNIVERSE_VORTEX_COUNT = {
-  light: 2200,
-  dark: 1900,
-}
-
-export const UNIVERSE_STAR_MATERIAL = {
-  vortexBaseSize: 230,
-  streamBaseSize: 205,
-  vortexOpacityLight: 0.96,
-  vortexOpacityDark: 0.82,
-  streamOpacityLight: 0.88,
-  streamOpacityDark: 0.6,
-}
 
 export const UNIVERSE_SYSTEM_LAYOUT = {
   radius: 92,

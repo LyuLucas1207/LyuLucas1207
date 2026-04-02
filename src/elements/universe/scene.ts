@@ -9,40 +9,17 @@ import {
   UNIVERSE_LOOK_AT,
   UNIVERSE_MOTION,
   UNIVERSE_ROTATION_SPEED,
-  UNIVERSE_STAR_MATERIAL,
   UNIVERSE_SYSTEM_FOCUS,
-  UNIVERSE_VORTEX_COUNT,
 } from './constants'
-import { buildStreamGeometry, buildVortexGeometry } from './geometry'
 import { createNebulaSprites } from './nebula'
 import type { UniverseShaders } from './shaders'
 import { Stellar, StellarBuilder } from './stellar'
+import { Stream, StreamBuilder } from './stream'
 import { createStarSystem, createSystemAnchors } from './systems'
 import { createUniverseColors } from './theme'
 import type { StarSystemConfig, UniversePalette } from './types'
+import { Vortex, VortexBuilder } from './vortex'
 
-function buildStarMaterial(
-  baseSize: number,
-  opacity: number,
-  isLight: boolean,
-  vertexShader: string,
-  fragmentShader: string,
-) {
-  return new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    vertexColors: true,
-    blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
-    uniforms: {
-      uTime: { value: 0 },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
-      uBaseSize: { value: baseSize },
-      uOpacity: { value: opacity },
-    },
-    vertexShader,
-    fragmentShader,
-  })
-}
 
 type CreateSceneOptions = {
   host: HTMLDivElement
@@ -109,42 +86,21 @@ export function createUniverseScene({
   glowB.position.set(42, -24, -30)
   scene.add(ambientLight, glowA, glowB)
 
-  const vortex = new THREE.Points(
-    buildVortexGeometry({
-      count: palette.isLight ? UNIVERSE_VORTEX_COUNT.light : UNIVERSE_VORTEX_COUNT.dark,
-      colors,
-      isLight: palette.isLight,
-    }),
-    buildStarMaterial(
-      UNIVERSE_STAR_MATERIAL.vortexBaseSize,
-      palette.isLight ? UNIVERSE_STAR_MATERIAL.vortexOpacityLight : UNIVERSE_STAR_MATERIAL.vortexOpacityDark,
-      palette.isLight,
-      shaders.starfieldVertex,
-      shaders.starfieldFragment,
-    ),
+  const vortex = new Vortex(
+    new VortexBuilder()
+      .colors(colors)
+      .isLight(palette.isLight)
+      .shaders({ vertex: shaders.starfieldVertex, fragment: shaders.starfieldFragment })
+      .done(),
   )
 
-  const streamGroup = new THREE.Group()
-  const streamMaterials: THREE.ShaderMaterial[] = []
-
-  for (let pathIndex = 0; pathIndex < 5; pathIndex += 1) {
-    const stream = new THREE.Points(
-      buildStreamGeometry({
-        pathIndex,
-        colors,
-        isLight: palette.isLight,
-      }),
-      buildStarMaterial(
-        UNIVERSE_STAR_MATERIAL.streamBaseSize,
-        palette.isLight ? UNIVERSE_STAR_MATERIAL.streamOpacityLight : UNIVERSE_STAR_MATERIAL.streamOpacityDark,
-        palette.isLight,
-        shaders.starfieldVertex,
-        shaders.starfieldFragment,
-      ),
-    )
-    streamGroup.add(stream)
-    streamMaterials.push(stream.material as THREE.ShaderMaterial)
-  }
+  const stream = new Stream(
+    new StreamBuilder()
+      .colors(colors)
+      .isLight(palette.isLight)
+      .shaders({ vertex: shaders.starfieldVertex, fragment: shaders.starfieldFragment })
+      .done(),
+  )
 
   const galaxyCore = new THREE.Group()
   const coreStarInstance = new Stellar(
@@ -154,7 +110,7 @@ export function createUniverseScene({
       .done(),
   )
   const coreStar = coreStarInstance.group
-  galaxyCore.add(vortex, streamGroup, coreStar)
+  galaxyCore.add(vortex.points, stream.group, coreStar)
 
   const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
   const systemRuntimes = systems.slice(0, 3).map((system, index) =>
@@ -361,13 +317,15 @@ export function createUniverseScene({
   timer.reset()
   let frameId = 0
 
-  const materials = [vortex.material, ...streamMaterials] as THREE.ShaderMaterial[]
+  const materials = [vortex.material, ...stream.materials]
 
   const animate = () => {
     timer.update()
     const elapsed = timer.getElapsed()
 
     coreStarInstance.update(elapsed)
+    vortex.update(elapsed)
+    stream.update(elapsed)
 
     if (focusedSystem && followFocusedSystem) {
       focusedSystem.group.getWorldPosition(focusTarget)
