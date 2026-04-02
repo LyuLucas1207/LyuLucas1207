@@ -27,7 +27,11 @@ export class Label {
     const ctx = canvas.getContext('2d')
 
     if (!ctx) {
-      this.sprite = new THREE.Sprite()
+      const fallback = new THREE.Sprite(
+        new THREE.SpriteMaterial({ transparent: true, depthWrite: false, depthTest: false }),
+      )
+      fallback.renderOrder = 1000
+      this.sprite = fallback
       return
     }
 
@@ -54,8 +58,15 @@ export class Label {
     ctx.fillText(config.text, v.w / 2, v.h / 2 + 2)
 
     const texture = new THREE.CanvasTexture(canvas)
-    const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false })
+    // 不参与深度测试：避免被同组的恒星/行星球体遮挡；始终后绘于同一系统几何之上
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    })
     this.sprite = new THREE.Sprite(material)
+    this.sprite.renderOrder = 1000
     this.sprite.scale.set(v.scaleX, v.scaleY, 1)
     this.sprite.position.set(0, v.posY, 0)
   }

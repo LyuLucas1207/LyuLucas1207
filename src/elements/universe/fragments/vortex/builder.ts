@@ -7,7 +7,7 @@ const DEFAULT_PALETTE: VortexPalette = {
 const DEFAULTS: VortexConfig = {
   particleCount: 2050,
   armCount: 5,
-  baseSize: 900,
+  baseSize: 450,
   opacity: 0.82,
   palette: DEFAULT_PALETTE,
   isLight: false,

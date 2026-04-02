@@ -5,8 +5,9 @@ const DEFAULT_PALETTE: StreamPalette = {
 }
 
 const DEFAULTS: StreamConfig = {
+  particleCount: 1360,
   streamCount: 5,
-  baseSize: 360,
+  baseSize: 180,
   opacity: 0.62,
   palette: DEFAULT_PALETTE,
   isLight: false,
@@ -20,6 +21,11 @@ export class StreamBuilder {
 
   constructor() {
     this.config = { ...DEFAULTS }
+  }
+
+  particleCount(value: number) {
+    this.config.particleCount = value
+    return this
   }
 
   streamCount(value: number) {

@@ -65,7 +65,7 @@ export class Stream {
   }
 
   private buildGeometry(pathIndex: number, config: StreamConfig) {
-    const count = config.isLight ? 260 : 220
+    const count = config.particleCount
     const positions = new Float32Array(count * 3)
     const tint = new Float32Array(count * 3)
     const sizes = new Float32Array(count)
@@ -73,8 +73,9 @@ export class Stream {
     const depths = new Float32Array(count)
     const baseAngle = (Math.PI * 2 * pathIndex) / config.streamCount
 
+    const denom = Math.max(count - 1, 1)
     for (let index = 0; index < count; index++) {
-      const progress = index / (count - 1)
+      const progress = index / denom
       const radius = 336 - progress * 288 + randomBetween(-2.8, 2.8)
       const angle = baseAngle + progress * 3.8 + Math.sin(progress * 6.4 + pathIndex) * 0.14
       const color = new THREE.Color(pickColor(config.palette.particleColorPool))
