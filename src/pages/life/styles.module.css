@@ -10,6 +10,10 @@
   width: min(100%, 18rem);
 }
 
+.timelineSection {
+  width: 100%;
+}
+
 .pathWrap {
   display: grid;
   gap: 0.75rem;

@@ -1,0 +1,195 @@
+[
+  {
+    "id": "ruisheng-cn",
+    "sortDate": "2017-09-01",
+    "side": "left",
+    "kind": "education",
+    "period": {
+      "en": "Sept 2017 – Jun 2022 (approx.)",
+      "zh": "约 2017 年 9 月 – 2022 年 6 月",
+      "fr": "Sept 2017 – juin 2022 (approx.)"
+    },
+    "title": {
+      "en": "Wuhan Ruisheng School — middle school through Grade 11",
+      "zh": "武汉睿升学校 — 初中至高二（国内）",
+      "fr": "École Wuhan Ruisheng — collège jusqu'à la 2ᵉ année du lycée (Chine)"
+    },
+    "body": {
+      "en": "Grades 7–11 in China before transferring to British Columbia for senior year.",
+      "zh": "初中到高二阶段在国内完成；课程体系与之后赴加读高三衔接。",
+      "fr": "De la 7ᵉ à la 11ᵉ année en Chine avant l'année terminale en Colombie-Britannique."
+    }
+  },
+  {
+    "id": "delta-grade12",
+    "sortDate": "2022-09-01",
+    "side": "right",
+    "kind": "education",
+    "period": {
+      "en": "Sept 2022 – Jun 2023",
+      "zh": "2022 年 9 月 – 2023 年 6 月",
+      "fr": "Sept 2022 – juin 2023"
+    },
+    "title": {
+      "en": "Delta Secondary School — Grade 12",
+      "zh": "Delta Secondary School — 高三",
+      "fr": "Delta Secondary School — 12ᵉ année"
+    },
+    "body": {
+      "en": "Senior year in Ladner, Delta, BC — bridge year before university.",
+      "zh": "在 BC 省 Delta 市完成高三，为本科过渡阶段。",
+      "fr": "Année terminale à Delta (CB) — passerelle avant l'université."
+    }
+  },
+  {
+    "id": "ubc-start",
+    "sortDate": "2023-09-01",
+    "side": "left",
+    "kind": "education",
+    "period": {
+      "en": "Sept 2023 – (expected May 2027)",
+      "zh": "2023 年 9 月 – 预计 2027 年 5 月",
+      "fr": "Sept 2023 – (mai 2027 prévu)"
+    },
+    "title": {
+      "en": "University of British Columbia — Computer Engineering",
+      "zh": "不列颠哥伦比亚大学（UBC）— 计算机工程",
+      "fr": "Université de la Colombie-Britannique — génie informatique"
+    },
+    "body": {
+      "en": "Started the BASc program (co-op); on track to graduate May 2027.",
+      "zh": "入读计算机工程本科（含 co-op），预计 2027 年 5 月毕业。",
+      "fr": "Début du programme BASc (co-op) ; diplôme prévu en mai 2027."
+    }
+  },
+  {
+    "id": "energy-dryer-capstone",
+    "sortDate": "2023-06-15",
+    "side": "right",
+    "kind": "project",
+    "period": {
+      "en": "May – Jul 2023",
+      "zh": "2023 年 5 月 – 7 月",
+      "fr": "Mai – juil. 2023"
+    },
+    "title": {
+      "en": "Capstone — Energy Recovery Clothes Dryer",
+      "zh": "毕业设计项目 — 能量回收衣物烘干机",
+      "fr": "Projet capstone — sèche-linge à récupération d'énergie"
+    },
+    "body": {
+      "en": "Hardware + Arduino control loop — sensors, heater/fan/motor integration.",
+      "zh": "硬件与 Arduino 控制：传感、加热/风扇/电机联动。",
+      "fr": "Boucle matérielle + Arduino : capteurs, chauffage, ventilateur, moteur."
+    },
+    "projectSlug": "energy-recovery-dryer"
+  },
+  {
+    "id": "iro-ice-ribbon",
+    "sortDate": "2024-08-22",
+    "side": "left",
+    "kind": "event",
+    "period": {
+      "en": "Summer 2024 · Beijing",
+      "zh": "2024 年暑假 · 北京",
+      "fr": "Été 2024 · Pékin"
+    },
+    "title": {
+      "en": "Ice Ribbon (National Speed Skating Oval) — robotics event staff",
+      "zh": "国家速滑馆「冰丝带」— 机器人赛事裁判 / 赛事工作",
+      "fr": "Patinoire olympique « Ruban de glace » — staff arbitrage / robotique"
+    },
+    "body": {
+      "en": "Volunteered at the National Speed Skating Oval during major robotics finals (e.g. IRO China finals & related programs that season at the venue).",
+      "zh": "暑假期间在国家速滑馆参与国际机器人奥林匹克大赛（IRO）中国总决赛等赛事相关工作（公开报道多为 8 月下旬）。",
+      "fr": "Bénévolat à la patinoire olympique lors de finales robotique (ex. finales Chine IRO et programmes associés cette saison)."
+    }
+  },
+  {
+    "id": "pure-scan",
+    "sortDate": "2024-09-01",
+    "side": "right",
+    "kind": "project",
+    "period": {
+      "en": "Jul – Nov 2024",
+      "zh": "2024 年 7 月 – 11 月",
+      "fr": "Juil. – nov. 2024"
+    },
+    "title": {
+      "en": "Pure Scan — Flutter QR toolkit shipped",
+      "zh": "Pure Scan — Flutter 二维码应用",
+      "fr": "Pure Scan — app Flutter QR"
+    },
+    "body": {
+      "en": "Cross-platform QR generate / scan / share with Material 3 UI.",
+      "zh": "跨平台生成、扫描、分享二维码，Material Design 3。",
+      "fr": "Génération, scan et partage QR multiplateforme, UI Material 3."
+    },
+    "projectSlug": "pure-scan-app"
+  },
+  {
+    "id": "fpga-cluster",
+    "sortDate": "2024-06-20",
+    "side": "left",
+    "kind": "project",
+    "period": {
+      "en": "Spring – Jun 2024",
+      "zh": "2024 年春 – 6 月",
+      "fr": "Printemps – juin 2024"
+    },
+    "title": {
+      "en": "CPEN Verilog sprint — FPGA coursework cluster",
+      "zh": "CPEN Verilog 课程项目群（FPGA）",
+      "fr": "Sprint Verilog CPEN — projets FPGA"
+    },
+    "body": {
+      "en": "Organ, iPod, PicoBlaze scope, RC4 crypto, DDS + Nios II — hardware labs completed in one term block.",
+      "zh": "电子琴、iPod、PicoBlaze 示波器、RC4、DDS+Nios II 等实验课项目集中完成。",
+      "fr": "Orgue, iPod, oscilloscope PicoBlaze, RC4, DDS + Nios II — labs FPGA sur le même bloc."
+    },
+    "projectSlug": "fpga-dds-nios"
+  },
+  {
+    "id": "nebula-start",
+    "sortDate": "2024-10-01",
+    "side": "right",
+    "kind": "project",
+    "period": {
+      "en": "2024 – present",
+      "zh": "2024 年 – 至今",
+      "fr": "2024 – présent"
+    },
+    "title": {
+      "en": "NebulaForgeX / NFX stack — long-arc build",
+      "zh": "NebulaForgeX / NFX 基础设施与工具链",
+      "fr": "NebulaForgeX / pile NFX — chantier long"
+    },
+    "body": {
+      "en": "NAS stack, Vault, News, Identity, Storages — home-lab grade DevOps and services.",
+      "zh": "NFX-Stack、Vault、News、Identity、Storages 等：面向 NAS / 边缘环境的工程化实践。",
+      "fr": "NFX-Stack, Vault, News, Identity, Storages — pratique DevOps « homelab »."
+    },
+    "projectSlug": "nebulaforgex-nas-ecosystem"
+  },
+  {
+    "id": "now-2026",
+    "sortDate": "2026-01-01",
+    "side": "left",
+    "kind": "milestone",
+    "period": {
+      "en": "2026 · Year 4 (senior)",
+      "zh": "2026 年 · 本科大四",
+      "fr": "2026 · 4ᵉ année"
+    },
+    "title": {
+      "en": "Senior year — thesis & launch runway to May 2027",
+      "zh": "大四 — 毕业设计与求职 / 升学准备",
+      "fr": "Dernière année — mémoire et lancement vers mai 2027"
+    },
+    "body": {
+      "en": "Final year of BASc; this site is part of the story between coursework and what comes next.",
+      "zh": "本科最后一年；本站记录课业之外的技术与生活切片。",
+      "fr": "Dernière année de BASc ; ce site documente la suite entre cours et projets."
+    }
+  }
+]

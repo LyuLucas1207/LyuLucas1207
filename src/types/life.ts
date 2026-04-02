@@ -23,3 +23,27 @@ export type LifeRecord = {
   body: string
   tags: string[]
 }
+
+export type LifeTimelineKind = 'education' | 'project' | 'event' | 'milestone'
+
+export type LifeTimelineApiItem = {
+  id: string
+  sortDate: string
+  side: 'left' | 'right'
+  kind: LifeTimelineKind
+  title: I18nText
+  period: I18nText
+  body: I18nText
+  projectSlug?: string
+}
+
+export type LifeTimelineItem = {
+  id: string
+  sortDate: string
+  side: 'left' | 'right'
+  kind: LifeTimelineKind
+  title: string
+  period: string
+  body: string
+  projectSlug?: string
+}

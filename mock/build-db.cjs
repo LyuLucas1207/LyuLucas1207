@@ -11,6 +11,7 @@ const projects = require(path.join(dir, 'data/projects.json'))
 const highlights = require(path.join(dir, 'data/highlights.json'))
 const timeline = require(path.join(dir, 'data/timeline.json'))
 const lifeRecords = require(path.join(dir, 'data/lifeRecords.json'))
+const lifeTimeline = require(path.join(dir, 'data/lifeTimeline.json'))
 
 const db = {
   profile,
@@ -18,6 +19,7 @@ const db = {
   highlights,
   timeline,
   lifeRecords,
+  lifeTimeline,
 }
 
 fs.writeFileSync(path.join(dir, 'db.json'), `${JSON.stringify(db, null, 2)}\n`, 'utf8')

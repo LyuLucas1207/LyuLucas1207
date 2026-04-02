@@ -6,6 +6,7 @@ import { Reveal } from '@/animations'
 import { PageIntro } from '@/components'
 import { lifeTypes } from '@/constants/siteContent'
 import { FragmentField } from './components/FragmentField'
+import { LifeVerticalTimeline } from './components/LifeVerticalTimeline'
 import { SectionDivider } from '@/components'
 import { TimelinePath } from '@/elements/world/components/TimelinePath'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
@@ -60,6 +61,12 @@ function LifePage() {
       <div>
         <SectionDivider />
       </div>
+
+      <Reveal delay={0.08}>
+        <section className={styles.timelineSection}>
+          <LifeVerticalTimeline />
+        </section>
+      </Reveal>
 
       <div className={styles.pathWrap}>
         <FragmentField />

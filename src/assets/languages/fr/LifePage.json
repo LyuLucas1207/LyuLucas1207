@@ -3,5 +3,9 @@
     "eyebrow": "Vie / Archives",
     "title": "Une partie plus calme de Lyu World: fragments, notes et petits relevés de la manière dont le travail se vit.",
     "description": "Cette page donne au site un centre plus humain. Tout ici n'est pas un projet. Certaines choses sont simplement des observations, des environnements et des traces."
+  },
+  "timeline": {
+    "aria": "Chronologie — études, jalons et projets liés",
+    "openProject": "Ouvrir le projet"
   }
 }

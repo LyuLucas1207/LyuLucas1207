@@ -1,1 +1,8 @@
-export { GetHighlights, GetLifeRecords, GetProfile, GetProjects, GetTimeline } from './worldApi'
+export {
+  GetHighlights,
+  GetLifeRecords,
+  GetLifeTimeline,
+  GetProfile,
+  GetProjects,
+  GetTimeline,
+} from './worldApi'

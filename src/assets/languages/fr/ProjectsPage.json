@@ -1,12 +1,18 @@
 {
   "intro": {
     "eyebrow": "Projets",
-    "title": "Des projets GitHub structurés comme une collection éditée plutôt qu'un dump de cartes.",
-    "description": "Les réalisations mises en avant, le travail système et les expériences sont séparés volontairement pour que la page puisse grandir sans devenir visuellement plate."
+    "title": "Un index fidèle au CV : d’abord l’infra, puis les apps, les cours et le capstone—dans l’ordre de Resume_Master.",
+    "description": "Les cartes sont numérotées exactement comme la section § Projects du PDF pour rester aligné avec ce que vous envoyez."
   },
   "copy": {
+    "resumeOrder": "Ordre identique à Resume_Master/main.tex (§ Projects). Données locales ; cette liste ne dépend pas du serveur JSON.",
+    "featuredKicker": "Focus · ordre CV #01",
     "featuredTitle": "Des systèmes avec un vrai point de vue.",
     "featuredDescription": "Une page projet qui se lit comme un index de collection plutôt qu'une galerie de templates.",
-    "searchPlaceholder": "Rechercher par titre, stack ou focus..."
+    "searchPlaceholder": "Rechercher par titre, stack ou focus...",
+    "repository": "Dépôt principal",
+    "relatedLink": "Lien associé",
+    "filtersAria": "Filtrer et rechercher des projets",
+    "showing": "{{count}} sur {{total}} affichés (ordre CV)"
   }
 }

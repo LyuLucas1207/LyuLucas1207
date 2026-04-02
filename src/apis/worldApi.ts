@@ -1,10 +1,13 @@
 import type {
   HighlightApiItem,
   LifeRecordApiItem,
+  LifeTimelineApiItem,
   ProfileApi,
   ProjectApiItem,
   TimelineApiItem,
 } from '@/types'
+
+import { RESUME_PROJECTS } from '@/constants/resumeProjects'
 
 import { httpClient } from './httpClient'
 
@@ -13,9 +16,9 @@ export async function GetProfile() {
   return data
 }
 
-export async function GetProjects() {
-  const { data } = await httpClient.get<ProjectApiItem[]>('/projects')
-  return data
+/** Curated list aligned with `Resume_Master/main.tex` (§ Projects). */
+export async function GetProjects(): Promise<ProjectApiItem[]> {
+  return RESUME_PROJECTS
 }
 
 export async function GetHighlights() {
@@ -30,5 +33,10 @@ export async function GetTimeline() {
 
 export async function GetLifeRecords() {
   const { data } = await httpClient.get<LifeRecordApiItem[]>('/lifeRecords')
+  return data
+}
+
+export async function GetLifeTimeline() {
+  const { data } = await httpClient.get<LifeTimelineApiItem[]>('/lifeTimeline')
   return data
 }

@@ -3,6 +3,8 @@ import type {
   HighlightItem,
   LifeRecord,
   LifeRecordApiItem,
+  LifeTimelineApiItem,
+  LifeTimelineItem,
   MetricApiItem,
   MetricItem,
   Profile,
@@ -16,10 +18,11 @@ import { getI18nList, getI18nText } from '@/types'
 import type { LanguageEnum } from 'nfx-ui/languages'
 import { makeUnifiedQuery } from 'nfx-ui/hooks'
 
-import { GetHighlights, GetLifeRecords, GetProfile, GetProjects, GetTimeline } from '@/apis'
+import { GetHighlights, GetLifeRecords, GetLifeTimeline, GetProfile, GetProjects, GetTimeline } from '@/apis'
 import {
   WORLD_HIGHLIGHTS,
   WORLD_LIFE_RECORDS,
+  WORLD_LIFE_TIMELINE,
   WORLD_PROFILE,
   WORLD_PROJECTS,
   WORLD_TIMELINE,
@@ -114,6 +117,19 @@ function localizeLifeRecord(item: LifeRecordApiItem, locale: LanguageEnum): Life
   }
 }
 
+function localizeLifeTimelineItem(item: LifeTimelineApiItem, locale: LanguageEnum): LifeTimelineItem {
+  return {
+    id: item.id,
+    sortDate: item.sortDate,
+    side: item.side,
+    kind: item.kind,
+    title: getI18nText(item.title, locale),
+    period: getI18nText(item.period, locale),
+    body: getI18nText(item.body, locale),
+    projectSlug: item.projectSlug,
+  }
+}
+
 // ========== Query hooks ==========
 
 export const useProfileQuery = () => {
@@ -154,4 +170,14 @@ export const useLifeRecordsQuery = () => {
     async () => (await GetLifeRecords()).map((item) => localizeLifeRecord(item, locale)),
   )
   return makeQuery(WORLD_LIFE_RECORDS(locale))
+}
+
+export const useLifeTimelineQuery = () => {
+  const locale = useLocale()
+  const makeQuery = makeUnifiedQuery<LifeTimelineItem[]>(async () => {
+    const rows = await GetLifeTimeline()
+    const localized = rows.map((item) => localizeLifeTimelineItem(item, locale))
+    return [...localized].sort((a, b) => b.sortDate.localeCompare(a.sortDate))
+  })
+  return makeQuery(WORLD_LIFE_TIMELINE(locale))
 }

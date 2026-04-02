@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ExternalLink } from 'lucide-react'
 import { Dropdown, SearchInput } from 'nfx-ui/components'
 
 import { Reveal } from '@/animations'
@@ -7,7 +8,6 @@ import { PageIntro } from '@/components'
 import { projectGroups } from '@/constants/siteContent'
 import { ProjectCard } from '@/elements/portfolio/components/ProjectCard'
 import { SectionDivider } from '@/components'
-import { SignalDiagram } from '@/elements/world/components/SignalDiagram'
 import { useScrollAtmosphere } from '@/elements/world/hooks/useScrollAtmosphere'
 import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
@@ -35,7 +35,12 @@ function ProjectsPage() {
     label: value === 'all' ? t('filters.allProjects') : t(`filters.${value}`),
   }))
 
-  const featured = projects.filter((project) => project.featured).slice(0, 1)[0]
+  const featured = projects.find((p) => p.featured)
+  const indexMap = useMemo(() => {
+    const map = new Map<string, number>()
+    projects.forEach((p, i) => map.set(p.slug, i + 1))
+    return map
+  }, [projects])
 
   useScrollAtmosphere(gridRef, { selector: '[data-project-card]' })
 
@@ -49,33 +54,62 @@ function ProjectsPage() {
         />
       </Reveal>
 
+      <Reveal delay={0.05}>
+        <p className={styles.resumeNote}>{t('ProjectsPage:copy.resumeOrder')}</p>
+      </Reveal>
+
       {featured ? (
-        <Reveal delay={0.06}>
-          <section className={styles.featuredPanel}>
-            <p className={styles.kicker}>{t('labels.featuredArtifact')}</p>
-            <div className={styles.featuredLayout}>
-              <div>
-                <h2>{featured.title}</h2>
-                <p>{featured.summary}</p>
+        <Reveal delay={0.08}>
+          <section className={styles.featuredBand} aria-labelledby="featured-heading">
+            <div className={styles.featuredInner}>
+              <div className={styles.featuredCopy}>
+                <p className={styles.kicker}>{t('ProjectsPage:copy.featuredKicker')}</p>
+                <h2 id="featured-heading">{featured.title}</h2>
+                <p className={styles.featuredSummary}>{featured.summary}</p>
+                <div className={styles.featuredLinks}>
+                  <a
+                    className={styles.repoLink}
+                    href={featured.repositoryUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ExternalLink size={15} aria-hidden />
+                    {t('ProjectsPage:copy.repository')}
+                  </a>
+                  {featured.liveUrl ? (
+                    <a className={styles.repoLink} href={featured.liveUrl} target="_blank" rel="noreferrer">
+                      <ExternalLink size={15} aria-hidden />
+                      {t('ProjectsPage:copy.relatedLink')}
+                    </a>
+                  ) : null}
+                </div>
               </div>
-              <div className={styles.featuredMeta}>
-                <span>{t(`projectCategories.${featured.category}`)}</span>
-                <strong>{featured.impact}</strong>
-              </div>
-            </div>
-            <div className={styles.diagramWrap}>
-              <SignalDiagram />
+              <aside className={styles.featuredAside}>
+                <span className={styles.monoIndex}>01</span>
+                <dl className={styles.metaList}>
+                  <div>
+                    <dt>{t('labels.role')}</dt>
+                    <dd>{featured.role}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('labels.impact')}</dt>
+                    <dd>{featured.impact}</dd>
+                  </div>
+                  <div>
+                    <dt>{t(`projectCategories.${featured.category}`)}</dt>
+                    <dd>{featured.year}</dd>
+                  </div>
+                </dl>
+              </aside>
             </div>
           </section>
         </Reveal>
       ) : null}
 
-      <div>
-        <SectionDivider />
-      </div>
+      <SectionDivider />
 
       <Reveal delay={0.1}>
-        <section className={styles.filters}>
+        <section className={styles.filters} aria-label={t('ProjectsPage:copy.filtersAria')}>
           <div className={styles.searchWrap}>
             <SearchInput
               placeholder={t('ProjectsPage:copy.searchPlaceholder')}
@@ -89,15 +123,34 @@ function ProjectsPage() {
         </section>
       </Reveal>
 
+      <Reveal delay={0.12}>
+        <p className={styles.resultCount} role="status">
+          {t('ProjectsPage:copy.showing', { count: filteredProjects.length, total: projects.length })}
+        </p>
+      </Reveal>
+
       <Reveal delay={0.14}>
         <section ref={gridRef} className={styles.grid}>
-          {filteredProjects.map((project) => (
-            <div key={project.slug} data-project-card>
-              <ProjectCard project={project} />
-            </div>
-          ))}
+          {filteredProjects.map((project) => {
+            const n = indexMap.get(project.slug)
+
+            return (
+              <div key={project.slug} className={styles.cardSlot} data-project-card>
+                {n != null ? (
+                  <span className={styles.orderBadge} aria-hidden>
+                    {String(n).padStart(2, '0')}
+                  </span>
+                ) : null}
+                <ProjectCard project={project} />
+              </div>
+            )
+          })}
         </section>
       </Reveal>
+
+      {filteredProjects.length === 0 ? (
+        <p className={styles.empty}>{t('empty.projects')}</p>
+      ) : null}
     </div>
   )
 }
