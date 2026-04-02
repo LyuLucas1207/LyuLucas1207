@@ -12,6 +12,7 @@ import solarEmpire from './themes/solarEmpire'
 
 export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables): UniversePalette {
   // Deterministic mapping (no random).
+  void _vars // keep signature compatibility; this mapper is deterministic via hardcoded theme configs.
 
   switch (themeEnum) {
     case ThemeEnum.DEFAULT:

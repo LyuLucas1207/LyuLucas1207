@@ -106,7 +106,7 @@ function HomePlanetHero() {
             action: () => setTheme(option),
           }),
       })),
-    [playWorldTransition, setTheme, t],
+    [playWorldTransition, setTheme, t, getThemeDisplayName],
   )
 
   const systems = useMemo<StarSystemConfig[]>(
