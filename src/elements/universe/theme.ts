@@ -5,6 +5,7 @@ import type { UniversePalette } from './types'
 import crimsonDominion from './themes/crimsonDominion'
 import deepVoid from './themes/deepVoid'
 import dreamBloom from './themes/dreamBloom'
+import emeraldExpanse from './themes/emeraldExpanse'
 import frostRift from './themes/frostRift'
 import neonAbyss from './themes/neonAbyss'
 import solarEmpire from './themes/solarEmpire'
@@ -20,13 +21,13 @@ export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables
     case ThemeEnum.LIGHT:
       return deepVoid
     case ThemeEnum.CORPORATE:
-      return neonAbyss
-    case ThemeEnum.FOREST:
       return frostRift
+    case ThemeEnum.FOREST:
+      return emeraldExpanse
     case ThemeEnum.WHEAT:
       return solarEmpire
     case ThemeEnum.DARK:
-      return solarEmpire
+      return neonAbyss
     case ThemeEnum.COSMIC:
       return dreamBloom
     case ThemeEnum.COFFEE:

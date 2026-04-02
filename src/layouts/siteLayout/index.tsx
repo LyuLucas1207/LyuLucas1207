@@ -14,9 +14,9 @@ import { SectionDivider } from '@/components'
 import { WorldAtmosphere } from '@/elements/world/components/WorldAtmosphere'
 import { WorldMark } from '@/elements/world/components/WorldMark'
 import { usePageTransition } from '@/elements/world/hooks/usePageTransition'
-import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { routerEventEmitter } from '@/events/router'
 import { ROUTES } from '@/navigations/routes'
+import { playWorldTransition } from '@/stores/transitionStore'
 import styles from './styles.module.css'
 
 function SiteLayout() {
@@ -24,7 +24,6 @@ function SiteLayout() {
   const { t } = useTranslation(['common', 'home'])
   const [menuOpen, setMenuOpen] = useState(false)
   const mainRef = useRef<HTMLElement | null>(null)
-  const { playWorldTransition } = useWorldTransition()
   const { themeName } = useTheme()
   const mood = routeMoods[location.pathname] ?? routeMoods['/'] ?? 'entry'
   const isDarkTheme = ['dark', 'cosmic', 'wine', 'coffee'].includes(themeName)
@@ -40,7 +39,8 @@ function SiteLayout() {
     const targetMood = routeMoods[path] ?? mood
 
     playWorldTransition({
-      mood: targetMood,
+      type: 'page',
+      page: path,
       title: t(labelKey),
       subtitle: t('labels.worldShift'),
       action: () => {

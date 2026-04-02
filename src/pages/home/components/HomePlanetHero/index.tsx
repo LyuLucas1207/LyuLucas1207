@@ -6,9 +6,8 @@ import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 
 import { useReducedMotion } from '@/hooks'
 import { routerEventEmitter } from '@/events/router'
-import { routeMoods } from '@/constants/siteContent'
-import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
+import { playWorldTransition } from '@/stores/transitionStore'
 import { createUniverseScene } from '@/elements/universe/scene'
 import type { HoverInfo } from '@/elements/universe/scene'
 import type { Nilable } from 'nfx-ui/types'
@@ -38,7 +37,6 @@ function HomePlanetHero() {
   const { t } = useTranslation(['common', 'home'])
   const { currentTheme, setTheme } = useTheme()
   const { getThemeDisplayName } = useThemeLabel()
-  const { playWorldTransition } = useWorldTransition()
   const prefersReducedMotion = useReducedMotion()
   const sceneHostRef = useRef<HTMLDivElement | null>(null)
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
@@ -100,13 +98,14 @@ function HomePlanetHero() {
         orbitSpeed: Math.max(0.0025, 0.009 - index * 0.00055),
         onSelect: () =>
           playWorldTransition({
-            mood: 'systems',
+            type: 'theme',
+            theme: option,
             title: getThemeDisplayName(option),
             subtitle: t('labels.worldShift'),
             action: () => setTheme(option),
           }),
       })),
-    [playWorldTransition, setTheme, t, getThemeDisplayName],
+    [setTheme, t, getThemeDisplayName],
   )
 
   const systems = useMemo<StarSystemConfig[]>(
@@ -129,7 +128,8 @@ function HomePlanetHero() {
           orbitSpeed: planet.orbitSpeed,
           onSelect: () =>
             playWorldTransition({
-              mood: 'beacon',
+              type: 'page',
+              page: ROUTES.HOME,
               title: planet.label,
               subtitle: t('labels.worldShift'),
               action: () => changeLanguage(planet.value),
@@ -149,7 +149,8 @@ function HomePlanetHero() {
             orbitSpeed: 0.0085,
             onSelect: () =>
               playWorldTransition({
-                mood: routeMoods[ROUTES.ABOUT],
+                type: 'page',
+                page: ROUTES.ABOUT,
                 title: t('navigation.about'),
                 subtitle: t('labels.worldShift'),
                 action: () => routerEventEmitter.navigateToAbout(),
@@ -163,7 +164,8 @@ function HomePlanetHero() {
             orbitSpeed: 0.006,
             onSelect: () =>
               playWorldTransition({
-                mood: routeMoods[ROUTES.PROJECTS],
+                type: 'page',
+                page: ROUTES.PROJECTS,
                 title: t('navigation.projects'),
                 subtitle: t('labels.worldShift'),
                 action: () => routerEventEmitter.navigateToProjects(),
@@ -177,7 +179,8 @@ function HomePlanetHero() {
             orbitSpeed: 0.0048,
             onSelect: () =>
               playWorldTransition({
-                mood: routeMoods[ROUTES.LIFE],
+                type: 'page',
+                page: ROUTES.LIFE,
                 title: t('navigation.life'),
                 subtitle: t('labels.worldShift'),
                 action: () => routerEventEmitter.navigateToLife(),
@@ -191,7 +194,8 @@ function HomePlanetHero() {
             orbitSpeed: 0.0038,
             onSelect: () =>
               playWorldTransition({
-                mood: routeMoods[ROUTES.CONTACT],
+                type: 'page',
+                page: ROUTES.CONTACT,
                 title: t('navigation.contact'),
                 subtitle: t('labels.worldShift'),
                 action: () => routerEventEmitter.navigateToContact(),
@@ -200,13 +204,14 @@ function HomePlanetHero() {
         ],
       },
     ],
-    [languagePlanets, playWorldTransition, t, themePlanets],
+    [languagePlanets, t, themePlanets],
   )
 
   const activeSystem = systems.find((system) => system.id === focusedSystemId)
   const handleReloadWorld = () => {
     playWorldTransition({
-      mood: 'entry',
+      type: 'page',
+      page: ROUTES.HOME,
       title: 'Lyu World',
       subtitle: t('brand.subtitle'),
       action: () => window.location.reload(),

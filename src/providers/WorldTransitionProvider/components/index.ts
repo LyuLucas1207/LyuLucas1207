@@ -1,1 +1,2 @@
-export { WorldTransitionOverlay } from './WorldTransitionOverlay'
+export { ThemeTransitionOverlay } from './ThemeTransitionOverlay'
+export { PageTransitionOverlay } from './PageTransitionOverlay'
