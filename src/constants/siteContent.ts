@@ -13,7 +13,7 @@ import { ROUTES } from '../navigations/routes'
 import type { NavigationItem } from '@/types'
 
 export const navigationItems: NavigationItem[] = [
-  { labelKey: 'navigation.world', path: ROUTES.HOME },
+  { labelKey: 'navigation.world', path: ROUTES.WORLD },
   { labelKey: 'navigation.intro', path: ROUTES.INTRO },
   { labelKey: 'navigation.projects', path: ROUTES.PROJECTS },
   { labelKey: 'navigation.life', path: ROUTES.LIFE },

@@ -13,7 +13,7 @@ import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function ProjectsPage() {
-  const { t } = useTranslation(['common', 'projects'])
+  const { t } = useTranslation(['shell', 'projects'])
   const [query, setQuery] = useState('')
   const [group, setGroup] = useState('all')
   const { data: projects = [] } = useProjectsQuery()
@@ -51,7 +51,7 @@ function ProjectsPage() {
 
       {featured ? (
         <Reveal delay={0.06}>
-          <section className={styles.featuredPanel} data-page-chunk>
+          <section className={styles.featuredPanel}>
             <p className={styles.kicker}>{t('labels.featuredArtifact')}</p>
             <div className={styles.featuredLayout}>
               <div>
@@ -70,12 +70,12 @@ function ProjectsPage() {
         </Reveal>
       ) : null}
 
-      <div data-page-chunk>
+      <div>
         <SectionDivider />
       </div>
 
       <Reveal delay={0.1}>
-        <section className={styles.filters} data-page-chunk>
+        <section className={styles.filters}>
           <div className={styles.searchWrap}>
             <SearchInput
               placeholder={t('projects:copy.searchPlaceholder')}
@@ -90,7 +90,7 @@ function ProjectsPage() {
       </Reveal>
 
       <Reveal delay={0.14}>
-        <section ref={gridRef} className={styles.grid} data-page-chunk>
+        <section ref={gridRef} className={styles.grid}>
           {filteredProjects.map((project) => (
             <div key={project.slug} data-project-card>
               <ProjectCard project={project} />

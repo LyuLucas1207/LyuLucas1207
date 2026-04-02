@@ -34,7 +34,7 @@ const themeOptions: ThemeEnum[] = [
 
 function HomePlanetHero() {
   const location = useLocation()
-  const { t, i18n } = useTranslation(['common', 'home'])
+  const { t, i18n } = useTranslation(['shell', 'world'])
   const { currentTheme, setTheme } = useTheme()
   const { getThemeDisplayName } = useThemeLabel()
   const { getLanguageDisplayName } = useLanguageLabel()
@@ -52,9 +52,9 @@ function HomePlanetHero() {
 
   const systemDescriptions = useMemo<Record<string, string>>(
     () => ({
-      'theme-system': t('home:scene.themeGalaxyDescription'),
-      'language-system': t('home:scene.languageGalaxyDescription'),
-      'page-system': t('home:scene.pageGalaxyDescription'),
+      'theme-system': t('world:scene.themeGalaxyDescription'),
+      'language-system': t('world:scene.languageGalaxyDescription'),
+      'page-system': t('world:scene.pageGalaxyDescription'),
     }),
     [t],
   )
@@ -113,14 +113,14 @@ function HomePlanetHero() {
     () => [
       {
         id: 'theme-system',
-        name: t('home:scene.themeGalaxy'),
-        summary: t('home:scene.planetUnit'),
+        name: t('world:scene.themeGalaxy'),
+        summary: t('world:scene.planetUnit'),
         planets: themePlanets,
       },
       {
         id: 'language-system',
-        name: t('home:scene.languageGalaxy'),
-        summary: t('home:scene.planetUnit'),
+        name: t('world:scene.languageGalaxy'),
+        summary: t('world:scene.planetUnit'),
         planets: languagePlanets.map((planet) => ({
           id: planet.id,
           label: planet.label,
@@ -139,8 +139,8 @@ function HomePlanetHero() {
       },
       {
         id: 'page-system',
-        name: t('home:scene.pageGalaxy'),
-        summary: t('home:scene.planetUnit'),
+        name: t('world:scene.pageGalaxy'),
+        summary: t('world:scene.planetUnit'),
         planets: [
           {
             id: 'page-intro',
@@ -212,7 +212,7 @@ function HomePlanetHero() {
   const handleReloadWorld = () => {
     playWorldTransition({
       type: 'page',
-      page: ROUTES.HOME,
+      page: ROUTES.WORLD,
       title: 'Lyu World',
       subtitle: t('brand.subtitle'),
       action: () => window.location.reload(),
@@ -264,19 +264,19 @@ function HomePlanetHero() {
         focusedSystemId={focusedSystemId}
         setFocusedSystemId={setFocusedSystemId}
         activeSystemName={activeSystem?.name}
-        selectGalaxyLabel={t('home:scene.selectGalaxy')}
+        selectGalaxyLabel={t('world:scene.selectGalaxy')}
       />
 
       <HomeActionDock
         onReload={handleReloadWorld}
-        buttonTitle={t('home:scene.reflyIdle')}
-        buttonLabel={t('home:scene.reflySystem')}
+        buttonTitle={t('world:scene.reflyIdle')}
+        buttonLabel={t('world:scene.reflySystem')}
       />
 
       <HomeHud
-        label={t('home:scene.selectedSystem')}
-        title={activeSystem?.name ?? t('home:scene.freeNavigation')}
-        description={focusedSystemId ? systemDescriptions[focusedSystemId] : t('home:scene.freeNavigationDesc')}
+        label={t('world:scene.selectedSystem')}
+        title={activeSystem?.name ?? t('world:scene.freeNavigation')}
+        description={focusedSystemId ? systemDescriptions[focusedSystemId] : t('world:scene.freeNavigationDesc')}
       />
 
       <HomeHoverTooltip hoverInfo={hoverInfo} />

@@ -100,27 +100,5 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "mail": "邮箱"
-  },
-  "worldTones": {
-    "corporate": {
-      "title": "Corporate Sky",
-      "description": "更开阔的蓝色空气感、更滑行式的动作和更利落的方向感。"
-    },
-    "forest": {
-      "title": "Forest Canopy",
-      "description": "更有层次的绿色深度、更柔和的呼吸节奏和更有机的空间感。"
-    },
-    "wine": {
-      "title": "Wine Editorial",
-      "description": "更浓郁的酒红氛围、更弯曲的高光线条和更克制的电影感。"
-    },
-    "cosmic": {
-      "title": "Cosmic Field",
-      "description": "更深的夜空对比、更明显的轨道信号和更戏剧化的纵深。"
-    },
-    "wheat": {
-      "title": "Wheat Archive",
-      "description": "更温暖的纸张光感、更安静的对比和更偏档案式的阅读气质。"
-    }
   }
 }

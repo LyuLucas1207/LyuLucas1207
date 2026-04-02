@@ -1,14 +1,14 @@
 import { HomePlanetHero } from './components/HomePlanetHero'
 import styles from './styles.module.css'
 
-function HomePage() {
+function WorldPage() {
   return (
     <div className={styles.page}>
-      <section className={styles.heroStage} data-page-chunk>
+      <section className={styles.heroStage}>
         <HomePlanetHero />
       </section>
     </div>
   )
 }
 
-export { HomePage }
+export { WorldPage }

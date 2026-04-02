@@ -29,8 +29,8 @@ export function useRouterEvents() {
     navigate(-1)
   }, [navigate])
 
-  const handleNavigateToHome = useCallback(() => {
-    navigate(ROUTES.HOME)
+  const handleNavigateToWorld = useCallback(() => {
+    navigate(ROUTES.WORLD)
   }, [navigate])
 
   const handleNavigateToIntro = useCallback(() => {
@@ -57,7 +57,7 @@ export function useRouterEvents() {
     routerEventEmitter.on(routerEvents.NAVIGATE, handleNavigate)
     routerEventEmitter.on(routerEvents.NAVIGATE_REPLACE, handleNavigateReplace)
     routerEventEmitter.on(routerEvents.NAVIGATE_BACK, handleNavigateBack)
-    routerEventEmitter.on(routerEvents.NAVIGATE_TO_HOME, handleNavigateToHome)
+    routerEventEmitter.on(routerEvents.NAVIGATE_TO_WORLD, handleNavigateToWorld)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_INTRO, handleNavigateToIntro)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_PROJECTS, handleNavigateToProjects)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_LIFE, handleNavigateToLife)
@@ -68,7 +68,7 @@ export function useRouterEvents() {
       routerEventEmitter.off(routerEvents.NAVIGATE, handleNavigate)
       routerEventEmitter.off(routerEvents.NAVIGATE_REPLACE, handleNavigateReplace)
       routerEventEmitter.off(routerEvents.NAVIGATE_BACK, handleNavigateBack)
-      routerEventEmitter.off(routerEvents.NAVIGATE_TO_HOME, handleNavigateToHome)
+      routerEventEmitter.off(routerEvents.NAVIGATE_TO_WORLD, handleNavigateToWorld)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_INTRO, handleNavigateToIntro)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_PROJECTS, handleNavigateToProjects)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_LIFE, handleNavigateToLife)
@@ -79,7 +79,7 @@ export function useRouterEvents() {
     handleNavigate,
     handleNavigateReplace,
     handleNavigateBack,
-    handleNavigateToHome,
+    handleNavigateToWorld,
     handleNavigateToIntro,
     handleNavigateToProjects,
     handleNavigateToLife,

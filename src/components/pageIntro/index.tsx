@@ -11,7 +11,7 @@ type PageIntroProps = {
 
 function PageIntro({ eyebrow, title, description, aside }: PageIntroProps) {
   return (
-    <section className={styles.intro} data-page-chunk>
+    <section className={styles.intro}>
       <div className={styles.copy}>
         <p className={styles.eyebrow}>{eyebrow}</p>
         <h1 className={styles.title}>{title}</h1>

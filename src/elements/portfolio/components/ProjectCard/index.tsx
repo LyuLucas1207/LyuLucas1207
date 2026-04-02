@@ -12,7 +12,7 @@ type ProjectCardProps = {
 }
 
 function ProjectCard({ project }: ProjectCardProps) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('shell')
 
   return (
     <article className={`${styles.card} ${styles[accentClassMap[project.accent]]}`}>

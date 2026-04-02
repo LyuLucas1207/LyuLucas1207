@@ -3,7 +3,7 @@ import type { RouteKey as RouteKeyGeneric, RoutePath as RoutePathGeneric } from 
 import { createRouter, defineRouter } from "nfx-ui/navigations";
 
 const routeMap = defineRouter({
-  HOME: '/',
+  WORLD: '/',
   INTRO: '/intro',
   PROJECTS: '/projects',
   PROJECT_DETAIL: '/projects/:slug',

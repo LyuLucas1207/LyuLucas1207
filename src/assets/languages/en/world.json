@@ -78,5 +78,27 @@
       "title": "Contact",
       "description": "A calm place to start a conversation when the brief deserves care."
     }
+  },
+  "worldTones": {
+    "corporate": {
+      "title": "Corporate sky",
+      "description": "Open blue light, gliding motion, and cleaner directional contrast."
+    },
+    "forest": {
+      "title": "Forest canopy",
+      "description": "Organic depth, softer green air, and slower breathing transitions."
+    },
+    "wine": {
+      "title": "Wine editorial",
+      "description": "Dense red warmth, curved highlights, and richer cinematic restraint."
+    },
+    "cosmic": {
+      "title": "Cosmic field",
+      "description": "Deeper night contrast, orbital signals, and more dramatic spatial depth."
+    },
+    "wheat": {
+      "title": "Wheat archive",
+      "description": "Warm paper light, quieter contrast, and a calmer archival reading mood."
+    }
   }
 }

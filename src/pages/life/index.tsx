@@ -14,7 +14,7 @@ import { formatDate } from 'nfx-ui/utils'
 import styles from './styles.module.css'
 
 function LifePage() {
-  const { t } = useTranslation(['common', 'life'])
+  const { t } = useTranslation(['shell', 'life'])
   const [type, setType] = useState('all')
   const { data: records = [] } = useLifeRecordsQuery()
   const gridRef = useRef<HTMLElement | null>(null)
@@ -52,21 +52,21 @@ function LifePage() {
       </Reveal>
 
       <Reveal delay={0.06}>
-        <section className={styles.controls} data-page-chunk>
+        <section className={styles.controls}>
           <Dropdown options={dropdownOptions} value={type} onChange={setType} />
         </section>
       </Reveal>
 
-      <div data-page-chunk>
+      <div>
         <SectionDivider />
       </div>
 
-      <div className={styles.pathWrap} data-page-chunk>
+      <div className={styles.pathWrap}>
         <FragmentField />
         <TimelinePath />
       </div>
 
-      <section ref={gridRef} className={styles.grid} data-page-chunk>
+      <section ref={gridRef} className={styles.grid}>
         {filteredRecords.map((record, index) => (
           <Reveal key={record.id} delay={index * 0.04}>
             <article className={styles.card} data-life-card>

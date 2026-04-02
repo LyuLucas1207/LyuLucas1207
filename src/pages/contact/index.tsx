@@ -22,7 +22,7 @@ type ContactFormValues = {
 
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
-  const { t } = useTranslation(['common', 'contact'])
+  const { t } = useTranslation(['shell', 'contact'])
   const { data: profile } = useProfileQuery()
   const gridRef = useRef<HTMLElement | null>(null)
   const contactSchema = useMemo(
@@ -69,7 +69,7 @@ function ContactPage() {
         />
       </Reveal>
 
-      <section ref={gridRef} className={styles.grid} data-page-chunk>
+      <section ref={gridRef} className={styles.grid}>
         <Reveal delay={0.06}>
           <div className={styles.panel} data-contact-card>
             <p className={styles.kicker}>{t('labels.reachOutDirectly')}</p>

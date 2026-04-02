@@ -12,7 +12,7 @@ import { useHighlightsQuery, useTimelineQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function HighlightsPage() {
-  const { t } = useTranslation(['common', 'highlights'])
+  const { t } = useTranslation(['shell', 'highlights'])
   const { data: highlights = [] } = useHighlightsQuery()
   const { data: timeline = [] } = useTimelineQuery()
   const gridRef = useRef<HTMLDivElement | null>(null)
@@ -29,7 +29,7 @@ function HighlightsPage() {
         />
       </Reveal>
 
-      <section className={styles.band} data-page-chunk>
+      <section className={styles.band}>
         <Reveal delay={0.06}>
           <article className={styles.leadPanel}>
             <h2>{t('highlights:copy.leadTitle')}</h2>
@@ -58,7 +58,7 @@ function HighlightsPage() {
       </section>
 
       <Reveal delay={0.2}>
-        <section className={styles.timelineSection} data-page-chunk>
+        <section className={styles.timelineSection}>
           <TimelinePath />
           <TimelineBlock items={timeline} />
         </section>

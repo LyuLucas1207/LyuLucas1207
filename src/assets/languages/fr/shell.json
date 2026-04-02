@@ -100,27 +100,5 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "mail": "Mail"
-  },
-  "worldTones": {
-    "corporate": {
-      "title": "Ciel corporate",
-      "description": "Une lumière bleue plus ouverte, un mouvement fluide et un contraste directionnel plus net."
-    },
-    "forest": {
-      "title": "Canopée",
-      "description": "Une profondeur organique, un air plus vert et des transitions plus respirantes."
-    },
-    "wine": {
-      "title": "Éditorial vin",
-      "description": "Une chaleur rouge plus dense, des reflets plus courbes et une retenue plus cinématographique."
-    },
-    "cosmic": {
-      "title": "Champ cosmique",
-      "description": "Un contraste nocturne plus profond, des signaux orbitaux et une spatialité plus dramatique."
-    },
-    "wheat": {
-      "title": "Archive blé",
-      "description": "Une lumière papier plus chaude, un contraste plus calme et une ambiance de lecture plus archivistique."
-    }
   }
 }

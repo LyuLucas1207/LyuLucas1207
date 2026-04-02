@@ -1,0 +1,151 @@
+.footer {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  padding: 1.5rem 0 4.5rem;
+}
+
+.footerInner {
+  width: min(1440px, calc(100vw - 3rem));
+  margin: 0 auto;
+}
+
+.footerTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 2rem;
+  padding: 2.35rem;
+  border-radius: var(--radius-card);
+  border: 1px solid color-mix(in srgb, var(--color-border-3) 72%, transparent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    color-mix(in srgb, var(--color-bg-2) 92%, black 8%);
+}
+
+.footerEyebrow {
+  margin: 0 0 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--color-fg-highlight);
+}
+
+.footerTitle {
+  margin: 0;
+  max-width: 42rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 1;
+  color: var(--color-fg-heading);
+}
+
+.pillarGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.4rem;
+}
+
+.pillarCard {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border-radius: var(--radius-card);
+  color: inherit;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.pillarCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pillarCard strong {
+  color: var(--color-fg-heading);
+}
+
+.pillarCard span {
+  line-height: 1.6;
+  color: var(--color-fg-muted);
+}
+
+.footerSignal {
+  align-self: start;
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.3rem 1.4rem;
+  border-radius: var(--radius-card);
+  border: 1px solid color-mix(in srgb, var(--color-border-4) 68%, transparent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 34%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.footerSignalTitle,
+.footerSignalText {
+  margin: 0;
+}
+
+.footerSignalTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2vw, 2.2rem);
+  line-height: 1;
+  color: var(--color-fg-heading);
+}
+
+.footerSignalText {
+  line-height: 1.75;
+  color: var(--color-fg-text);
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 0 0;
+  color: var(--color-fg-muted);
+}
+
+.footerLinks {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footerLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footerLink:hover {
+  color: var(--color-fg-heading);
+}
+
+@media (max-width: 980px) {
+  .footerTop,
+  .footerBottom {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .pillarGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .footerInner {
+    width: calc(100vw - 1.2rem);
+  }
+
+  .footerTop {
+    padding: 1.2rem;
+  }
+}
