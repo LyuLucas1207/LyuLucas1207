@@ -45,8 +45,9 @@ function localizeProfile(data: ProfileApi, locale: LanguageEnum): Profile {
     focusAreas: getI18nList(data.focusAreas, locale),
     metrics: data.metrics.map((m) => localizeMetric(m, locale)),
     worldview: getI18nList(data.worldview, locale),
-    aboutPrelude: getI18nText(data.aboutPrelude, locale),
-    aboutBody: getI18nList(data.aboutBody, locale),
+    introPrelude: getI18nText(data.introPrelude, locale),
+    introBody: getI18nList(data.introBody, locale),
+    hobbies: getI18nList(data.hobbies, locale),
     contactMethods: data.contactMethods.map((c) => ({
       label: getI18nText(c.label, locale),
       value: getI18nText(c.value, locale),

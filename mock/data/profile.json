@@ -98,24 +98,20 @@
       "Les meilleurs systèmes frontend facilitent le travail futur sans avoir l'air génériques."
     ]
   },
-  "aboutPrelude": {
-    "zh": "我的背景扎根于技术，但我最在意的工作，通常发生在系统与表达交界的地方。",
-    "en": "I come from a technically grounded background, but the work I care about most lives at the edge between systems and expression.",
-    "fr": "Mon parcours est ancré dans la technique, mais ce qui me motive le plus se situe à la frontière entre systèmes et expression."
+  "introPrelude": {
+    "zh": "你好，我是 Lucas（吕／Lyu）。我来自中国，现在在温哥华的不列颠哥伦比亚大学（UBC）读计算机工程。离家读书这几年，我更在意把生活过清楚：上课、写代码、运动和见朋友。我喜欢打羽毛球、骑车、游泳和徒步——它们让我换口气，也让我记得身体和时间都有自己的节奏。\n\n如果你想了解「我这个人」，而不只是项目列表，可以从上面这段文字开始。需要联系或合作，欢迎去网站的联系页找我。",
+    "en": "Hi — I'm Lucas (Lyu). I'm from China, and I'm studying Computer Engineering at UBC in Vancouver. Living away from home, I care about keeping life legible: classes, code, sports, and time with friends. I play badminton, cycle, swim, and hike — they help me reset and remember that both body and time have their own rhythm.\n\nIf you want to know me as a person rather than as a list of repos, start with the lines on the left. For contact or collaboration, use the site's contact page.",
+    "fr": "Bonjour — je suis Lucas (Lyu). Je viens de Chine et j'étudie le génie informatique à UBC, à Vancouver. Loin de la famille, je veux garder une vie lisible : cours, code, sport et amis. Badminton, vélo, natation et randonnée m'aident à souffler et me rappellent que le corps et le temps ont leur propre rythme.\n\nSi vous voulez me connaître comme personne plutôt que comme une liste de dépôts, commencez par le texte à gauche. Pour écrire ou collaborer, passez par la page contact du site."
   },
-  "aboutBody": {
-    "zh": [
-      "这通常意味着要带着纪律去做界面：更清楚的信息架构、更干净的组件边界、更有分寸的 motion，以及真正统一的主题系统。",
-      "它也意味着在意一个网站\u201c感觉如何\u201d。它是否会呼吸，是否尊重注意力，是否留下一个观点，而不是只留下一套模板。"
-    ],
-    "en": [
-      "That usually means building interfaces with discipline: stronger information architecture, cleaner component boundaries, more thoughtful motion, and real theme coherence.",
-      "It also means caring about how a site feels. Whether it breathes correctly. Whether it respects attention. Whether it leaves behind a point of view instead of a template."
-    ],
-    "fr": [
-      "Cela veut souvent dire construire des interfaces avec rigueur : architecture de l'information plus nette, limites de composants plus claires, animation plus mesurée et cohérence thématique réelle.",
-      "Cela signifie aussi se soucier de la sensation qu'un site procure. S'il respire correctement. S'il respecte l'attention. S'il laisse une vision plutôt qu'un modèle toute fait."
-    ]
+  "introBody": {
+    "zh": [],
+    "en": [],
+    "fr": []
+  },
+  "hobbies": {
+    "zh": ["羽毛球", "骑行", "游泳", "徒步"],
+    "en": ["Badminton", "Cycling", "Swimming", "Hiking"],
+    "fr": ["Badminton", "Vélo", "Natation", "Randonnée"]
   },
   "contactMethods": [
     {

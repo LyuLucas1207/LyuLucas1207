@@ -30,8 +30,9 @@ export type ProfileApi = {
   focusAreas: I18nStruct<string[]>
   metrics: MetricApiItem[]
   worldview: I18nStruct<string[]>
-  aboutPrelude: I18nText
-  aboutBody: I18nStruct<string[]>
+  introPrelude: I18nText
+  introBody: I18nStruct<string[]>
+  hobbies?: I18nStruct<string[]>
   contactMethods: ContactMethod[]
 }
 
@@ -47,8 +48,9 @@ export type Profile = {
   focusAreas: string[]
   metrics: MetricItem[]
   worldview: string[]
-  aboutPrelude: string
-  aboutBody: string[]
+  introPrelude: string
+  introBody: string[]
+  hobbies: string[]
   contactMethods: Array<{
     label: string
     value: string

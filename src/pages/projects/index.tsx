@@ -37,7 +37,7 @@ function ProjectsPage() {
 
   const featured = projects.filter((project) => project.featured).slice(0, 1)[0]
 
-  useScrollAtmosphere(gridRef, { selector: '[data-project-card]', mood: 'systems' })
+  useScrollAtmosphere(gridRef, { selector: '[data-project-card]' })
 
   return (
     <div className={styles.page}>

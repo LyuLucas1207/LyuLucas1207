@@ -8,14 +8,13 @@ import {
   Sparkles,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { DashboardBackgroundEnum } from 'nfx-ui/preference'
 
 import { ROUTES } from '../navigations/routes'
-import type { NavigationItem, WorldMood } from '@/types'
+import type { NavigationItem } from '@/types'
 
 export const navigationItems: NavigationItem[] = [
   { labelKey: 'navigation.world', path: ROUTES.HOME },
-  { labelKey: 'navigation.about', path: ROUTES.ABOUT },
+  { labelKey: 'navigation.intro', path: ROUTES.INTRO },
   { labelKey: 'navigation.projects', path: ROUTES.PROJECTS },
   { labelKey: 'navigation.life', path: ROUTES.LIFE },
   { labelKey: 'navigation.highlights', path: ROUTES.HIGHLIGHTS },
@@ -28,24 +27,6 @@ export const socialLinks = [
   { labelKey: 'social.mail', href: 'mailto:hello@lyulucas.dev' },
 ]
 
-export const routeBackgrounds: Record<string, DashboardBackgroundEnum> = {
-  [ROUTES.HOME]: DashboardBackgroundEnum.NONE,
-  [ROUTES.ABOUT]: DashboardBackgroundEnum.NONE,
-  [ROUTES.PROJECTS]: DashboardBackgroundEnum.NONE,
-  [ROUTES.LIFE]: DashboardBackgroundEnum.NONE,
-  [ROUTES.HIGHLIGHTS]: DashboardBackgroundEnum.NONE,
-  [ROUTES.CONTACT]: DashboardBackgroundEnum.NONE,
-}
-
-export const routeMoods: Record<string, WorldMood> = {
-  [ROUTES.HOME]: 'entry',
-  [ROUTES.ABOUT]: 'editorial',
-  [ROUTES.PROJECTS]: 'systems',
-  [ROUTES.LIFE]: 'fragments',
-  [ROUTES.HIGHLIGHTS]: 'trajectory',
-  [ROUTES.CONTACT]: 'beacon',
-}
-
 export const worldPillars: Array<{
   id: 'identity' | 'work' | 'records' | 'experience' | 'contact'
   path: string
@@ -53,7 +34,7 @@ export const worldPillars: Array<{
 }> = [
   {
     id: 'identity',
-    path: ROUTES.ABOUT,
+    path: ROUTES.INTRO,
     icon: BookHeart,
   },
   {

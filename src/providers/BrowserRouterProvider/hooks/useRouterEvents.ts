@@ -33,8 +33,8 @@ export function useRouterEvents() {
     navigate(ROUTES.HOME)
   }, [navigate])
 
-  const handleNavigateToAbout = useCallback(() => {
-    navigate(ROUTES.ABOUT)
+  const handleNavigateToIntro = useCallback(() => {
+    navigate(ROUTES.INTRO)
   }, [navigate])
 
   const handleNavigateToProjects = useCallback(() => {
@@ -58,7 +58,7 @@ export function useRouterEvents() {
     routerEventEmitter.on(routerEvents.NAVIGATE_REPLACE, handleNavigateReplace)
     routerEventEmitter.on(routerEvents.NAVIGATE_BACK, handleNavigateBack)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_HOME, handleNavigateToHome)
-    routerEventEmitter.on(routerEvents.NAVIGATE_TO_ABOUT, handleNavigateToAbout)
+    routerEventEmitter.on(routerEvents.NAVIGATE_TO_INTRO, handleNavigateToIntro)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_PROJECTS, handleNavigateToProjects)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_LIFE, handleNavigateToLife)
     routerEventEmitter.on(routerEvents.NAVIGATE_TO_HIGHLIGHTS, handleNavigateToHighlights)
@@ -69,7 +69,7 @@ export function useRouterEvents() {
       routerEventEmitter.off(routerEvents.NAVIGATE_REPLACE, handleNavigateReplace)
       routerEventEmitter.off(routerEvents.NAVIGATE_BACK, handleNavigateBack)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_HOME, handleNavigateToHome)
-      routerEventEmitter.off(routerEvents.NAVIGATE_TO_ABOUT, handleNavigateToAbout)
+      routerEventEmitter.off(routerEvents.NAVIGATE_TO_INTRO, handleNavigateToIntro)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_PROJECTS, handleNavigateToProjects)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_LIFE, handleNavigateToLife)
       routerEventEmitter.off(routerEvents.NAVIGATE_TO_HIGHLIGHTS, handleNavigateToHighlights)
@@ -80,7 +80,7 @@ export function useRouterEvents() {
     handleNavigateReplace,
     handleNavigateBack,
     handleNavigateToHome,
-    handleNavigateToAbout,
+    handleNavigateToIntro,
     handleNavigateToProjects,
     handleNavigateToLife,
     handleNavigateToHighlights,

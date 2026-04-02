@@ -143,18 +143,18 @@ function HomePlanetHero() {
         summary: t('home:scene.planetUnit'),
         planets: [
           {
-            id: 'page-about',
-            label: t('navigation.about'),
+            id: 'page-intro',
+            label: t('navigation.intro'),
             orbitRadius: 11,
             planetRadius: 1.35,
             orbitSpeed: 0.0085,
             onSelect: () =>
               playWorldTransition({
                 type: 'page',
-                page: ROUTES.ABOUT,
-                title: t('navigation.about'),
+                page: ROUTES.INTRO,
+                title: t('navigation.intro'),
                 subtitle: t('labels.worldShift'),
-                action: () => routerEventEmitter.navigateToAbout(),
+                action: () => routerEventEmitter.navigateToIntro(),
               }),
           },
           {

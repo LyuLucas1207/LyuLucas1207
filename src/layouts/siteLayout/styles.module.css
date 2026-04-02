@@ -28,46 +28,10 @@
   background: radial-gradient(circle at 12% 16%, rgba(var(--color-primary-rgb), 0.08), transparent 28%);
 }
 
-.shell[data-world-mood='entry']::after {
+.shell::after {
   background:
     radial-gradient(circle at 78% 18%, rgba(var(--color-primary-rgb), 0.08), transparent 24%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent 28%);
-}
-
-.shell[data-world-mood='editorial']::after {
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 240px 100%, 100% 180px;
-  opacity: 0.18;
-}
-
-.shell[data-world-mood='systems']::after {
-  background:
-    linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.1) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 96px 100%, 100% 96px;
-  opacity: 0.16;
-}
-
-.shell[data-world-mood='fragments']::after {
-  background:
-    radial-gradient(circle at 20% 72%, rgba(var(--color-primary-rgb), 0.08), transparent 20%),
-    radial-gradient(circle at 84% 28%, rgba(255, 255, 255, 0.03), transparent 18%);
-  opacity: 0.24;
-}
-
-.shell[data-world-mood='trajectory']::after {
-  background:
-    linear-gradient(130deg, transparent 35%, rgba(var(--color-primary-rgb), 0.06) 52%, transparent 66%);
-  opacity: 0.16;
-}
-
-.shell[data-world-mood='beacon']::after {
-  background:
-    radial-gradient(circle at 50% 18%, rgba(var(--color-primary-rgb), 0.08), transparent 18%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 22%);
-  opacity: 0.18;
 }
 
 .atmosphereLayer {

@@ -4,12 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTheme } from 'nfx-ui/themes'
 
-import {
-  navigationItems,
-  routeMoods,
-  socialLinks,
-  worldPillars,
-} from '@/constants/siteContent'
+import { navigationItems, socialLinks, worldPillars } from '@/constants/siteContent'
 import { SectionDivider } from '@/components'
 import { WorldAtmosphere } from '@/elements/world/components/WorldAtmosphere'
 import { WorldMark } from '@/elements/world/components/WorldMark'
@@ -25,18 +20,15 @@ function SiteLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const mainRef = useRef<HTMLElement | null>(null)
   const { themeName } = useTheme()
-  const mood = routeMoods[location.pathname] ?? routeMoods['/'] ?? 'entry'
   const isDarkTheme = ['dark', 'cosmic', 'wine', 'coffee'].includes(themeName)
 
-  usePageTransition(mainRef, location.pathname, mood)
+  usePageTransition(mainRef, location.pathname)
 
   const handleNavigate = (path: string, labelKey: string) => {
     if (path === location.pathname) {
       setMenuOpen(false)
       return
     }
-
-    const targetMood = routeMoods[path] ?? mood
 
     playWorldTransition({
       type: 'page',
@@ -53,12 +45,11 @@ function SiteLayout() {
   return (
     <div
       className={styles.shell}
-      data-world-mood={mood}
       data-theme-name={themeName}
       data-theme-scheme={isDarkTheme ? 'dark' : 'light'}
     >
         <div className={styles.atmosphereLayer}>
-          <WorldAtmosphere mood={mood} pageKey={location.pathname} />
+          <WorldAtmosphere key={location.pathname} />
         </div>
         <div className={styles.frame} />
 

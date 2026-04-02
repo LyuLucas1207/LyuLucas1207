@@ -26,7 +26,7 @@ export function PageMoodGraphics({ page, className }: { page: PageKey; className
           <circle cx="420" cy="140" r="6" data-overlay-dot {...commonDotProps} />
         </svg>
       )
-    case ROUTES.ABOUT:
+    case ROUTES.INTRO:
       return (
         <svg viewBox="0 0 640 340" aria-hidden="true" className={className}>
           <path d="M200 70V290" data-overlay-draw {...commonDrawProps} />

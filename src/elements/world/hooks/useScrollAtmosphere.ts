@@ -2,14 +2,12 @@ import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
 
 import { useReducedMotion } from '@/hooks'
-import type { WorldMood } from '@/types'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 type UseScrollAtmosphereOptions = {
   selector?: string
   y?: number
-  mood?: WorldMood
 }
 
 export function useScrollAtmosphere(
@@ -26,37 +24,19 @@ export function useScrollAtmosphere(
         return
       }
 
-      const mood = options.mood ?? 'entry'
       const targets = options.selector
         ? node.querySelectorAll<HTMLElement>(options.selector)
         : [node]
 
       targets.forEach((target, index) => {
-        const distanceMap: Record<WorldMood, number> = {
-          entry: 32,
-          editorial: 16,
-          systems: 22,
-          fragments: 28,
-          trajectory: 24,
-          beacon: 18,
-        }
-        const easeMap: Record<WorldMood, string> = {
-          entry: 'power4.out',
-          editorial: 'power2.out',
-          systems: 'expo.out',
-          fragments: 'sine.out',
-          trajectory: 'power3.out',
-          beacon: 'power2.out',
-        }
-
         gsap.fromTo(
           target,
           {
             opacity: 0,
-            y: options.y ?? distanceMap[mood],
-            x: mood === 'systems' ? 10 : mood === 'trajectory' ? -8 : 0,
-            scale: mood === 'fragments' ? 0.985 : 1,
-            filter: mood === 'editorial' ? 'blur(8px)' : 'blur(6px)',
+            y: options.y ?? 26,
+            x: 0,
+            scale: 1,
+            filter: 'blur(6px)',
           },
           {
             opacity: 1,
@@ -65,7 +45,7 @@ export function useScrollAtmosphere(
             scale: 1,
             filter: 'blur(0px)',
             duration: 0.85,
-            ease: easeMap[mood],
+            ease: 'power4.out',
             delay: index * 0.03,
             scrollTrigger: {
               trigger: target,
@@ -84,6 +64,6 @@ export function useScrollAtmosphere(
         })
       }
     },
-    { scope: ref, dependencies: [reducedMotion, options.selector, options.y, options.mood] },
+    { scope: ref, dependencies: [reducedMotion, options.selector, options.y] },
   )
 }

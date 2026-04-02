@@ -10,6 +10,11 @@
   height: 100%;
 }
 
+.layer {
+  opacity: 0.9;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.72) 52%, transparent 92%);
+}
+
 .layerSoft,
 .layerBright {
   fill: none;
@@ -27,34 +32,4 @@
 .layerBright circle[data-atmos-spin] {
   fill: rgba(var(--color-primary-rgb), 0.08);
   stroke: rgba(var(--color-primary-rgb), 0.3);
-}
-
-.entry {
-  opacity: 0.9;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.72) 52%, transparent 92%);
-}
-
-.editorial {
-  opacity: 0.56;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.64) 68%, transparent);
-}
-
-.systems {
-  opacity: 0.5;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.62) 72%, transparent);
-}
-
-.fragments {
-  opacity: 0.44;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.46) 72%, transparent);
-}
-
-.trajectory {
-  opacity: 0.52;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.6) 74%, transparent);
-}
-
-.beacon {
-  opacity: 0.58;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.64) 62%, transparent);
 }

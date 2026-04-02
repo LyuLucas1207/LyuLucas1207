@@ -4,7 +4,7 @@ import { createRouter, defineRouter } from "nfx-ui/navigations";
 
 const routeMap = defineRouter({
   HOME: '/',
-  ABOUT: '/about',
+  INTRO: '/intro',
   PROJECTS: '/projects',
   PROJECT_DETAIL: '/projects/:slug',
   LIFE: '/life',

@@ -57,7 +57,7 @@ function ContactPage() {
     reset()
   })
 
-  useScrollAtmosphere(gridRef, { selector: '[data-contact-card]', mood: 'beacon' })
+  useScrollAtmosphere(gridRef, { selector: '[data-contact-card]' })
 
   return (
     <div className={styles.page}>

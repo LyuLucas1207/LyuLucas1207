@@ -29,6 +29,6 @@ export async function GetTimeline() {
 }
 
 export async function GetLifeRecords() {
-  const { data } = await httpClient.get<LifeRecordApiItem[]>('/life-records')
+  const { data } = await httpClient.get<LifeRecordApiItem[]>('/lifeRecords')
   return data
 }

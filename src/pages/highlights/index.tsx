@@ -17,7 +17,7 @@ function HighlightsPage() {
   const { data: timeline = [] } = useTimelineQuery()
   const gridRef = useRef<HTMLDivElement | null>(null)
 
-  useScrollAtmosphere(gridRef, { selector: '[data-highlight-card]', mood: 'trajectory' })
+  useScrollAtmosphere(gridRef, { selector: '[data-highlight-card]' })
 
   return (
     <div className={styles.page}>

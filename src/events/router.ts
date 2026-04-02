@@ -7,7 +7,7 @@ export const routerEvents = defineEvents({
   NAVIGATE_REPLACE: 'ROUTER:NAVIGATE_REPLACE',
   NAVIGATE_BACK: 'ROUTER:NAVIGATE_BACK',
   NAVIGATE_TO_HOME: 'ROUTER:NAVIGATE_TO_HOME',
-  NAVIGATE_TO_ABOUT: 'ROUTER:NAVIGATE_TO_ABOUT',
+  NAVIGATE_TO_INTRO: 'ROUTER:NAVIGATE_TO_INTRO',
   NAVIGATE_TO_PROJECTS: 'ROUTER:NAVIGATE_TO_PROJECTS',
   NAVIGATE_TO_LIFE: 'ROUTER:NAVIGATE_TO_LIFE',
   NAVIGATE_TO_HIGHLIGHTS: 'ROUTER:NAVIGATE_TO_HIGHLIGHTS',
@@ -43,8 +43,8 @@ class RouterEventEmitter extends EventEmitter<RouterEvent> {
     this.emit(routerEvents.NAVIGATE_TO_HOME)
   }
 
-  navigateToAbout() {
-    this.emit(routerEvents.NAVIGATE_TO_ABOUT)
+  navigateToIntro() {
+    this.emit(routerEvents.NAVIGATE_TO_INTRO)
   }
 
   navigateToProjects() {

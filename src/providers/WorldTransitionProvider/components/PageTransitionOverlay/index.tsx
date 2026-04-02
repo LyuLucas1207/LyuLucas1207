@@ -24,7 +24,7 @@ export function PageTransitionOverlay({ request, onMidpoint, onComplete }: Props
 
   const shellBackground = useMemo(() => {
     if (!pageRequest) return undefined
-    const vars = currentTheme.colors.variables as Record<string, string | undefined>
+    const vars = currentTheme.colors.variables as unknown as Record<string, string | undefined>
     const bg2 = vars.bg2 ?? 'rgba(10, 10, 14, 1)'
     const bg3 = vars.bg3 ?? 'rgba(6, 6, 10, 1)'
     const glow = vars.primaryTransparent ?? 'rgba(255, 255, 255, 0.16)'

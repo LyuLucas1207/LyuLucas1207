@@ -1,0 +1,12 @@
+{
+  "hero": {
+    "eyebrow": "Présentation",
+    "titleTemplate": "Bonjour, je suis {{name}}"
+  },
+  "meta": {
+    "avatarAlt": "Portrait de Lucas"
+  },
+  "side": {
+    "hobbiesTitle": "Au quotidien"
+  }
+}

@@ -39,7 +39,7 @@ function LifePage() {
           ),
   }))
 
-  useScrollAtmosphere(gridRef, { selector: '[data-life-card]', mood: 'fragments' })
+  useScrollAtmosphere(gridRef, { selector: '[data-life-card]' })
 
   return (
     <div className={styles.page}>
