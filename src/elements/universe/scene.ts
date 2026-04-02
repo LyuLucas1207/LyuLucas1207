@@ -21,6 +21,11 @@ import type { StarSystemConfig, UniversePalette } from './types'
 import { Vortex, VortexBuilder } from './vortex'
 
 
+export type HoverInfo = {
+  systemName: string
+  label: string
+}
+
 type CreateSceneOptions = {
   host: HTMLDivElement
   palette: UniversePalette
@@ -29,6 +34,7 @@ type CreateSceneOptions = {
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
   onFocusSystemChange?: (systemId?: string) => void
+  onHoverChange?: (info: HoverInfo | null) => void
 }
 
 export type UniverseSceneController = {
@@ -44,6 +50,7 @@ export function createUniverseScene({
   onDraggingChange,
   systems,
   onFocusSystemChange,
+  onHoverChange,
 }: CreateSceneOptions) {
   const colors = createUniverseColors(palette)
   const renderer = new THREE.WebGLRenderer({
@@ -118,7 +125,7 @@ export function createUniverseScene({
   )
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime] as const))
   systemRuntimes.forEach((runtime) => {
-    runtime.star.userData.focusSystem = runtime
+    runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
   })
 
@@ -209,6 +216,11 @@ export function createUniverseScene({
       hoveredPlanet = hit
       if (hoveredPlanet) hoveredPlanet.userData.hovered = true
       host.style.cursor = hoveredPlanet ? 'pointer' : 'default'
+      onHoverChange?.(
+        hoveredPlanet
+          ? { systemName: hoveredPlanet.userData.systemName as string, label: hoveredPlanet.userData.label as string }
+          : null,
+      )
     }
   }
 
@@ -378,7 +390,7 @@ export function createUniverseScene({
 
     galaxyCore.rotation.y += palette.isLight ? UNIVERSE_ROTATION_SPEED.coreLight : UNIVERSE_ROTATION_SPEED.coreDark
     systemRuntimes.forEach((runtime) => {
-      const starHovered = Boolean(runtime.star.userData.hovered)
+      const starHovered = Boolean(runtime.starMesh.userData.hovered)
       runtime.star.scale.lerp(
         new THREE.Vector3(starHovered ? 1.08 : 1, starHovered ? 1.08 : 1, starHovered ? 1.08 : 1),
         0.18,

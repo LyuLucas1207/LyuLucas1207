@@ -367,6 +367,47 @@
   color: color-mix(in srgb, var(--space-text) 56%, var(--space-star-secondary) 44%);
 }
 
+.hoverTooltip {
+  position: absolute;
+  right: 1.35rem;
+  bottom: 1.5rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--space-star-primary) 16%, transparent);
+  border-radius: 0.85rem 0.85rem 0.35rem 0.85rem;
+  background: color-mix(in srgb, var(--space-bg) 78%, transparent);
+  backdrop-filter: blur(22px) saturate(1.12);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.hoverTooltipVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hoverSystem {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--space-star-primary) 68%, var(--space-text) 32%);
+}
+
+.hoverLabel {
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--space-star-primary);
+}
+
 @media (max-width: 960px) {
   .systemSidebar {
     top: 0.85rem;
@@ -383,5 +424,10 @@
     left: 0.85rem;
     bottom: 0.85rem;
     width: min(20rem, calc(100vw - 1.7rem));
+  }
+
+  .hoverTooltip {
+    right: 0.85rem;
+    bottom: 0.85rem;
   }
 }

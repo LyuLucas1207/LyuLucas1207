@@ -13,6 +13,7 @@ function themeSelect(palette: UniversePalette, value: ThemeValue) {
 
 export class Stellar {
   readonly group: THREE.Group
+  readonly coreMesh: THREE.Mesh
   private shellMesh: THREE.Mesh
   private shellAnimated = false
   private haloMesh: Nullable<THREE.Mesh> = null
@@ -37,6 +38,8 @@ export class Stellar {
         clearcoatRoughness: config.surface.clearcoatRoughness,
       }),
     )
+
+    this.coreMesh = sphere
 
     this.shellMesh = new THREE.Mesh(
       new THREE.SphereGeometry(config.shell.radius, config.segments, config.segments),

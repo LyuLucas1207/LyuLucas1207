@@ -12,7 +12,7 @@ const DEFAULT_COLORS: UniverseColorPool = {
 const DEFAULTS: VortexConfig = {
   particleCount: { light: 2200, dark: 1900 },
   armCount: 5,
-  baseSize: 230,
+  baseSize: 900,
   opacity: { light: 0.96, dark: 0.82 },
   colors: DEFAULT_COLORS,
   isLight: false,

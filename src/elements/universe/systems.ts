@@ -14,6 +14,7 @@ import type { StarSystemConfig, UniverseColorPool, UniversePalette } from './typ
 export type StarSystemRuntime = {
   group: THREE.Group
   star: THREE.Object3D
+  starMesh: THREE.Mesh
   stellar: Stellar
   planets: PlanetRuntime[]
   satellites: Satellite[]
@@ -99,14 +100,17 @@ export function createStarSystem(
   const systemColors = [...colors.primary, ...colors.hover, ...colors.light]
   const stellar = new Stellar(new StellarBuilder().palette(palette).done())
   const star = stellar.group
+  const starMesh = stellar.coreMesh
   const label = createLabelSprite(config.name, palette.primary, 'system')
-  star.userData.baseScale = 1
-  star.userData.hovered = false
+  starMesh.userData.baseScale = 1
+  starMesh.userData.hovered = false
+  starMesh.userData.systemName = config.name
+  starMesh.userData.label = config.name
   group.add(star, label)
 
   const planets: PlanetRuntime[] = []
   const satellites: Satellite[] = []
-  const interactiveObjects: THREE.Object3D[] = [star]
+  const interactiveObjects: THREE.Object3D[] = [starMesh]
   const maxOrbitRadius = config.planets.reduce((largest, planet) => Math.max(largest, planet.orbitRadius), 0)
 
   config.planets.forEach((planetConfig, index) => {
@@ -134,6 +138,7 @@ export function createStarSystem(
     planet.mesh.userData.action = planetConfig.onSelect
     planet.mesh.userData.baseScale = 1
     planet.mesh.userData.hovered = false
+    planet.mesh.userData.systemName = config.name
     planet.mesh.userData.label = planetConfig.label
 
     if (variance > 0.52) {
@@ -180,5 +185,5 @@ export function createStarSystem(
     interactiveObjects.push(planet.mesh)
   })
 
-  return { group, star, stellar, planets, satellites, interactiveObjects, maxOrbitRadius } satisfies StarSystemRuntime
+  return { group, star, starMesh, stellar, planets, satellites, interactiveObjects, maxOrbitRadius } satisfies StarSystemRuntime
 }

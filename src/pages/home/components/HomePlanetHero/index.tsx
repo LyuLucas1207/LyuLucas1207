@@ -12,6 +12,7 @@ import { routeMoods } from '@/constants/siteContent'
 import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
 import { createUniverseScene } from '@/elements/universe/scene'
+import type { HoverInfo } from '@/elements/universe/scene'
 import { loadUniverseShaders } from '@/elements/universe/shaders'
 import { buildUniversePalette } from '@/elements/universe/theme'
 import type { StarSystemConfig } from '@/elements/universe/types'
@@ -42,6 +43,7 @@ function HomePlanetHero() {
   const [, setDragging] = useState(false)
   const palette = useMemo(() => buildUniversePalette(currentTheme.colors.variables), [currentTheme])
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const systemDescriptions = useMemo<Record<string, string>>(
@@ -223,6 +225,7 @@ function HomePlanetHero() {
         onDraggingChange: setDragging,
         systems,
         onFocusSystemChange: setFocusedSystemId,
+        onHoverChange: setHoverInfo,
       })
       sceneControllerRef.current = controller
     })
@@ -329,6 +332,16 @@ function HomePlanetHero() {
             ? systemDescriptions[focusedSystemId]
             : t('home:scene.freeNavigationDesc')}
         </p>
+      </div>
+
+      <div
+        className={`${styles.hoverTooltip} ${hoverInfo ? styles.hoverTooltipVisible : ''}`}
+        aria-live="polite"
+      >
+        <span className={styles.hoverSystem}>{hoverInfo?.systemName}</span>
+        {hoverInfo && hoverInfo.label !== hoverInfo.systemName && (
+          <strong className={styles.hoverLabel}>{hoverInfo.label}</strong>
+        )}
       </div>
     </section>
   )

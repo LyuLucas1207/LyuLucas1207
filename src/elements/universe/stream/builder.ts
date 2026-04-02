@@ -10,7 +10,7 @@ const DEFAULT_COLORS: UniverseColorPool = {
 
 const DEFAULTS: StreamConfig = {
   streamCount: 5,
-  baseSize: 205,
+  baseSize: 360,
   opacity: { light: 0.88, dark: 0.6 },
   colors: DEFAULT_COLORS,
   isLight: false,
