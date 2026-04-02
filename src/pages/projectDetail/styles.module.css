@@ -60,7 +60,7 @@
 .deepDive {
   position: relative;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: var(--radius-card);
   border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
   background: var(--panel-bg);
 }
@@ -92,7 +92,7 @@
 .caseStudy::after {
   inset: auto 1.4rem 1.4rem;
   height: 5rem;
-  border-radius: 1.4rem;
+  border-radius: var(--radius-card);
   border: 1px solid rgba(255, 255, 255, 0.16);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)),
@@ -154,7 +154,7 @@
 
 .stack li {
   padding: 0.45rem 0.75rem;
-  border-radius: 999px;
+  border-radius: var(--radius-button);
   background: rgba(255, 255, 255, 0.045);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }

@@ -16,7 +16,7 @@
   position: relative;
   overflow: hidden;
   padding: 1.9rem;
-  border-radius: 2rem;
+  border-radius: var(--radius-card);
   border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
   background: var(--panel-bg);
   box-shadow: 0 24px 70px rgba(8, 5, 18, 0.16);
@@ -52,7 +52,7 @@
   display: grid;
   gap: 0.45rem;
   padding: 1.05rem 1.1rem;
-  border-radius: 1.35rem;
+  border-radius: var(--radius-card);
   text-decoration: none;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
@@ -126,6 +126,6 @@
   .panel,
   .form {
     padding: 1.2rem;
-    border-radius: 1.6rem;
+    border-radius: var(--radius-card);
   }
 }

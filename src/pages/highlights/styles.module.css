@@ -20,7 +20,7 @@
 
 .leadPanel {
   padding: 1.8rem;
-  border-radius: 1.8rem;
+  border-radius: var(--radius-card);
 }
 
 .leadPanel h2 {
@@ -51,7 +51,7 @@
   gap: 0.65rem;
   min-height: 8rem;
   padding: 1.3rem;
-  border-radius: 1.35rem;
+  border-radius: var(--radius-card);
   text-align: center;
   color: var(--color-fg-heading);
 }

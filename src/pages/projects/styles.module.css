@@ -9,7 +9,7 @@
 .featuredPanel,
 .filters {
   padding: 1.35rem;
-  border-radius: 1.6rem;
+  border-radius: var(--radius-card);
   border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
   background: var(--panel-bg);
 }

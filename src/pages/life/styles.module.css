@@ -24,7 +24,7 @@
 
 .card {
   padding: 1.65rem;
-  border-radius: 1.8rem;
+  border-radius: var(--radius-card);
   border: 1px solid color-mix(in srgb, var(--color-border-4) 36%, transparent);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 36%),
@@ -87,7 +87,7 @@
 
 .tags span {
   padding: 0.4rem 0.7rem;
-  border-radius: 999px;
+  border-radius: var(--radius-button);
   background: rgba(255, 255, 255, 0.04);
   color: var(--color-fg-muted);
   font-size: 0.8rem;
