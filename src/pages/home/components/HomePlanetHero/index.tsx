@@ -13,7 +13,8 @@ import { useWorldTransition } from '@/providers/WorldTransitionProvider'
 import { ROUTES } from '@/navigations/routes'
 import { createUniverseScene } from '@/elements/universe/scene'
 import type { HoverInfo } from '@/elements/universe/scene'
-import { loadUniverseShaders } from '@/elements/universe/shaders'
+import type { Nilable } from 'nfx-ui/types'
+import { loadUniverseShaders } from '@/elements/universe/utils/shaders'
 import { buildUniversePalette } from '@/elements/universe/theme'
 import type { StarSystemConfig } from '@/elements/universe/types'
 import styles from './styles.module.css'
@@ -41,9 +42,12 @@ function HomePlanetHero() {
   const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
   const sidebarRef = useRef<HTMLElement | null>(null)
   const [, setDragging] = useState(false)
-  const palette = useMemo(() => buildUniversePalette(currentTheme.colors.variables), [currentTheme])
+  const palette = useMemo(
+    () => buildUniversePalette(currentTheme.colors.name as ThemeEnum, currentTheme.colors.variables),
+    [currentTheme],
+  )
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
+  const [hoverInfo, setHoverInfo] = useState<Nilable<HoverInfo>>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const systemDescriptions = useMemo<Record<string, string>>(
@@ -257,16 +261,7 @@ function HomePlanetHero() {
       className={styles.hero}
       style={
         {
-          '--space-bg': palette.bg,
-          '--space-bg-2': palette.bg2,
-          '--space-bg-3': palette.bg3,
-          '--space-star-primary': palette.primary,
-          '--space-star-secondary': palette.primaryLight,
-          '--space-star-highlight': palette.fgHighlight,
-          '--space-overlay': palette.overlay,
-          '--space-border': palette.border2,
-          '--space-veil': palette.primaryTransparent,
-          '--space-text': palette.fgHeading,
+          '--space-bg': palette.sceneBg,
         } as CSSProperties
       }
     >
@@ -292,9 +287,8 @@ function HomePlanetHero() {
             <button
               key={system.id}
               type="button"
-              className={`${styles.galaxyOption} ${
-                focusedSystemId === system.id ? styles.galaxyOptionActive : ''
-              }`}
+              className={`${styles.galaxyOption} ${focusedSystemId === system.id ? styles.galaxyOptionActive : ''
+                }`}
               onClick={() => {
                 setFocusedSystemId(system.id)
                 setSidebarOpen(false)

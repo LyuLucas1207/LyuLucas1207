@@ -1,15 +1,16 @@
 import * as THREE from 'three'
 
-import { toRgbaWithAlpha } from 'nfx-ui/utils'
-
-import { pickColor } from './color'
 import { UNIVERSE_SYSTEM_LAYOUT } from './constants'
-import type { PlanetRuntime } from './planet'
-import { Planet, PlanetBuilder } from './planet'
-import { Ring, RingBuilder } from './ring'
-import { Satellite, SatelliteBuilder } from './satellite'
-import { Stellar, StellarBuilder } from './stellar'
-import type { StarSystemConfig, UniverseColorPool, UniversePalette } from './types'
+import {
+  Label, LabelBuilder,
+  Orbit, OrbitBuilder,
+  Planet, PlanetBuilder,
+  Ring, RingBuilder,
+  Satellite, SatelliteBuilder,
+  Stellar, StellarBuilder,
+} from './fragments'
+import type { PlanetRuntime } from './fragments'
+import type { StarSystemConfig, UniversePalette } from './types'
 
 export type StarSystemRuntime = {
   group: THREE.Group
@@ -20,60 +21,6 @@ export type StarSystemRuntime = {
   satellites: Satellite[]
   interactiveObjects: THREE.Object3D[]
   maxOrbitRadius: number
-}
-
-function createLabelSprite(label: string, color: string, variant: 'system' | 'planet' = 'planet') {
-  const canvas = document.createElement('canvas')
-  canvas.width = variant === 'system' ? 352 : 248
-  canvas.height = variant === 'system' ? 90 : 68
-  const context = canvas.getContext('2d')
-
-  if (!context) {
-    return new THREE.Sprite()
-  }
-
-  const width = canvas.width
-  const height = canvas.height
-  const inset = variant === 'system' ? 12 : 10
-  const radius = variant === 'system' ? 8 : 7
-  const fillGradient = context.createLinearGradient(0, 0, width, height)
-  fillGradient.addColorStop(0, toRgbaWithAlpha(color, variant === 'system' ? 0.085 : 0.065))
-  fillGradient.addColorStop(1, toRgbaWithAlpha(color, variant === 'system' ? 0.018 : 0.014))
-
-  context.clearRect(0, 0, width, height)
-  context.fillStyle = fillGradient
-  context.beginPath()
-  context.roundRect(inset, inset, width - inset * 2, height - inset * 2, radius)
-  context.fill()
-
-  context.strokeStyle = toRgbaWithAlpha(color, variant === 'system' ? 0.18 : 0.12)
-  context.lineWidth = 1
-  context.stroke()
-
-  context.fillStyle = color
-  context.font = variant === 'system' ? '700 22px "Segoe UI"' : '600 18px "Segoe UI"'
-  context.textAlign = 'center'
-  context.textBaseline = 'middle'
-  context.fillText(label, width / 2, height / 2 + 2)
-
-  const texture = new THREE.CanvasTexture(canvas)
-  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false })
-  const sprite = new THREE.Sprite(material)
-  sprite.scale.set(variant === 'system' ? 22 : 13.8, variant === 'system' ? 5.8 : 3.8, 1)
-  sprite.position.set(0, variant === 'system' ? 10.6 : 3.25, 0)
-  return sprite
-}
-
-function createOrbitRing(radius: number, color: string) {
-  return new THREE.Mesh(
-    new THREE.TorusGeometry(radius, 0.04, 10, 120),
-    new THREE.MeshBasicMaterial({
-      color: new THREE.Color(color),
-      transparent: true,
-      opacity: 0.22,
-      depthWrite: false,
-    }),
-  )
 }
 
 export function createSystemAnchors(count: number) {
@@ -90,23 +37,33 @@ export function createSystemAnchors(count: number) {
 export function createStarSystem(
   config: StarSystemConfig,
   palette: UniversePalette,
-  colors: UniverseColorPool,
   anchor: THREE.Vector3,
 ) {
   const group = new THREE.Group()
   group.position.copy(anchor)
   group.userData.systemId = config.id
 
-  const systemColors = [...colors.primary, ...colors.hover, ...colors.light]
-  const stellar = new Stellar(new StellarBuilder().palette(palette).done())
+  const stellar = new Stellar(
+    new StellarBuilder()
+      .palette(palette.stellar)
+      .isLight(palette.isStellarLight)
+      .done(),
+  )
   const star = stellar.group
   const starMesh = stellar.coreMesh
-  const label = createLabelSprite(config.name, palette.primary, 'system')
+  const label = new Label(
+    new LabelBuilder()
+      .text(config.name)
+      .variant('system')
+      .palette(palette.label)
+      .isLight(palette.isLabelLight)
+      .done(),
+  )
   starMesh.userData.baseScale = 1
   starMesh.userData.hovered = false
   starMesh.userData.systemName = config.name
   starMesh.userData.label = config.name
-  group.add(star, label)
+  group.add(star, label.sprite)
 
   const planets: PlanetRuntime[] = []
   const satellites: Satellite[] = []
@@ -124,14 +81,23 @@ export function createStarSystem(
     orbitCarrier.rotation.z =
       (Math.PI * 2 * index) / Math.max(config.planets.length, 1) + variance * Math.PI * 2
 
-    const orbitRing = createOrbitRing(planetConfig.orbitRadius, pickColor(colors.light))
+    const orbit = new Orbit(
+      new OrbitBuilder()
+        .radius(planetConfig.orbitRadius)
+        .palette(palette.orbit)
+        .isLight(palette.isOrbitLight)
+        .done(),
+    )
 
-    const planetColor = planetConfig.accent ?? pickColor(systemColors)
+    const planetPalette = planetConfig.accent
+      ? { surfaceColorPool: [planetConfig.accent] }
+      : palette.planet
+
     const planet = new Planet(
       new PlanetBuilder()
         .planetRadius(planetConfig.planetRadius)
-        .color(planetColor)
-        .palette(palette)
+        .palette(planetPalette)
+        .isLight(palette.isPlanetLight)
         .done(),
     )
     planet.body.position.set(planetConfig.orbitRadius, 0, 0)
@@ -142,12 +108,17 @@ export function createStarSystem(
     planet.mesh.userData.label = planetConfig.label
 
     if (variance > 0.52) {
+      const ringPalette = planetConfig.accent
+        ? { bandColorPool: [planetConfig.accent] }
+        : palette.ring
+
       const ring = new Ring(
         new RingBuilder()
           .innerRadius(planetConfig.planetRadius * 1.4)
           .outerRadius(planetConfig.planetRadius * (2.8 + variance * 0.8))
           .ringNumber(1 + Math.floor(Math.random() * 3))
-          .color(planetColor)
+          .palette(ringPalette)
+          .isLight(palette.isRingLight)
           .rotation([Math.PI / 2 + (variance - 0.5) * 0.9, 0, (variance - 0.5) * 0.7])
           .done(),
       )
@@ -160,19 +131,26 @@ export function createStarSystem(
           .radius(planetConfig.planetRadius * 0.2)
           .orbitRadius(planetConfig.planetRadius * 2.2)
           .speed(0.015 + variance * 0.02)
-          .color(pickColor(systemColors))
-          .isLight(palette.isLight)
+          .palette(palette.satellite)
+          .isLight(palette.isSatelliteLight)
           .done(),
       )
       planet.body.add(satellite.group)
       satellites.push(satellite)
     }
 
-    const planetLabel = createLabelSprite(planetConfig.label, palette.primary, 'planet')
-    planetLabel.position.set(planetConfig.orbitRadius, 2.9, 0)
+    const planetLabel = new Label(
+      new LabelBuilder()
+        .text(planetConfig.label)
+        .variant('planet')
+        .palette(palette.label)
+        .isLight(palette.isLabelLight)
+        .done(),
+    )
+    planetLabel.sprite.position.set(planetConfig.orbitRadius, 2.9, 0)
 
-    orbitCarrier.add(planet.body, planetLabel)
-    orbitPlane.add(orbitRing, orbitCarrier)
+    orbitCarrier.add(planet.body, planetLabel.sprite)
+    orbitPlane.add(orbit.mesh, orbitCarrier)
     pivot.add(orbitPlane)
     group.add(pivot)
     planets.push({

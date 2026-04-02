@@ -15,15 +15,6 @@ export const UNIVERSE_FOG = {
   dark: 0.00095,
 }
 
-export const UNIVERSE_LIGHT_INTENSITY = {
-  ambientLight: 0.34,
-  ambientDark: 0.12,
-  glowPrimaryLight: 16,
-  glowPrimaryDark: 28,
-  glowAccentLight: 14,
-  glowAccentDark: 24,
-}
-
 export const UNIVERSE_ROTATION_SPEED = {
   coreLight: 0.00055,
   coreDark: 0.0008,
@@ -57,7 +48,7 @@ export const UNIVERSE_CAMERA_LIMITS = {
 
 
 export const UNIVERSE_SYSTEM_LAYOUT = {
-  radius: 92,
+  radius: 112,
   startAngle: -Math.PI / 2,
 }
 

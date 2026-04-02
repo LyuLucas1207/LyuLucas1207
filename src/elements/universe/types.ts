@@ -1,26 +1,47 @@
-export type UniversePalette = {
-  bg: string
-  bg2: string
-  bg3: string
-  primary: string
-  primaryHover: string
-  primaryLight: string
-  primaryTransparent: string
-  fgHighlight: string
-  fgHeading: string
-  border2: string
-  overlay: string
-  isLight: boolean
-}
+import type {
+  LabelPalette,
+  NebulaPalette,
+  OrbitPalette,
+  PlanetPalette,
+  RingPalette,
+  SatellitePalette,
+  StellarPalette,
+  StreamPalette,
+  VortexPalette,
+} from './fragments'
 
-export type UniverseColorPool = {
-  primary: string[]
-  hover: string[]
-  light: string[]
-  all: string[]
-}
+export interface UniversePalette {
+  label: LabelPalette
+  isLabelLight: boolean
+  nebula: NebulaPalette
+  isNebulaLight: boolean
+  orbit: OrbitPalette
+  isOrbitLight: boolean
+  planet: PlanetPalette
+  isPlanetLight: boolean
+  ring: RingPalette
+  isRingLight: boolean
+  satellite: SatellitePalette
+  isSatelliteLight: boolean
+  stellar: StellarPalette
+  isStellarLight: boolean
+  stream: StreamPalette
+  isStreamLight: boolean
+  vortex: VortexPalette
+  isVortexLight: boolean
 
-export type StarSystemPlanetOption = {
+  /** 场景背景色 — WebGL 清屏色 */
+  sceneBg: string
+  /** 雾气色 — 远景淡出 */
+  sceneFogColor: string
+  /** 场景是否浅色主题 */
+  sceneIsLight: boolean
+  /** 场景主光源色 */
+  sceneGlowPrimaryColor: string
+  /** 场景辅光源色 */
+  sceneGlowAccentColor: string
+}
+export interface StarSystemPlanetOption {
   id: string
   label: string
   accent?: string
@@ -30,23 +51,9 @@ export type StarSystemPlanetOption = {
   onSelect: () => void
 }
 
-export type StarSystemConfig = {
+export interface StarSystemConfig {
   id: string
   name: string
   summary: string
   planets: StarSystemPlanetOption[]
 }
-
-export type VortexGeometryOptions = {
-  count: number
-  colors: UniverseColorPool
-  isLight: boolean
-}
-
-export type StreamGeometryOptions = {
-  pathIndex: number
-  colors: UniverseColorPool
-  isLight: boolean
-}
-
-export type ThemeValue = { light: number; dark: number }

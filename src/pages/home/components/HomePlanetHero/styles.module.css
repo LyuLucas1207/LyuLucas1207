@@ -1,12 +1,9 @@
 .hero {
   --space-bg: var(--color-bg);
   --space-bg-2: var(--color-bg-2);
-  --space-bg-3: var(--color-bg-3);
   --space-star-primary: var(--color-primary);
   --space-star-secondary: var(--color-primary-light);
   --space-star-highlight: var(--color-fg-highlight);
-  --space-overlay: var(--color-overlay);
-  --space-border: var(--color-border-2);
   --space-veil: var(--color-primary-transparent);
   --space-text: var(--color-fg-heading);
   position: relative;

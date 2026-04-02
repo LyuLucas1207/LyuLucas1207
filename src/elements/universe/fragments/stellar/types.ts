@@ -1,0 +1,61 @@
+import type { ValueByTheme } from '../types'
+import type { Nilable } from 'nfx-ui/types'
+
+export interface StellarPalette {
+  /** 恒星核心色 — 球体表面色 & 自发光色 */
+  coreColor: string
+  /** 外壳色 — ShaderMaterial uniform 颜色 */
+  shellColor: string
+  /** 外壳回退色 — 无 shader 时 BasicMaterial 的颜色 */
+  shellFallbackColor: string
+  /** 光晕色 — 光晕层材质颜色 */
+  haloColor: string
+  /** 关键光源色 — 主方向 PointLight 颜色 */
+  keyLightColor: string
+  /** 边缘光源色 — 轮廓补光 PointLight 颜色 */
+  rimLightColor: string
+}
+
+export interface StellarLightConfig {
+  intensity: ValueByTheme
+  distance: number
+  position: [number, number, number]
+}
+
+export interface StellarSurfaceConfig {
+  roughness: number
+  metalness: number
+  clearcoat: number
+  clearcoatRoughness: number
+}
+
+export interface StellarShellConfig {
+  radius: number
+  opacity: ValueByTheme
+  ifanimate: boolean
+}
+
+export interface StellarHaloConfig {
+  radius: number
+  opacity: ValueByTheme
+  ifanimate: boolean
+}
+
+export interface StellarShellShaders {
+  vertex: string
+  fragment: string
+}
+
+export interface StellarConfig {
+  radius: number
+  segments: number
+  emissive: ValueByTheme
+  palette: StellarPalette
+  isLight: boolean
+  surface: StellarSurfaceConfig
+  shell: StellarShellConfig
+  keyLight: StellarLightConfig
+  halo: Nilable<StellarHaloConfig>
+  rimLight: Nilable<StellarLightConfig>
+  shellShaders: Nilable<StellarShellShaders>
+}
