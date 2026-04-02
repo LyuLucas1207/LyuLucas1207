@@ -13,7 +13,7 @@ import { useProjectsQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function ProjectsPage() {
-  const { t } = useTranslation(['shell', 'projects'])
+  const { t } = useTranslation(['components', 'ProjectsPage'])
   const [query, setQuery] = useState('')
   const [group, setGroup] = useState('all')
   const { data: projects = [] } = useProjectsQuery()
@@ -43,9 +43,9 @@ function ProjectsPage() {
     <div className={styles.page}>
       <Reveal>
         <PageIntro
-          eyebrow={t('projects:intro.eyebrow')}
-          title={t('projects:intro.title')}
-          description={t('projects:intro.description')}
+          eyebrow={t('ProjectsPage:intro.eyebrow')}
+          title={t('ProjectsPage:intro.title')}
+          description={t('ProjectsPage:intro.description')}
         />
       </Reveal>
 
@@ -78,7 +78,7 @@ function ProjectsPage() {
         <section className={styles.filters}>
           <div className={styles.searchWrap}>
             <SearchInput
-              placeholder={t('projects:copy.searchPlaceholder')}
+              placeholder={t('ProjectsPage:copy.searchPlaceholder')}
               value={query}
               onChange={setQuery}
             />

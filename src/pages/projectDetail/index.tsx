@@ -11,7 +11,7 @@ import styles from './styles.module.css'
 
 function ProjectDetailPage() {
   const { slug } = useParams()
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation('components')
   const { data: projects = [] } = useProjectsQuery()
   const project = projects.find((item) => item.slug === slug)
 

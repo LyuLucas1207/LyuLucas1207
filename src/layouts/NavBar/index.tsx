@@ -12,7 +12,7 @@ import styles from './styles.module.css'
 
 function NavBar() {
   const location = useLocation()
-  const { t } = useTranslation(['shell', 'world'])
+  const { t } = useTranslation(['components', 'WorldPage'])
   const [menuOpen, setMenuOpen] = useState(false)
 
   const handleNavigate = (path: string, labelKey: string) => {

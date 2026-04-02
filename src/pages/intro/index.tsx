@@ -9,7 +9,7 @@ import { IntroTypewriter } from './components/IntroTypewriter'
 import styles from './styles.module.css'
 
 function IntroPage() {
-  const { t } = useTranslation(['intro'])
+  const { t } = useTranslation(['IntroPage'])
   const { data: profile } = useProfileQuery()
 
   const narrative = useMemo(() => {
@@ -21,19 +21,19 @@ function IntroPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>{t('intro:hero.eyebrow')}</p>
+        <p className={styles.eyebrow}>{t('IntroPage:hero.eyebrow')}</p>
         <motion.h1
           className={styles.title}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          {t('intro:hero.titleTemplate', { name: profile?.name ?? 'Lucas Lyu' })}
+          {t('IntroPage:hero.titleTemplate', { name: profile?.name ?? 'Lucas Lyu' })}
         </motion.h1>
       </header>
 
       <div className={styles.split}>
-        <section className={styles.narrative} aria-label={t('intro:hero.eyebrow')}>
+        <section className={styles.narrative} aria-label={t('IntroPage:hero.eyebrow')}>
           <IntroTypewriter text={narrative} />
         </section>
 
@@ -46,7 +46,7 @@ function IntroPage() {
           >
             <img
               src="/avatar.png"
-              alt={t('intro:meta.avatarAlt')}
+              alt={t('IntroPage:meta.avatarAlt')}
               className={styles.avatar}
               width={480}
               height={480}
@@ -57,7 +57,7 @@ function IntroPage() {
 
           {profile?.hobbies?.length ? (
             <div className={styles.hobbyBlock}>
-              <p className={styles.hobbyLabel}>{t('intro:side.hobbiesTitle')}</p>
+              <p className={styles.hobbyLabel}>{t('IntroPage:side.hobbiesTitle')}</p>
               <ul className={styles.hobbyList}>
                 {profile.hobbies.map((item) => (
                   <li key={item} className={styles.hobbyChip}>

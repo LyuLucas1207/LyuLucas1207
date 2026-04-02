@@ -14,7 +14,7 @@ import { formatDate } from 'nfx-ui/utils'
 import styles from './styles.module.css'
 
 function LifePage() {
-  const { t } = useTranslation(['shell', 'life'])
+  const { t } = useTranslation(['components', 'LifePage'])
   const [type, setType] = useState('all')
   const { data: records = [] } = useLifeRecordsQuery()
   const gridRef = useRef<HTMLElement | null>(null)
@@ -45,9 +45,9 @@ function LifePage() {
     <div className={styles.page}>
       <Reveal>
         <PageIntro
-          eyebrow={t('life:intro.eyebrow')}
-          title={t('life:intro.title')}
-          description={t('life:intro.description')}
+          eyebrow={t('LifePage:intro.eyebrow')}
+          title={t('LifePage:intro.title')}
+          description={t('LifePage:intro.description')}
         />
       </Reveal>
 

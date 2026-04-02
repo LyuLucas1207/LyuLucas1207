@@ -6,7 +6,7 @@ import { SectionDivider } from '@/components'
 import styles from './styles.module.css'
 
 function Footer() {
-  const { t } = useTranslation(['shell', 'world'])
+  const { t } = useTranslation(['components', 'WorldPage'])
 
   return (
     <footer className={styles.footer}>
@@ -20,8 +20,8 @@ function Footer() {
               {worldPillars.slice(0, 4).map((pillar) => (
                 <NavLink key={pillar.id} to={pillar.path} className={styles.pillarCard}>
                   <pillar.icon size={18} />
-                  <strong>{t(`world:pillars.${pillar.id}.title`)}</strong>
-                  <span>{t(`world:pillars.${pillar.id}.description`)}</span>
+                  <strong>{t(`WorldPage:pillars.${pillar.id}.title`)}</strong>
+                  <span>{t(`WorldPage:pillars.${pillar.id}.description`)}</span>
                 </NavLink>
               ))}
             </div>

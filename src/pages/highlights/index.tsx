@@ -12,7 +12,7 @@ import { useHighlightsQuery, useTimelineQuery } from '@/hooks'
 import styles from './styles.module.css'
 
 function HighlightsPage() {
-  const { t } = useTranslation(['shell', 'highlights'])
+  const { t } = useTranslation(['components', 'HighlightsPage'])
   const { data: highlights = [] } = useHighlightsQuery()
   const { data: timeline = [] } = useTimelineQuery()
   const gridRef = useRef<HTMLDivElement | null>(null)
@@ -23,17 +23,17 @@ function HighlightsPage() {
     <div className={styles.page}>
       <Reveal>
         <PageIntro
-          eyebrow={t('highlights:intro.eyebrow')}
-          title={t('highlights:intro.title')}
-          description={t('highlights:intro.description')}
+          eyebrow={t('HighlightsPage:intro.eyebrow')}
+          title={t('HighlightsPage:intro.title')}
+          description={t('HighlightsPage:intro.description')}
         />
       </Reveal>
 
       <section className={styles.band}>
         <Reveal delay={0.06}>
           <article className={styles.leadPanel}>
-            <h2>{t('highlights:copy.leadTitle')}</h2>
-            <p>{t('highlights:copy.leadBody')}</p>
+            <h2>{t('HighlightsPage:copy.leadTitle')}</h2>
+            <p>{t('HighlightsPage:copy.leadBody')}</p>
             <div className={styles.signalWrap}>
               <SignalDiagram />
             </div>

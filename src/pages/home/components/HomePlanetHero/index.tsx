@@ -34,7 +34,7 @@ const themeOptions: ThemeEnum[] = [
 
 function HomePlanetHero() {
   const location = useLocation()
-  const { t, i18n } = useTranslation(['shell', 'world'])
+  const { t, i18n } = useTranslation(['components', 'WorldPage'])
   const { currentTheme, setTheme } = useTheme()
   const { getThemeDisplayName } = useThemeLabel()
   const { getLanguageDisplayName } = useLanguageLabel()
@@ -52,9 +52,9 @@ function HomePlanetHero() {
 
   const systemDescriptions = useMemo<Record<string, string>>(
     () => ({
-      'theme-system': t('world:scene.themeGalaxyDescription'),
-      'language-system': t('world:scene.languageGalaxyDescription'),
-      'page-system': t('world:scene.pageGalaxyDescription'),
+      'theme-system': t('WorldPage:scene.themeGalaxyDescription'),
+      'language-system': t('WorldPage:scene.languageGalaxyDescription'),
+      'page-system': t('WorldPage:scene.pageGalaxyDescription'),
     }),
     [t],
   )
@@ -113,14 +113,14 @@ function HomePlanetHero() {
     () => [
       {
         id: 'theme-system',
-        name: t('world:scene.themeGalaxy'),
-        summary: t('world:scene.planetUnit'),
+        name: t('WorldPage:scene.themeGalaxy'),
+        summary: t('WorldPage:scene.planetUnit'),
         planets: themePlanets,
       },
       {
         id: 'language-system',
-        name: t('world:scene.languageGalaxy'),
-        summary: t('world:scene.planetUnit'),
+        name: t('WorldPage:scene.languageGalaxy'),
+        summary: t('WorldPage:scene.planetUnit'),
         planets: languagePlanets.map((planet) => ({
           id: planet.id,
           label: planet.label,
@@ -139,8 +139,8 @@ function HomePlanetHero() {
       },
       {
         id: 'page-system',
-        name: t('world:scene.pageGalaxy'),
-        summary: t('world:scene.planetUnit'),
+        name: t('WorldPage:scene.pageGalaxy'),
+        summary: t('WorldPage:scene.planetUnit'),
         planets: [
           {
             id: 'page-intro',
@@ -264,19 +264,19 @@ function HomePlanetHero() {
         focusedSystemId={focusedSystemId}
         setFocusedSystemId={setFocusedSystemId}
         activeSystemName={activeSystem?.name}
-        selectGalaxyLabel={t('world:scene.selectGalaxy')}
+        selectGalaxyLabel={t('WorldPage:scene.selectGalaxy')}
       />
 
       <HomeActionDock
         onReload={handleReloadWorld}
-        buttonTitle={t('world:scene.reflyIdle')}
-        buttonLabel={t('world:scene.reflySystem')}
+        buttonTitle={t('WorldPage:scene.reflyIdle')}
+        buttonLabel={t('WorldPage:scene.reflySystem')}
       />
 
       <HomeHud
-        label={t('world:scene.selectedSystem')}
-        title={activeSystem?.name ?? t('world:scene.freeNavigation')}
-        description={focusedSystemId ? systemDescriptions[focusedSystemId] : t('world:scene.freeNavigationDesc')}
+        label={t('WorldPage:scene.selectedSystem')}
+        title={activeSystem?.name ?? t('WorldPage:scene.freeNavigation')}
+        description={focusedSystemId ? systemDescriptions[focusedSystemId] : t('WorldPage:scene.freeNavigationDesc')}
       />
 
       <HomeHoverTooltip hoverInfo={hoverInfo} />

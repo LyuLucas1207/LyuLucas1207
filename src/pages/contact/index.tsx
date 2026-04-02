@@ -22,7 +22,7 @@ type ContactFormValues = {
 
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
-  const { t } = useTranslation(['shell', 'contact'])
+  const { t } = useTranslation(['components', 'ContactPage'])
   const { data: profile } = useProfileQuery()
   const gridRef = useRef<HTMLElement | null>(null)
   const contactSchema = useMemo(
@@ -63,9 +63,9 @@ function ContactPage() {
     <div className={styles.page}>
       <Reveal>
         <PageIntro
-          eyebrow={t('contact:intro.eyebrow')}
-          title={t('contact:intro.title')}
-          description={t('contact:intro.description')}
+          eyebrow={t('ContactPage:intro.eyebrow')}
+          title={t('ContactPage:intro.title')}
+          description={t('ContactPage:intro.description')}
         />
       </Reveal>
 

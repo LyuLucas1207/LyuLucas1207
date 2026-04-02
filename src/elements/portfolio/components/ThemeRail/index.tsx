@@ -12,7 +12,7 @@ const featuredThemes = [
 
 function ThemeRail() {
   const { themeName, setTheme, baseName, setBase } = useTheme()
-  const { t } = useTranslation('shell')
+  const { t } = useTranslation('components')
 
   return (
     <aside className={styles.panel}>
