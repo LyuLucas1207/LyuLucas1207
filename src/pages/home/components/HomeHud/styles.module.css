@@ -9,7 +9,9 @@
   width: min(24rem, calc(100vw - 3.2rem));
   padding: 1rem 1.2rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
-  border-radius: 1rem 1rem 1rem 0.35rem;
+  border-radius:
+    calc(var(--radius-card) * 2) calc(var(--radius-card) * 2) calc(var(--radius-card) * 0.5)
+    calc(var(--radius-card) * 2);
   background:
     linear-gradient(
       135deg,

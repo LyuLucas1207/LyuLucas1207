@@ -3,31 +3,36 @@
   top: 1.35rem;
   right: 1.35rem;
   z-index: 4;
-  width: min(14rem, calc(100vw - 3rem));
+  width: min(17.5rem, calc(100vw - 3rem));
 }
 
 .actionButton {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
   width: 100%;
-  display: grid;
-  gap: 0.28rem;
-  padding: 0.88rem 1.05rem;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
-  border-radius: 1.05rem 1.05rem 0.35rem 1.05rem;
+  padding: 0.75rem 1rem 0.75rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border-radius: var(--radius-input);
   background:
     linear-gradient(
       135deg,
       color-mix(in srgb, var(--color-bg-2) 94%, transparent),
-      color-mix(in srgb, var(--color-bg) 88%, rgba(255, 255, 255, 0.02))
+      color-mix(in srgb, var(--color-bg) 86%, rgba(255, 255, 255, 0.02))
     );
   color: var(--color-fg-heading);
   text-align: left;
+  cursor: pointer;
   backdrop-filter: blur(18px) saturate(1.08);
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.16),
     inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   overflow: hidden;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .actionButton::before {
@@ -36,33 +41,33 @@
   inset: 0;
   background:
     linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--color-primary) 20%, transparent),
-      transparent 36%
+      100deg,
+      color-mix(in srgb, var(--color-primary) 18%, transparent),
+      transparent 40%
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 28%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 32%);
   pointer-events: none;
 }
 
 .actionButton::after {
   content: '';
   position: absolute;
-  left: 1rem;
-  right: 1.2rem;
-  top: 0.72rem;
+  left: 0.85rem;
+  right: 1rem;
+  top: 0.65rem;
   height: 1px;
-  background: linear-gradient(90deg, var(--color-primary), transparent 80%);
-  opacity: 0.54;
+  background: linear-gradient(90deg, var(--color-primary), transparent 78%);
+  opacity: 0.45;
   pointer-events: none;
 }
 
 .actionButton:hover:not(:disabled) {
-  transform: translateX(-4px);
+  transform: translateX(-3px);
   border-color: color-mix(in srgb, var(--color-primary) 48%, transparent);
   box-shadow:
     0 22px 48px rgba(0, 0, 0, 0.18),
     0 0 0 1px color-mix(in srgb, var(--color-primary) 10%, transparent),
-    inset 0 0 28px color-mix(in srgb, var(--color-primary) 8%, transparent);
+    inset 0 0 26px color-mix(in srgb, var(--color-primary) 7%, transparent);
 }
 
 .actionButton:disabled {
@@ -70,20 +75,61 @@
   cursor: not-allowed;
 }
 
-.actionButton strong {
+.universeSlot {
   position: relative;
   z-index: 1;
-  font-size: 0.95rem;
+  flex-shrink: 0;
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: calc(var(--radius-card) * 1.25);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-bg) 40%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 12%, transparent),
+    0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.copyTitle {
+  font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
   color: var(--color-primary);
+}
+
+.copyHint {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--color-fg-heading) 58%, var(--color-primary) 42%);
+  opacity: 0.88;
 }
 
 @media (max-width: 960px) {
   .actionDock {
     top: 0.85rem;
     right: 0.85rem;
-    width: auto;
+    width: min(16rem, calc(100vw - 1.7rem));
+  }
+
+  .universeSlot {
+    width: 2.85rem;
+    height: 2.85rem;
+  }
+
+  .copyHint {
+    display: none;
   }
 }
-

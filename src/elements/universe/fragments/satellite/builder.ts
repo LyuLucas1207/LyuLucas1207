@@ -11,7 +11,7 @@ const DEFAULTS: SatelliteConfig = {
   orbitRadius: 1.8,
   speed: 0.02,
   palette: DEFAULT_PALETTE,
-  emissive: { off: 0.4, on: 0.8 },
+  emissive: { off: 0.4, on: 1.8 },
   isLight: false,
 }
 

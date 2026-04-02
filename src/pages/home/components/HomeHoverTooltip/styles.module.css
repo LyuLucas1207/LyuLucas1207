@@ -8,7 +8,7 @@
   gap: 0.35rem;
   padding: 0.9rem 1.2rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
-  border-radius: 0.85rem 0.85rem 0.35rem 0.85rem;
+  border-radius:var(--radius-input);
   background: color-mix(in srgb, var(--color-bg) 78%, transparent);
   backdrop-filter: blur(22px) saturate(1.12);
   box-shadow: 0 10px 32px rgba(0, 0, 0, 0.16);

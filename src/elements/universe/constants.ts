@@ -48,7 +48,7 @@ export const UNIVERSE_CAMERA_LIMITS = {
 
 
 export const UNIVERSE_SYSTEM_LAYOUT = {
-  radius: 112,
+  radius: 130,
   startAngle: -Math.PI / 2,
 }
 
