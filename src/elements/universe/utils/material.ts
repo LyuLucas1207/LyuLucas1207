@@ -11,7 +11,8 @@ export function buildStarMaterial(
     transparent: true,
     depthWrite: false,
     vertexColors: true,
-    blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
+    // `isLight` now means `glowOn`: glow uses additive blending.
+    blending: isLight ? THREE.AdditiveBlending : THREE.NormalBlending,
     uniforms: {
       uTime: { value: 0 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },

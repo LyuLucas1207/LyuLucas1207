@@ -1,4 +1,4 @@
-import type { ValueByTheme } from '../types'
+import type { GlowOnOff } from '../types'
 
 export interface PlanetPalette {
   /** 行星表面候选色池 — 未指定 accent 时随机选取 */
@@ -8,7 +8,7 @@ export interface PlanetPalette {
 export interface PlanetSurfaceConfig {
   roughness: number
   metalness: number
-  emissive: ValueByTheme
+  emissive: GlowOnOff
 }
 
 export interface PlanetConfig {

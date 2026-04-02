@@ -17,7 +17,9 @@ export class Label {
 
   constructor(config: LabelConfig) {
     const v = VARIANT[config.variant]
-    const color = config.palette.color
+    const palette = config.palette
+    const startColor = 'startColor' in palette ? palette.startColor : palette.color
+    const endColor = 'endColor' in palette ? palette.endColor : palette.color
 
     const canvas = document.createElement('canvas')
     canvas.width = v.w
@@ -29,10 +31,11 @@ export class Label {
       return
     }
 
+    // Label brightness follows `isLight` (now interpreted as glowOn/off).
     const opacityScale = config.isLight ? 1.4 : 1
     const gradient = ctx.createLinearGradient(0, 0, v.w, v.h)
-    gradient.addColorStop(0, toRgbaWithAlpha(color, v.fillA * opacityScale))
-    gradient.addColorStop(1, toRgbaWithAlpha(color, v.fillB * opacityScale))
+    gradient.addColorStop(0, toRgbaWithAlpha(startColor, v.fillA * opacityScale))
+    gradient.addColorStop(1, toRgbaWithAlpha(endColor, v.fillB * opacityScale))
 
     ctx.clearRect(0, 0, v.w, v.h)
     ctx.fillStyle = gradient
@@ -40,11 +43,11 @@ export class Label {
     ctx.roundRect(v.inset, v.inset, v.w - v.inset * 2, v.h - v.inset * 2, v.radius)
     ctx.fill()
 
-    ctx.strokeStyle = toRgbaWithAlpha(color, v.stroke * opacityScale)
+    ctx.strokeStyle = toRgbaWithAlpha(startColor, v.stroke * opacityScale)
     ctx.lineWidth = 1
     ctx.stroke()
 
-    ctx.fillStyle = color
+    ctx.fillStyle = startColor
     ctx.font = v.font
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'

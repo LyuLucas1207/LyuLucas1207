@@ -261,7 +261,9 @@ function HomePlanetHero() {
       className={styles.hero}
       style={
         {
+          // Keep the CSS background in sync with WebGL.
           '--space-bg': palette.sceneBg,
+          '--space-bg-2': palette.sceneFogColor,
         } as CSSProperties
       }
     >

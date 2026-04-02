@@ -15,7 +15,8 @@ export class Orbit {
       new THREE.MeshBasicMaterial({
         color: new THREE.Color(pickColor(config.palette.colorPool)),
         transparent: true,
-        opacity: config.isLight ? 0.28 : 0.22,
+        // `isLight` means glowOn; raise opacity when glow is on.
+        opacity: config.isLight ? 0.35 : 0.18,
         depthWrite: false,
       }),
     )

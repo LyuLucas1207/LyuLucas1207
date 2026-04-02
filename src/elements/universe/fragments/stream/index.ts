@@ -29,7 +29,7 @@ export class Stream {
       const geometry = this.buildGeometry(pathIndex, config)
       const material = buildStarMaterial(
         config.baseSize,
-        config.isLight ? config.opacity.light : config.opacity.dark,
+        config.opacity,
         config.isLight,
         config.shaders.vertex,
         config.shaders.fragment,

@@ -9,7 +9,7 @@ const DEFAULTS: PlanetConfig = {
   segments: 24,
   palette: DEFAULT_PALETTE,
   isLight: false,
-  surface: { roughness: 0.34, metalness: 0.12, emissive: { light: 0.6, dark: 1.2 } },
+  surface: { roughness: 0.34, metalness: 0.12, emissive: { off: 0.6, on: 1.2 } },
 }
 
 export class PlanetBuilder {

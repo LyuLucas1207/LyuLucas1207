@@ -22,7 +22,8 @@ export class Satellite {
       new THREE.MeshStandardMaterial({
         color,
         emissive: color,
-        emissiveIntensity: config.isLight ? config.emissive.light : config.emissive.dark,
+        // `isLight` means `glowOn` -> stronger emissive when glow is on.
+        emissiveIntensity: config.isLight ? config.emissive.on : config.emissive.off,
         roughness: 0.5,
         metalness: 0.1,
       }),

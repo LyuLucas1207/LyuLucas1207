@@ -11,7 +11,7 @@ export interface StreamShaders {
 export interface StreamConfig {
   streamCount: number
   baseSize: number
-  opacity: { light: number; dark: number }
+  opacity: number
   palette: StreamPalette
   isLight: boolean
   shaders: StreamShaders

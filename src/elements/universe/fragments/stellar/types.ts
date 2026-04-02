@@ -1,4 +1,4 @@
-import type { ValueByTheme } from '../types'
+import type { GlowOnOff } from '../types'
 import type { Nilable } from 'nfx-ui/types'
 
 export interface StellarPalette {
@@ -17,7 +17,7 @@ export interface StellarPalette {
 }
 
 export interface StellarLightConfig {
-  intensity: ValueByTheme
+  intensity: GlowOnOff
   distance: number
   position: [number, number, number]
 }
@@ -31,13 +31,13 @@ export interface StellarSurfaceConfig {
 
 export interface StellarShellConfig {
   radius: number
-  opacity: ValueByTheme
+  opacity: GlowOnOff
   ifanimate: boolean
 }
 
 export interface StellarHaloConfig {
   radius: number
-  opacity: ValueByTheme
+  opacity: GlowOnOff
   ifanimate: boolean
 }
 
@@ -49,7 +49,7 @@ export interface StellarShellShaders {
 export interface StellarConfig {
   radius: number
   segments: number
-  emissive: ValueByTheme
+  emissive: GlowOnOff
   palette: StellarPalette
   isLight: boolean
   surface: StellarSurfaceConfig

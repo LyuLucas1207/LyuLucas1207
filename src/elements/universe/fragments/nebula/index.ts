@@ -40,8 +40,10 @@ export class Nebula {
         new THREE.SpriteMaterial({
           map: createNebulaTexture(color),
           transparent: true,
-          opacity: config.isLight ? 0.1 + index * 0.03 : 0.07 + index * 0.03,
-          blending: config.isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
+          // `isLight` means `glowOn`: glow uses additive blending.
+          // Opacity should not depend on glowOn/off; use additive/normal blending for glow effect.
+          opacity: 0.08 + index * 0.03,
+          blending: config.isLight ? THREE.AdditiveBlending : THREE.NormalBlending,
           depthWrite: false,
         }),
       )

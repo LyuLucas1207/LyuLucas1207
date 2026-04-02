@@ -6,10 +6,6 @@ import type { StellarConfig } from './types'
 export type { StellarConfig, StellarPalette, StellarShellShaders } from './types'
 export { StellarBuilder } from './builder'
 
-function themeSelect(isLight: boolean, value: { light: number; dark: number }) {
-  return isLight ? value.light : value.dark
-}
-
 export class Stellar {
   readonly group: THREE.Group
   readonly coreMesh: THREE.Mesh
@@ -33,7 +29,7 @@ export class Stellar {
       new THREE.MeshPhysicalMaterial({
         color: coreColor,
         emissive: coreColor,
-        emissiveIntensity: themeSelect(config.isLight, config.emissive),
+        emissiveIntensity: config.isLight ? config.emissive.on : config.emissive.off,
         roughness: config.surface.roughness,
         metalness: config.surface.metalness,
         clearcoat: config.surface.clearcoat,
@@ -53,7 +49,7 @@ export class Stellar {
             side: THREE.BackSide,
             uniforms: {
               uColor: { value: shellColor },
-              uOpacity: { value: themeSelect(config.isLight, config.shell.opacity) },
+              uOpacity: { value: config.isLight ? config.shell.opacity.on : config.shell.opacity.off },
             },
             vertexShader: config.shellShaders.vertex,
             fragmentShader: config.shellShaders.fragment,
@@ -61,7 +57,7 @@ export class Stellar {
         : new THREE.MeshBasicMaterial({
             color: shellFallbackColor,
             transparent: true,
-            opacity: themeSelect(config.isLight, config.shell.opacity),
+            opacity: config.isLight ? config.shell.opacity.on : config.shell.opacity.off,
             depthWrite: false,
           }),
     )
@@ -75,7 +71,7 @@ export class Stellar {
         new THREE.MeshBasicMaterial({
           color: haloColor,
           transparent: true,
-          opacity: themeSelect(config.isLight, config.halo.opacity),
+          opacity: config.isLight ? config.halo.opacity.on : config.halo.opacity.off,
           depthWrite: false,
         }),
       )
@@ -85,7 +81,7 @@ export class Stellar {
 
     const keyLight = new THREE.PointLight(
       keyLightColor,
-      themeSelect(config.isLight, config.keyLight.intensity),
+      config.isLight ? config.keyLight.intensity.on : config.keyLight.intensity.off,
       config.keyLight.distance,
       2,
     )
@@ -95,7 +91,7 @@ export class Stellar {
     if (config.rimLight) {
       const rimLight = new THREE.PointLight(
         rimLightColor,
-        themeSelect(config.isLight, config.rimLight.intensity),
+        config.isLight ? config.rimLight.intensity.on : config.rimLight.intensity.off,
         config.rimLight.distance,
         2,
       )

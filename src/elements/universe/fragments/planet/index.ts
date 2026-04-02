@@ -28,7 +28,8 @@ export class Planet {
       new THREE.MeshStandardMaterial({
         color,
         emissive: color,
-        emissiveIntensity: config.isLight ? config.surface.emissive.light : config.surface.emissive.dark,
+        // `isLight` means `glowOn`. Use the stronger emissive value when glow is on.
+        emissiveIntensity: config.isLight ? config.surface.emissive.on : config.surface.emissive.off,
         roughness: config.surface.roughness,
         metalness: config.surface.metalness,
       }),

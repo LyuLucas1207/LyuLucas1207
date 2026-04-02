@@ -1,4 +1,4 @@
-import type { ValueByTheme } from '../types'
+import type { GlowOnOff } from '../types'
 
 export interface SatellitePalette {
   /** 卫星表面候选色池 — 随机选取 */
@@ -11,6 +11,6 @@ export interface SatelliteConfig {
   orbitRadius: number
   speed: number
   palette: SatellitePalette
-  emissive: ValueByTheme
+  emissive: GlowOnOff
   isLight: boolean
 }

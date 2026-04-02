@@ -69,7 +69,8 @@ export class Ring {
         new THREE.MeshStandardMaterial({
           color: bandColor,
           emissive: bandColor,
-          emissiveIntensity: config.isLight ? 0.4 : 0.6,
+          // `isLight` means `glowOn`: glow on should be stronger.
+          emissiveIntensity: config.isLight ? 0.6 : 0.4,
           side: THREE.DoubleSide,
           roughness: 0.5,
           metalness: 0.1,

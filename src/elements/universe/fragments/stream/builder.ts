@@ -1,4 +1,3 @@
-import type { ValueByTheme } from '../types'
 import type { StreamConfig, StreamPalette, StreamShaders } from './types'
 
 const DEFAULT_PALETTE: StreamPalette = {
@@ -8,7 +7,7 @@ const DEFAULT_PALETTE: StreamPalette = {
 const DEFAULTS: StreamConfig = {
   streamCount: 5,
   baseSize: 360,
-  opacity: { light: 0.88, dark: 0.6 },
+  opacity: 0.62,
   palette: DEFAULT_PALETTE,
   isLight: false,
   shaders: { vertex: '', fragment: '' },
@@ -33,7 +32,7 @@ export class StreamBuilder {
     return this
   }
 
-  opacity(value: ValueByTheme) {
+  opacity(value: number) {
     this.config.opacity = value
     return this
   }

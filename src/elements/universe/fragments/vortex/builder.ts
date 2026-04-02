@@ -1,4 +1,3 @@
-import type { ValueByTheme } from '../types'
 import type { VortexConfig, VortexPalette, VortexShaders } from './types'
 
 const DEFAULT_PALETTE: VortexPalette = {
@@ -6,10 +5,10 @@ const DEFAULT_PALETTE: VortexPalette = {
 }
 
 const DEFAULTS: VortexConfig = {
-  particleCount: { light: 2200, dark: 1900 },
+  particleCount: 2050,
   armCount: 5,
   baseSize: 900,
-  opacity: { light: 0.96, dark: 0.82 },
+  opacity: 0.82,
   palette: DEFAULT_PALETTE,
   isLight: false,
   shaders: { vertex: '', fragment: '' },
@@ -24,7 +23,7 @@ export class VortexBuilder {
     this.config = { ...DEFAULTS }
   }
 
-  particleCount(value: ValueByTheme) {
+  particleCount(value: number) {
     this.config.particleCount = value
     return this
   }
@@ -39,7 +38,7 @@ export class VortexBuilder {
     return this
   }
 
-  opacity(value: ValueByTheme) {
+  opacity(value: number) {
     this.config.opacity = value
     return this
   }

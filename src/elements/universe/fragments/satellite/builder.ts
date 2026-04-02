@@ -1,4 +1,4 @@
-import type { ValueByTheme } from '../types'
+import type { GlowOnOff } from '../types'
 import type { SatelliteConfig, SatellitePalette } from './types'
 
 const DEFAULT_PALETTE: SatellitePalette = {
@@ -11,7 +11,7 @@ const DEFAULTS: SatelliteConfig = {
   orbitRadius: 1.8,
   speed: 0.02,
   palette: DEFAULT_PALETTE,
-  emissive: { light: 0.4, dark: 0.8 },
+  emissive: { off: 0.4, on: 0.8 },
   isLight: false,
 }
 
@@ -47,7 +47,7 @@ export class SatelliteBuilder {
     return this
   }
 
-  emissive(value: ValueByTheme) {
+  emissive(value: GlowOnOff) {
     this.config.emissive = value
     return this
   }

@@ -16,12 +16,12 @@ export class Vortex {
   private offset: number
 
   constructor(config: VortexConfig) {
-    const count = config.isLight ? config.particleCount.light : config.particleCount.dark
+    const count = config.particleCount
     const geometry = this.buildGeometry(count, config)
 
     this.material = buildStarMaterial(
       config.baseSize,
-      config.isLight ? config.opacity.light : config.opacity.dark,
+      config.opacity,
       config.isLight,
       config.shaders.vertex,
       config.shaders.fragment,

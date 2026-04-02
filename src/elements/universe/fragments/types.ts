@@ -1,1 +1,2 @@
-export type ValueByTheme = { light: number; dark: number }
+
+export type GlowOnOff = { off: number; on: number }

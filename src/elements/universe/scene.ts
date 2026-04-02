@@ -63,10 +63,8 @@ export function createUniverseScene({
   host.replaceChildren(renderer.domElement)
 
   const scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(
-    palette.sceneFogColor,
-    palette.sceneIsLight ? UNIVERSE_FOG.light : UNIVERSE_FOG.dark,
-  )
+  // Keep fog density as "dark-universe" baseline; colors come from the theme.
+  scene.fog = new THREE.FogExp2(palette.sceneFogColor, UNIVERSE_FOG.dark)
 
   const camera = new THREE.PerspectiveCamera(68, host.clientWidth / Math.max(host.clientHeight, 1), 0.1, 2800)
   camera.position.set(UNIVERSE_CAMERA_POSITION.x, UNIVERSE_CAMERA_POSITION.y, UNIVERSE_CAMERA_POSITION.z)
@@ -161,12 +159,11 @@ export function createUniverseScene({
 
     cameraRig.update(input, elapsed, {
       prefersReducedMotion,
-      isLight: palette.sceneIsLight,
+      // Treat universe baseline as dark.
+      isLight: false,
     })
 
-    galaxyCore.rotation.y += palette.sceneIsLight
-      ? UNIVERSE_ROTATION_SPEED.coreLight
-      : UNIVERSE_ROTATION_SPEED.coreDark
+    galaxyCore.rotation.y += UNIVERSE_ROTATION_SPEED.coreDark
 
     systemRuntimes.forEach((runtime) => {
       const starHovered = Boolean(runtime.starMesh.userData.hovered)
