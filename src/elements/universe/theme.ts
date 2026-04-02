@@ -2,6 +2,7 @@ import { ThemeEnum, type ColorVariables } from 'nfx-ui/themes'
 
 import type { UniversePalette } from './types'
 
+import crimsonDominion from './themes/crimsonDominion'
 import deepVoid from './themes/deepVoid'
 import dreamBloom from './themes/dreamBloom'
 import frostRift from './themes/frostRift'
@@ -14,23 +15,23 @@ export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables
 
   switch (themeEnum) {
     case ThemeEnum.DEFAULT:
-      return neonAbyss
+      return crimsonDominion
     case ThemeEnum.LIGHT:
-      return dreamBloom
+      return deepVoid
     case ThemeEnum.CORPORATE:
-      return frostRift
-    case ThemeEnum.FOREST:
       return neonAbyss
+    case ThemeEnum.FOREST:
+      return frostRift
     case ThemeEnum.WHEAT:
       return solarEmpire
     case ThemeEnum.DARK:
-      return deepVoid
+      return solarEmpire
     case ThemeEnum.COSMIC:
       return dreamBloom
     case ThemeEnum.COFFEE:
-      return frostRift
+      return solarEmpire
     case ThemeEnum.WINE:
-      return neonAbyss
+      return crimsonDominion
     default:
       return deepVoid
   }
