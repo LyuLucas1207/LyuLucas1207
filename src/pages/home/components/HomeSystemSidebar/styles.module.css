@@ -5,8 +5,10 @@
   z-index: 4;
   display: flex;
   flex-direction: column;
+
   gap: 0.35rem;
   min-width: 16.5rem;
+
 }
 
 .sidebarToggle {
@@ -21,6 +23,8 @@
   backdrop-filter: blur(24px) saturate(1.15);
   cursor: pointer;
   transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+  justify-content: center;
+  align-items: center;
 }
 
 .sidebarToggle:hover,
@@ -75,6 +79,7 @@
     max-height 300ms cubic-bezier(0.4, 0, 0.2, 1),
     opacity 220ms ease,
     transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    
 }
 
 .sidebarPanelOpen {
@@ -82,6 +87,7 @@
   opacity: 1;
   transform: translateY(0) scale(1);
   pointer-events: auto;
+
 }
 
 .galaxyOption {
@@ -89,6 +95,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.7rem 0.85rem;
+  padding-left: 2.5rem;
   border: none;
   border-radius: 0.5rem;
   background: transparent;
