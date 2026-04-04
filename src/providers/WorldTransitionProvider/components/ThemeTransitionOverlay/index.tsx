@@ -101,7 +101,7 @@ export function ThemeTransitionOverlay({ request, onMidpoint, onComplete }: Prop
       <div className={styles.shell} style={shellBackground ? { background: shellBackground } : undefined} data-overlay-shell>
         <div className={styles.veil} data-overlay-veil />
         <div className={styles.copy}>
-          <p data-overlay-copy>{themeRequest.title ?? 'Lyu World'}</p>
+          <p data-overlay-copy>{themeRequest.title ?? 'Lyu Star Realm'}</p>
           {themeRequest.subtitle ? <span data-overlay-copy>{themeRequest.subtitle}</span> : null}
         </div>
         <div className={styles.graphic}>

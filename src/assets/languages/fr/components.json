@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "world": "Monde",
+    "world": "Royaume stellaire",
     "intro": "Présentation",
     "projects": "Projets",
     "life": "Vie",
@@ -9,7 +9,7 @@
   },
   "actions": {
     "enterContact": "Entrer dans le contact",
-    "reenterWorld": "Rentrer dans Lyu World",
+    "reenterWorld": "Rentrer dans le Lyu Star Realm",
     "exploreProjects": "Voir tous les projets",
     "getInTouch": "Prendre contact",
     "viewCaseStudy": "Voir l'étude de cas",
@@ -68,10 +68,11 @@
     "title": "Un monde numérique personnel organisé autour de l'identité, du travail, des archives et de l'artisanat technique.",
     "description": "Construit avec React, TypeScript, CSS Modules, nfx-ui@0.8.0, i18next, GSAP et une couche mock API typée.",
     "signalTitle": "Un système vivant qui change de ton par le mouvement, pas seulement par la couleur.",
-    "signalDescription": "Chaque route change son atmosphère, son glyph de transition et son rythme spatial tout en restant dans un seul Lyu World."
+    "signalDescription": "Chaque route change son atmosphère, son glyph de transition et son rythme spatial tout en restant dans un seul Lyu Star Realm."
   },
   "brand": {
-    "subtitle": "Lyu Lucas. Une atmosphère pensée comme un système."
+    "title": "Lucas Lyu",
+    "subtitle": "Un univers de systèmes, de code et d'idées"
   },
   "accessibility": {
     "toggleNavigation": "Basculer la navigation"

@@ -41,7 +41,7 @@ function NavBar() {
             <WorldMark />
           </span>
           <span className={styles.brandCopy}>
-            <strong>Lyu World</strong>
+            <strong>{t('brand.title')}</strong>
           </span>
         </NavLink>
 

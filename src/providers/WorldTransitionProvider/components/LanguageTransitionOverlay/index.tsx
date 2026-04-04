@@ -103,7 +103,7 @@ export function LanguageTransitionOverlay({ request, onMidpoint, onComplete }: P
       <div className={styles.shell} style={shellBackground ? { background: shellBackground } : undefined} data-overlay-shell>
         <div className={styles.veil} data-overlay-veil />
         <div className={styles.copy}>
-          <p data-overlay-copy>{languageRequest.title ?? 'Lyu World'}</p>
+          <p data-overlay-copy>{languageRequest.title ?? 'Lyu Star Realm'}</p>
           {languageRequest.subtitle ? <span data-overlay-copy>{languageRequest.subtitle}</span> : null}
         </div>
         <div className={styles.graphic}>

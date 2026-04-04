@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "world": "世界",
+    "world": "星域",
     "intro": "个人介绍",
     "projects": "项目",
     "life": "生活",
@@ -9,7 +9,7 @@
   },
   "actions": {
     "enterContact": "进入联系",
-    "reenterWorld": "重新进入 Lyu World",
+    "reenterWorld": "重新进入 Lyu 星域",
     "exploreProjects": "查看全部项目",
     "getInTouch": "开始联系",
     "viewCaseStudy": "查看案例",
@@ -68,10 +68,11 @@
     "title": "一个围绕身份、作品、记录与技术审美组织起来的个人数字世界。",
     "description": "使用 React、TypeScript、CSS Modules、nfx-ui@0.8.0、i18next、GSAP 与强类型 mock API 构建。",
     "signalTitle": "这个世界的变化不只来自颜色，也来自动作、节奏与氛围。",
-    "signalDescription": "每条路由都拥有自己的转场符号、运动语言与空间气质，同时仍然属于同一个 Lyu World。"
+    "signalDescription": "每条路由都拥有自己的转场符号、运动语言与空间气质，同时仍然属于同一个 Lyu 星域。"
   },
   "brand": {
-    "subtitle": "Lyu Lucas。被工程组织起来的氛围。"
+    "title": "Lucas Lyu",
+    "subtitle": "进入我的星域：系统、代码与思想"
   },
   "accessibility": {
     "toggleNavigation": "切换导航"

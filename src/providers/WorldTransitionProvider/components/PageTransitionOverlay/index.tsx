@@ -103,7 +103,7 @@ export function PageTransitionOverlay({ request, onMidpoint, onComplete }: Props
       <div className={styles.shell} style={shellBackground ? { background: shellBackground } : undefined} data-overlay-shell>
         <div className={styles.veil} data-overlay-veil />
         <div className={styles.copy}>
-          <p data-overlay-copy>{pageRequest.title ?? 'Lyu World'}</p>
+          <p data-overlay-copy>{pageRequest.title ?? 'Lyu Star Realm'}</p>
           {pageRequest.subtitle ? <span data-overlay-copy>{pageRequest.subtitle}</span> : null}
         </div>
         <div className={styles.graphic}>

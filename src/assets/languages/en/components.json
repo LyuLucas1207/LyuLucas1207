@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "world": "World",
+    "world": "Star Realm",
     "intro": "Introduction",
     "projects": "Projects",
     "life": "Life",
@@ -9,7 +9,7 @@
   },
   "actions": {
     "enterContact": "Enter contact",
-    "reenterWorld": "Re-enter Lyu World",
+    "reenterWorld": "Re-enter Lyu Star Realm",
     "exploreProjects": "Explore all projects",
     "getInTouch": "Get in touch",
     "viewCaseStudy": "View case study",
@@ -68,10 +68,11 @@
     "title": "A personal digital world organized around identity, work, records, and technical craft.",
     "description": "Built with React, TypeScript, CSS Modules, nfx-ui@0.8.0, i18next, GSAP, and a typed mock API layer.",
     "signalTitle": "A world system that changes tone through motion, not just color.",
-    "signalDescription": "Each route shifts its atmosphere, its transition glyph, and its spatial rhythm while staying inside one coherent Lyu World."
+    "signalDescription": "Each route shifts its atmosphere, its transition glyph, and its spatial rhythm while staying inside one coherent Lyu Star Realm."
   },
   "brand": {
-    "subtitle": "Lyu Lucas. Engineered atmosphere."
+    "title": "Lucas Lyu",
+    "subtitle": "A Universe of Systems, Code, and Ideas"
   },
   "accessibility": {
     "toggleNavigation": "Toggle navigation"

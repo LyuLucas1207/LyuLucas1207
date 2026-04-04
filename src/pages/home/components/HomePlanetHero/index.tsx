@@ -213,7 +213,7 @@ function HomePlanetHero() {
     playWorldTransition({
       type: 'page',
       page: ROUTES.WORLD,
-      title: 'Lyu World',
+      title: t('brand.title'),
       subtitle: t('brand.subtitle'),
       action: () => window.location.reload(),
     })
