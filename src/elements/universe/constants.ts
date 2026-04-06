@@ -22,6 +22,9 @@ export const UNIVERSE_ROTATION_SPEED = {
   driftDark: 0,
 }
 
+/** 宇宙全景绕 **世界 Y（竖直）** 转动，弧度/秒；用 `Scene.backgroundRotation`（等距图会先烘成 cubemap，改 texture.offset 无效） */
+export const UNIVERSE_BACKGROUND_Y_RADIANS_PER_SEC = 0.055
+
 export const UNIVERSE_CAMERA_DRIFT = {
   xAmplitude: 0,
   yAmplitude: 0,

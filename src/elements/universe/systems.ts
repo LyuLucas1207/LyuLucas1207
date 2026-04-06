@@ -109,6 +109,7 @@ export function createStarSystem(
 
     // 星环与卫星二选一（各 50%），避免同时出现；此前并存时卫星轨道常与星环相交，视觉上像「乱飞」。
     const ringOrSatellite = Math.random()
+    let ringForRuntime: Ring | undefined
     if (ringOrSatellite < 0.5) {
       const ringPalette = planetConfig.accent
         ? { bandColorPool: [planetConfig.accent] }
@@ -124,6 +125,7 @@ export function createStarSystem(
           .rotation([Math.PI / 2 + (variance - 0.5) * 0.9, 0, (variance - 0.5) * 0.7])
           .done(),
       )
+      ringForRuntime = ring
       planet.body.add(ring.group)
     } else {
       const satellite = new Satellite(
@@ -164,6 +166,7 @@ export function createStarSystem(
       mesh: planet.mesh,
       speed: planetConfig.orbitSpeed * (0.72 + variance * 0.66) * (variance > 0.5 ? 1 : -1),
       baseScale: 1,
+      ring: ringForRuntime,
     })
     interactiveObjects.push(planet.mesh)
   })

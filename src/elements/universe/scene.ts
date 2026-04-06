@@ -19,6 +19,12 @@ import {
   Vortex, VortexBuilder,
 } from './fragments'
 import { attachRandomPlanetGlb } from './utils/planetGlb'
+import { attachRandomRingStripTexture } from './utils/ringTextures'
+import {
+  attachRandomUniverseBackground,
+  disposeSceneBackground,
+  spinUniverseBackground,
+} from './utils/universeBackground'
 import { createStarSystem, createSystemAnchors } from './systems'
 import type { StarSystemConfig, UniversePalette } from './types'
 import type { UniverseShaders } from './utils/shaders'
@@ -64,6 +70,7 @@ export function createUniverseScene({
   host.replaceChildren(renderer.domElement)
 
   const scene = new THREE.Scene()
+  attachRandomUniverseBackground(scene)
   // Keep fog density as "dark-universe" baseline; colors come from the theme.
   scene.fog = new THREE.FogExp2(palette.sceneFogColor, UNIVERSE_FOG.dark)
 
@@ -112,8 +119,9 @@ export function createUniverseScene({
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
-    runtime.planets.forEach((planet) => {
-      void attachRandomPlanetGlb(planet)
+    runtime.planets.forEach((p) => {
+      void attachRandomPlanetGlb(p)
+      if (p.ring) void attachRandomRingStripTexture(p.ring)
     })
   })
 
@@ -161,6 +169,7 @@ export function createUniverseScene({
   const animate = () => {
     timer.update()
     const elapsed = timer.getElapsed()
+    spinUniverseBackground(scene, timer.getDelta(), !prefersReducedMotion)
 
     coreStarInstance.update(elapsed)
     vortex.update(elapsed)
@@ -219,6 +228,7 @@ export function createUniverseScene({
     resizeObserver.disconnect()
     timer.dispose()
     input.destroy()
+    disposeSceneBackground(scene)
     scene.traverse((child) => {
       const target = child as THREE.Mesh | THREE.Points | THREE.Sprite
       if ('geometry' in target && target.geometry) {

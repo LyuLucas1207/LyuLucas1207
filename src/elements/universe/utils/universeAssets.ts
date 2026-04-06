@@ -33,6 +33,15 @@ export const SATELLITES_GLB_URLS: string[] = [
   '/textures/satellites/Vermora.glb',
 ]
 
+/** 星环径向条带 PNG（横向=半径、竖向=周向可 repeat） */
+export const RING_RADIAL_STRIP_URLS: string[] = ['/textures/rings/ring1.png']
+
+/** 宇宙全景/天空背景图（2:1 equirectangular 最佳；`Scene.background`） */
+export const UNIVERSE_BACKGROUND_URLS: string[] = [
+  '/textures/universes/universe1.jpg',
+  '/textures/universes/universe2.jpg',
+]
+
 export const UNIVERSE_SHADERS = {
   starfield: {
     vertex: '/shaders/starfield.vert.glsl',
