@@ -26,11 +26,13 @@ export const PLANET_GLB_URLS: string[] = [
   '/textures/planets/white/Nivalis.glb',
 ]
 
-export const SATELLITES_GLB_URLS: string[] = [
-  '/textures/satellites/Ashara.glb',
-  '/textures/satellites/Crimvex.glb',
-  '/textures/satellites/Duskar.glb',
-  '/textures/satellites/Vermora.glb',
+/** 卫星表面贴图（多图随机，`TextureLoader` + 球面 map） */
+export const SATELLITES_TEXTURE_URLS: string[] = [
+  '/textures/satellites/satellites1.jpg',
+  '/textures/satellites/satellites2.jpg',
+  '/textures/satellites/satellites3.jpg',
+  '/textures/satellites/satellites4.jpg',
+  '/textures/satellites/satellites5.jpg',
 ]
 
 /** 星环径向条带 PNG（横向=半径、竖向=周向可 repeat） */

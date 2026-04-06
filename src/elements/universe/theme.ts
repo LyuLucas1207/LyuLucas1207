@@ -9,6 +9,7 @@ import emeraldExpanse from './themes/emeraldExpanse'
 import frostRift from './themes/frostRift'
 import mahogany from './themes/mahogany'
 import neonAbyss from './themes/neonAbyss'
+import rubyNebula from './themes/rubyNebula'
 import solarEmpire from './themes/solarEmpire'
 
 
@@ -34,7 +35,7 @@ export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables
     case ThemeEnum.COFFEE:
       return mahogany
     case ThemeEnum.WINE:
-      return crimsonDominion
+      return rubyNebula
     default:
       return deepVoid
   }

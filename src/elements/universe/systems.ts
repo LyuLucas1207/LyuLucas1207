@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import { UNIVERSE_SYSTEM_LAYOUT } from './constants'
+import { pickDistinctSatelliteTextureUrls } from './utils/satelliteAtlas'
 import {
   Label, LabelBuilder,
   Orbit, OrbitBuilder,
@@ -130,21 +131,35 @@ export function createStarSystem(
       ringForRuntime = ring
       planet.body.add(ring.group)
     } else {
-      const satellite = new Satellite(
-        new SatelliteBuilder()
-          .radius(planetConfig.planetRadius * 0.2)
-          .orbitRadius(planetConfig.planetRadius * (3.0 + Math.random() * 0.55))
-          .speed(0.015 + variance * 0.02)
-          .palette(palette.satellite)
-          .isLight(palette.isSatelliteLight)
-          .surface({
-            roughness: builtPlanetConfig.surface.roughness,
-            metalness: builtPlanetConfig.surface.metalness,
-          })
-          .done(),
-      )
-      planet.body.add(satellite.group)
-      satellites.push(satellite)
+      const satelliteCount = 1 + Math.floor(Math.random() * 3)
+      const textureUrls = pickDistinctSatelliteTextureUrls(satelliteCount)
+      const satelliteSpeed = 0.015 + variance * 0.02
+      for (let j = 0; j < satelliteCount; j++) {
+        const jVar = Math.random()
+        const roughBase = builtPlanetConfig.surface.roughness
+        const satellite = new Satellite(
+          new SatelliteBuilder()
+            .radius(planetConfig.planetRadius * (0.28 + j * 0.03 + jVar * 0.08))
+            .segments(12 + Math.floor(Math.random() * 4) * 2)
+            .orbitRadius(planetConfig.planetRadius * (2.72 + j * 0.46 + jVar * 0.52))
+            .speed(satelliteSpeed)
+            .palette(palette.satellite)
+            .isLight(palette.isSatelliteLight)
+            .surface({
+              roughness: THREE.MathUtils.clamp(roughBase + (jVar - 0.35) * 0.26, 0.12, 0.92),
+              metalness: 0,
+            })
+            .done(),
+        )
+        satellite.group.userData.satelliteTextureUrl = textureUrls[j]
+        const orbitTilt = new THREE.Group()
+        orbitTilt.rotation.x = (jVar - 0.5) * 1.22
+        orbitTilt.rotation.z = ((j + 1) * 0.41 + variance * 0.55) * (j % 2 === 0 ? 1 : -1)
+        orbitTilt.rotation.y = j * 0.89 + jVar * 0.74
+        orbitTilt.add(satellite.group)
+        planet.body.add(orbitTilt)
+        satellites.push(satellite)
+      }
     }
 
     const planetLabel = new Label(

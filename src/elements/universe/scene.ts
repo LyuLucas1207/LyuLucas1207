@@ -19,6 +19,7 @@ import {
   Vortex, VortexBuilder,
 } from './fragments'
 import { attachRandomPlanetGlb } from './utils/planetGlb'
+import { attachSatelliteAtlasTexture } from './utils/satelliteAtlas'
 import { attachRandomRingStripTexture } from './utils/ringTextures'
 import { attachRandomSystemStellarGlb } from './utils/stellarGlb'
 import {
@@ -125,6 +126,10 @@ export function createUniverseScene({
     runtime.planets.forEach((p) => {
       void attachRandomPlanetGlb(p)
       if (p.ring) void attachRandomRingStripTexture(p.ring)
+    })
+    runtime.satellites.forEach((sat) => {
+      const u = sat.group.userData.satelliteTextureUrl
+      void attachSatelliteAtlasTexture(sat, typeof u === 'string' ? u : undefined)
     })
   })
 

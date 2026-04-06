@@ -11,10 +11,10 @@ const DEFAULTS: SatelliteConfig = {
   orbitRadius: 1.8,
   speed: 0.02,
   palette: DEFAULT_PALETTE,
-  /** 卫星体积小且多为深色，默认自发光需明显高于行星，否则几乎看不见 */
-  emissive: { off: 3.65, on: 6.85 },
+  /** 暗场景下可见度：`emissiveMap` 与表面贴图同步，此值调节自发光强弱（亦参与点光强度） */
+  emissive: { off: 1.35, on: 2.35 },
   isLight: false,
-  surface: { roughness: 0.34, metalness: 0.12 },
+  surface: { roughness: 0.34, metalness: 0 },
 }
 
 export class SatelliteBuilder {
