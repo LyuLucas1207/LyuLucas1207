@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { pickColor } from 'nfx-ui/utils'
 
 import  type { Nullable } from 'nfx-ui/types'
+import type { Ring } from '../ring'
 import type { PlanetConfig } from './types'
 
 export type { PlanetConfig, PlanetPalette, PlanetSurfaceConfig } from './types'
@@ -16,6 +17,8 @@ export type PlanetRuntime = {
   mesh: THREE.Mesh
   speed: number
   baseScale: number
+  /** 若本行星带星环（与卫星二选一），用于异步挂上 PBR 贴图 */
+  ring?: Ring
 }
 
 export class Planet {

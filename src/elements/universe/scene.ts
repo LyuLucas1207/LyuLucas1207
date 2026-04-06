@@ -19,6 +19,7 @@ import {
   Vortex, VortexBuilder,
 } from './fragments'
 import { attachRandomPlanetGlb } from './utils/planetGlb'
+import { attachRandomRingTextures } from './utils/ringTextures'
 import { createStarSystem, createSystemAnchors } from './systems'
 import type { StarSystemConfig, UniversePalette } from './types'
 import type { UniverseShaders } from './utils/shaders'
@@ -112,8 +113,9 @@ export function createUniverseScene({
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
-    runtime.planets.forEach((planet) => {
-      void attachRandomPlanetGlb(planet)
+    runtime.planets.forEach((p) => {
+      void attachRandomPlanetGlb(p)
+      if (p.ring) void attachRandomRingTextures(p.ring)
     })
   })
 

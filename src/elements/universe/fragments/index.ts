@@ -2,7 +2,7 @@ export { Planet, PlanetBuilder } from './planet'
 export type { PlanetConfig, PlanetPalette, PlanetRuntime, PlanetSurfaceConfig } from './planet'
 
 export { Ring, RingBuilder } from './ring'
-export type { RingConfig, RingPalette } from './ring'
+export type { RingAlbedoMaps, RingConfig, RingPalette } from './ring'
 
 export { Satellite, SatelliteBuilder } from './satellite'
 export type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './satellite'

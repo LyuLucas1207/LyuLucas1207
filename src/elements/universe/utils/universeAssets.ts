@@ -33,6 +33,13 @@ export const SATELLITES_GLB_URLS: string[] = [
   '/textures/satellites/Vermora.glb',
 ]
 
+/** 星环贴图目录（各含 texture.jpg / texture.png / texture.r.jpg） */
+export const RING_TEXTURE_BASE_URLS: string[] = [
+  '/textures/rings/texture1',
+  '/textures/rings/texture2',
+  '/textures/rings/texture3',
+]
+
 export const UNIVERSE_SHADERS = {
   starfield: {
     vertex: '/shaders/starfield.vert.glsl',
