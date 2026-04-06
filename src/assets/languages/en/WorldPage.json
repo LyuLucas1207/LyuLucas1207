@@ -9,7 +9,7 @@
     "eyebrow": "Galaxy navigation",
     "title": "A navigable galaxy of work, life, systems, and reflective worlds.",
     "description": "Drag the galaxy, let it rotate, and enter each world through its own orbit instead of through a flat list of sections.",
-    "dragHint": "Drag the galaxy. Click a planet to enter its world."
+    "dragHint": "Drag the galaxy, pick a system, then use the planets list on the right to follow or enter."
   },
   "scene": {
     "eyebrow": "Lyu Star Realm scene",
@@ -37,8 +37,11 @@
     "languageGalaxyDescription": "Switch language without leaving the scene",
     "selectedSystem": "Current System",
     "freeNavigation": "Free Navigation",
-    "freeNavigationDesc": "Drag the galaxy, click a planet to enter its world",
+    "freeNavigationDesc": "Drag the galaxy, choose a system, then use the list on the right to follow or enter a planet",
     "planetUnit": "planets",
+    "planetsPanelTitle": "Planets",
+    "followPlanet": "Follow",
+    "enterPlanet": "Enter",
     "reflySystem": "Re-enter World",
     "reflyIdle": "Reload this world view",
     "selectGalaxy": "Select Galaxy"

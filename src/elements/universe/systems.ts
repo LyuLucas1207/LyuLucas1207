@@ -101,6 +101,8 @@ export function createStarSystem(
     const planet = new Planet(builtPlanetConfig)
     planet.body.position.set(planetConfig.orbitRadius, 0, 0)
     planet.mesh.userData.planetRadius = planetConfig.planetRadius
+    planet.mesh.userData.planetId = planetConfig.id
+    planet.mesh.userData.planetBody = planet.body
     planet.mesh.userData.action = planetConfig.onSelect
     planet.mesh.userData.baseScale = 1
     planet.mesh.userData.hovered = false
@@ -171,5 +173,18 @@ export function createStarSystem(
     interactiveObjects.push(planet.mesh)
   })
 
-  return { group, star, starMesh, stellar, planets, satellites, interactiveObjects, maxOrbitRadius } satisfies StarSystemRuntime
+  const runtime = {
+    group,
+    star,
+    starMesh,
+    stellar,
+    planets,
+    satellites,
+    interactiveObjects,
+    maxOrbitRadius,
+  } satisfies StarSystemRuntime
+  for (const p of planets) {
+    p.mesh.userData.focusSystem = runtime
+  }
+  return runtime
 }

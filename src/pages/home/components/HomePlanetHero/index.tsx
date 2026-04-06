@@ -15,6 +15,7 @@ import { loadUniverseShaders } from '@/elements/universe/utils/shaders'
 import { buildUniversePalette } from '@/elements/universe/theme'
 import type { StarSystemConfig } from '@/elements/universe/types'
 import styles from './styles.module.css'
+import { HomePlanetsPanel } from '../HomePlanetsPanel'
 import { HomeSystemSidebar } from '../HomeSystemSidebar'
 import { HomeActionDock } from '../HomeActionDock'
 import { HomeHud } from '../HomeHud'
@@ -271,6 +272,18 @@ function HomePlanetHero() {
         onReload={handleReloadWorld}
         buttonTitle={t('WorldPage:scene.reflyIdle')}
         buttonLabel={t('WorldPage:scene.reflySystem')}
+      />
+
+      <HomePlanetsPanel
+        system={activeSystem}
+        panelTitle={t('WorldPage:scene.planetsPanelTitle')}
+        followLabel={t('WorldPage:scene.followPlanet')}
+        enterLabel={t('WorldPage:scene.enterPlanet')}
+        onFollowPlanet={(planetId) => {
+          if (!focusedSystemId) return
+          sceneControllerRef.current?.setFocusPlanet(focusedSystemId, planetId)
+        }}
+        onEnterPlanet={(planet) => planet.onSelect()}
       />
 
       <HomeHud

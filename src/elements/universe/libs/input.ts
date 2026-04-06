@@ -31,7 +31,7 @@ export class SceneInput {
 
   onDraggingChange?: (dragging: boolean) => void
   onHoverChange?: (info: Nilable<HoverInfo>) => void
-  onObjectClick?: (object: THREE.Object3D) => void
+  onObjectClick?: (object: THREE.Object3D, event: Pick<PointerEvent, 'button'>) => void
   onBreakFocus?: () => void
 
   private dragDeltaX = 0
@@ -147,10 +147,6 @@ export class SceneInput {
 
     this.dragDeltaX += dx
     this.dragDeltaY += dy
-
-    if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
-      this.onBreakFocus?.()
-    }
   }
 
   private onPointerUp(event: PointerEvent) {
@@ -164,7 +160,7 @@ export class SceneInput {
     this.host.releasePointerCapture?.(event.pointerId)
     this.onDraggingChange?.(false)
     if (isClick && this.hoveredObject) {
-      this.onObjectClick?.(this.hoveredObject)
+      this.onObjectClick?.(this.hoveredObject, event)
     }
   }
 

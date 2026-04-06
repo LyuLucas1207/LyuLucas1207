@@ -9,7 +9,7 @@
     "eyebrow": "星系导航",
     "title": "一个可以被拖动、旋转并进入的个人世界星系。",
     "description": "拖动整个星系，等待它自行旋转，再通过每个星球进入不同的世界，而不是阅读一排静态栏目。",
-    "dragHint": "拖动星系，点击星球进入对应世界。"
+    "dragHint": "拖动星系，选择恒星系统后，在右侧列表中跟随或进入行星。"
   },
   "scene": {
     "eyebrow": "Lyu 星域场景",
@@ -37,8 +37,11 @@
     "languageGalaxyDescription": "切换语言卫星，无需离开当前场景",
     "selectedSystem": "当前系统",
     "freeNavigation": "自由遨游",
-    "freeNavigationDesc": "拖动星系，点击星球进入对应世界",
+    "freeNavigationDesc": "拖动星系，选定系统后，在右侧列表中跟随或进入行星",
     "planetUnit": "颗星球",
+    "planetsPanelTitle": "行星",
+    "followPlanet": "跟随",
+    "enterPlanet": "进入",
     "reflySystem": "重新飞入世界",
     "reflyIdle": "重新初始化当前宇宙",
     "selectGalaxy": "选择星系"

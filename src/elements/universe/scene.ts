@@ -20,6 +20,7 @@ import {
 } from './fragments'
 import { attachRandomPlanetGlb } from './utils/planetGlb'
 import { attachRandomRingStripTexture } from './utils/ringTextures'
+import { attachRandomSystemStellarGlb } from './utils/stellarGlb'
 import {
   attachRandomUniverseBackground,
   disposeSceneBackground,
@@ -45,6 +46,7 @@ type CreateSceneOptions = {
 export type UniverseSceneController = {
   destroy: () => void
   setFocusSystem: (systemId?: string) => void
+  setFocusPlanet: (systemId: string, planetId: string) => void
 }
 
 export function createUniverseScene({
@@ -119,6 +121,7 @@ export function createUniverseScene({
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
+    void attachRandomSystemStellarGlb(runtime.stellar)
     runtime.planets.forEach((p) => {
       void attachRandomPlanetGlb(p)
       if (p.ring) void attachRandomRingStripTexture(p.ring)
@@ -140,12 +143,17 @@ export function createUniverseScene({
   input.onDraggingChange = onDraggingChange
   input.onHoverChange = onHoverChange
   input.onBreakFocus = () => cameraRig.clearFocus()
-  input.onObjectClick = (obj) => {
-    if (typeof obj.userData.action === 'function') {
-      obj.userData.action()
+  input.onObjectClick = (obj, event) => {
+    if (event.button !== 0) return
+
+    const action = obj.userData.action
+    if (typeof action === 'function') {
+      action()
+      return
     }
-    if (obj.userData.focusSystem) {
-      const runtime = obj.userData.focusSystem as CameraFocusTarget & { group: THREE.Group }
+
+    const runtime = obj.userData.focusSystem as (CameraFocusTarget & { group: THREE.Group }) | undefined
+    if (runtime) {
       setFocusSystem(runtime.group.userData.systemId as string | undefined)
     }
   }
@@ -156,8 +164,25 @@ export function createUniverseScene({
       cameraRig.clearFocus()
       return
     }
-    const runtime = systemRuntimeMap.get(systemId) ?? null
-    cameraRig.setFocus(runtime)
+    const rt = systemRuntimeMap.get(systemId) ?? null
+    if (!rt) return
+    cameraRig.setFocus({
+      group: rt.group,
+      maxOrbitRadius: rt.maxOrbitRadius,
+    })
+  }
+
+  const setFocusPlanet = (systemId: string, planetId: string) => {
+    const rt = systemRuntimeMap.get(systemId)
+    if (!rt) return
+    const entry = rt.planets.find((p) => p.mesh.userData.planetId === planetId)
+    if (!entry) return
+    cameraRig.setFocus({
+      group: rt.group,
+      maxOrbitRadius: rt.maxOrbitRadius,
+      follow: entry.body,
+      followFrameRadius: entry.mesh.userData.planetRadius as number,
+    })
   }
 
   const timer = new THREE.Timer()
@@ -250,5 +275,6 @@ export function createUniverseScene({
   return {
     destroy,
     setFocusSystem,
+    setFocusPlanet,
   } satisfies UniverseSceneController
 }

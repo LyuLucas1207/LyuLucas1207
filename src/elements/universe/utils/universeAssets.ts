@@ -36,6 +36,15 @@ export const SATELLITES_GLB_URLS: string[] = [
 /** 星环径向条带 PNG（横向=半径、竖向=周向可 repeat） */
 export const RING_RADIAL_STRIP_URLS: string[] = ['/textures/rings/ring1.png']
 
+/** 各恒星系统随机恒星 GLB */
+export const STELLAR_GLB_URLS: string[] = [
+  '/textures/stellars/Astrax.glb',
+  '/textures/stellars/Coruscant.glb',
+  '/textures/stellars/Crimora.glb',
+  '/textures/stellars/Solvrax.glb',
+  '/textures/stellars/Vorthalis.glb',
+]
+
 /** 宇宙全景/天空背景图（2:1 equirectangular 最佳；`Scene.background`） */
 export const UNIVERSE_BACKGROUND_URLS: string[] = [
   '/textures/universes/universe1.jpg',

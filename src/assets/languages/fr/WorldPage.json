@@ -9,7 +9,7 @@
     "eyebrow": "Navigation galactique",
     "title": "Une galaxie navigable de travail, de vie, de systèmes et de mondes réflexifs.",
     "description": "Faites glisser la galaxie, laissez-la tourner et entrez dans chaque monde par sa propre orbite plutôt que par une liste plate.",
-    "dragHint": "Faites glisser la galaxie. Cliquez sur une planète pour entrer dans son monde."
+    "dragHint": "Faites glisser la galaxie, choisissez un système, puis utilisez la liste à droite pour suivre ou entrer."
   },
   "scene": {
     "eyebrow": "Scène Lyu Star Realm",
@@ -37,8 +37,11 @@
     "languageGalaxyDescription": "Changez de langue sans quitter la scène",
     "selectedSystem": "Système actuel",
     "freeNavigation": "Navigation libre",
-    "freeNavigationDesc": "Faites glisser la galaxie pour explorer",
+    "freeNavigationDesc": "Faites glisser la galaxie, choisissez un système, puis utilisez la liste à droite pour suivre ou entrer.",
     "planetUnit": "planètes",
+    "planetsPanelTitle": "Planètes",
+    "followPlanet": "Suivre",
+    "enterPlanet": "Entrer",
     "reflySystem": "Réentrer dans le monde",
     "reflyIdle": "Réinitialiser cet univers",
     "selectGalaxy": "Choisir galaxie"

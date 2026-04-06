@@ -49,11 +49,14 @@ export interface StellarShellShaders {
 export interface StellarConfig {
   radius: number
   segments: number
+  /** 核心（球/GLB）绕本地 Y 自转角速度，弧度/秒；`update` 内用 `elapsed * coreSpinSpeed` */
+  coreSpinSpeed: number
   emissive: GlowOnOff
   palette: StellarPalette
   isLight: boolean
   surface: StellarSurfaceConfig
-  shell: StellarShellConfig
+  /** 半透明外壳；`undefined` 时不创建外层球壳 */
+  shell: Nilable<StellarShellConfig>
   keyLight: StellarLightConfig
   halo: Nilable<StellarHaloConfig>
   rimLight: Nilable<StellarLightConfig>

@@ -7,6 +7,7 @@ import type {
   StellarShellShaders,
   StellarSurfaceConfig,
 } from './types'
+import type { Nilable } from 'nfx-ui/types'
 import type { GlowOnOff } from '../types'
 
 const DEFAULT_PALETTE: StellarPalette = {
@@ -21,6 +22,7 @@ const DEFAULT_PALETTE: StellarPalette = {
 const CORE_STAR_DEFAULTS: StellarConfig = {
   radius: 8,
   segments: 48,
+  coreSpinSpeed: 0.14,
   emissive: { off: 2.8, on: 4.2 },
   palette: DEFAULT_PALETTE,
   isLight: false,
@@ -36,12 +38,13 @@ const CORE_STAR_DEFAULTS: StellarConfig = {
 const SYSTEM_STAR_DEFAULTS: StellarConfig = {
   radius: 3.2,
   segments: 32,
-  emissive: { off: 2.4, on: 3.4 },
+  coreSpinSpeed: 0.52,
+  emissive: { off: 3.6, on: 5.2 },
   palette: DEFAULT_PALETTE,
   isLight: false,
   surface: { roughness: 0.2, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.14 },
-  shell: { radius: 5.2, opacity: { off: 0.16, on: 0.22 }, ifanimate: true },
-  keyLight: { intensity: { off: 10, on: 14 }, distance: 54, position: [4, 4, 5] },
+  shell: undefined,
+  keyLight: { intensity: { off: 22, on: 32 }, distance: 72, position: [4, 4, 5] },
   halo: undefined,
   rimLight: undefined,
   shellShaders: undefined,
@@ -84,6 +87,11 @@ export class StellarBuilder {
     return this
   }
 
+  coreSpinSpeed(value: number) {
+    this.config.coreSpinSpeed = value
+    return this
+  }
+
   emissive(value: GlowOnOff) {
     this.config.emissive = value
     return this
@@ -94,12 +102,12 @@ export class StellarBuilder {
     return this
   }
 
-  shell(value: StellarShellConfig) {
+  shell(value: Nilable<StellarShellConfig>) {
     this.config.shell = value
     return this
   }
 
-  halo(value: StellarHaloConfig) {
+  halo(value: Nilable<StellarHaloConfig>) {
     this.config.halo = value
     return this
   }
@@ -109,18 +117,23 @@ export class StellarBuilder {
     return this
   }
 
-  rimLight(value: StellarLightConfig) {
+  rimLight(value: Nilable<StellarLightConfig>) {
     this.config.rimLight = value
     return this
   }
 
-  shellShaders(value: StellarShellShaders) {
+  shellShaders(value: Nilable<StellarShellShaders>) {
     this.config.shellShaders = value
     return this
   }
 
   noHalo() {
     this.config.halo = undefined
+    return this
+  }
+
+  noShell() {
+    this.config.shell = undefined
     return this
   }
 

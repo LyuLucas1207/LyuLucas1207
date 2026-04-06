@@ -55,8 +55,15 @@ export const UNIVERSE_SYSTEM_LAYOUT = {
   startAngle: -Math.PI / 2,
 }
 
+/** 跟焦整个星系（`group` 锚点 / 恒星） */
 export const UNIVERSE_SYSTEM_FOCUS = {
-  heightOffset: 19,
+  heightOffset: 26,
   distanceOffset: 26,
+  lerp: 0.08,
+}
+
+/** 跟焦单颗行星（`follow` 为行星 body）；与星系参数分开调 */
+export const UNIVERSE_PLANET_FOCUS = {
+  heightOffset: 26,
   lerp: 0.08,
 }

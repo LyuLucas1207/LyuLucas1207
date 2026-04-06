@@ -6,6 +6,7 @@ import {
   UNIVERSE_CAMERA_DRIFT,
   UNIVERSE_CAMERA_LIMITS,
   UNIVERSE_MOTION,
+  UNIVERSE_PLANET_FOCUS,
   UNIVERSE_ROTATION_SPEED,
   UNIVERSE_SYSTEM_FOCUS,
 } from '../constants'
@@ -14,6 +15,10 @@ import type { SceneInput } from './input'
 export interface CameraFocusTarget {
   group: THREE.Group
   maxOrbitRadius: number
+  /** 若设置，观察目标与相机偏移相对于该物体（如行星 `body`），否则相对 `group`（星系锚点）。 */
+  follow?: THREE.Object3D
+  /** 与 `follow` 配套，用于计算相机距离（通常取行星半径）。 */
+  followFrameRadius?: number
 }
 
 export interface CameraUpdateOptions {
@@ -36,6 +41,9 @@ export class CameraRig {
 
   private focusTarget: Nilable<CameraFocusTarget> = null
   private followingFocus = false
+  /** 跟焦时在「朝向目标」基础上的额外 yaw/pitch（拖拽写这里，避免被每帧基准朝向覆盖） */
+  private focusYawOffset = 0
+  private focusPitchOffset = 0
 
   private readonly forward = new THREE.Vector3()
   private readonly strafe = new THREE.Vector3()
@@ -60,6 +68,8 @@ export class CameraRig {
   setFocus(target: Nilable<CameraFocusTarget>) {
     this.focusTarget = target
     this.followingFocus = target !== null
+    this.focusYawOffset = 0
+    this.focusPitchOffset = 0
     if (target) {
       this.movement.velocity.set(0, 0, 0)
       this.movement.thrust = 0
@@ -70,6 +80,8 @@ export class CameraRig {
   clearFocus() {
     this.focusTarget = null
     this.followingFocus = false
+    this.focusYawOffset = 0
+    this.focusPitchOffset = 0
     this.onFocusSystemChange?.(undefined)
   }
 
@@ -80,9 +92,15 @@ export class CameraRig {
 
   update(input: SceneInput, elapsed: number, options: CameraUpdateOptions) {
     const { dx, dy } = input.consumeDragDelta()
-    this.movement.targetYaw -= dx * 0.0024
-    this.movement.targetPitch -= dy * 0.0021
-    this.movement.targetPitch = THREE.MathUtils.clamp(this.movement.targetPitch, -1.45, 1.45)
+    if (this.focusTarget && this.followingFocus) {
+      this.focusYawOffset -= dx * 0.0024
+      this.focusPitchOffset -= dy * 0.0021
+      this.focusPitchOffset = THREE.MathUtils.clamp(this.focusPitchOffset, -0.95, 0.95)
+    } else {
+      this.movement.targetYaw -= dx * 0.0024
+      this.movement.targetPitch -= dy * 0.0021
+      this.movement.targetPitch = THREE.MathUtils.clamp(this.movement.targetPitch, -1.45, 1.45)
+    }
 
     const wheelDelta = input.consumeWheelDelta()
     this.movement.thrust += THREE.MathUtils.clamp(
@@ -92,12 +110,27 @@ export class CameraRig {
     )
 
     if (this.focusTarget && this.followingFocus) {
-      this.focusTarget.group.getWorldPosition(this.lookTarget)
-      this.focusOffset.set(0, UNIVERSE_SYSTEM_FOCUS.heightOffset, this.focusTarget.maxOrbitRadius * 1.5)
-      this.desiredPosition.copy(this.focusTarget.group.localToWorld(this.focusOffset.clone()))
+      const follow = this.focusTarget.follow
+      const planetFollow = follow != null
+      const anchor = planetFollow ? follow : this.focusTarget.group
+      const frameR = planetFollow
+        ? (this.focusTarget.followFrameRadius ?? this.focusTarget.maxOrbitRadius)
+        : this.focusTarget.maxOrbitRadius
+      const cam = planetFollow ? UNIVERSE_PLANET_FOCUS : UNIVERSE_SYSTEM_FOCUS
+      anchor.getWorldPosition(this.lookTarget)
+      this.focusOffset.set(0, cam.heightOffset, frameR * 1.5)
+      this.desiredPosition.copy(anchor.localToWorld(this.focusOffset.clone()))
       this.clampPosition(this.desiredPosition)
-      this.camera.position.lerp(this.desiredPosition, UNIVERSE_SYSTEM_FOCUS.lerp)
-      this.applyLookAt(this.camera.position, this.lookTarget)
+      this.camera.position.lerp(this.desiredPosition, cam.lerp)
+      const direction = this.lookTarget.clone().sub(this.camera.position).normalize()
+      const baseYaw = Math.atan2(-direction.x, -direction.z)
+      const basePitch = Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))
+      this.movement.targetYaw = baseYaw + this.focusYawOffset
+      this.movement.targetPitch = THREE.MathUtils.clamp(
+        basePitch + this.focusPitchOffset,
+        -1.45,
+        1.45,
+      )
     }
 
     this.movement.yaw = THREE.MathUtils.lerp(this.movement.yaw, this.movement.targetYaw, UNIVERSE_MOTION.yawLerp)
@@ -135,7 +168,8 @@ export class CameraRig {
       this.clampPosition(this.camera.position)
     }
 
-    if (!options.prefersReducedMotion && !input.isDragging) {
+    // 跟焦时禁用漂移，否则相机会在世界里抖动，无法与目标（尤其行星）保持相对静止
+    if (!options.prefersReducedMotion && !input.isDragging && !this.followingFocus) {
       this.movement.targetYaw += options.isLight
         ? UNIVERSE_ROTATION_SPEED.driftLight
         : UNIVERSE_ROTATION_SPEED.driftDark
@@ -151,9 +185,4 @@ export class CameraRig {
     position.z = THREE.MathUtils.clamp(position.z, -UNIVERSE_CAMERA_LIMITS.z, UNIVERSE_CAMERA_LIMITS.z)
   }
 
-  private applyLookAt(position: THREE.Vector3, target: THREE.Vector3) {
-    const direction = target.clone().sub(position).normalize()
-    this.movement.targetYaw = Math.atan2(-direction.x, -direction.z)
-    this.movement.targetPitch = Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))
-  }
 }
