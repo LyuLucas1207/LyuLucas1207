@@ -2,19 +2,46 @@ import * as THREE from 'three'
 
 import type { Nullable } from 'nfx-ui/types'
 import { safeZeroable } from 'nfx-ui/utils'
+
+import type { CameraRigMovement } from '../../libs/camera'
+import {
+  clampCameraPosition,
+  setLocalQuaternionFromWorldLookAt,
+  syncMainCameraWorldUpView,
+  unwrapYawNear,
+  worldOrbitBaseFromOffsetTowardTarget,
+  worldYawPitchToCameraMinusZ,
+} from '../../libs/camera'
 import { Fragment } from '../../libs/fragment'
 import { disposeMaterials, disposeObject3DSubtree } from '../../utils/disposeThreeResources'
 import type { StellarConfig } from './types'
 
-export type { StellarConfig, StellarCoreHoverConfig, StellarPalette, StellarShellShaders } from './types'
+export type {
+  StellarConfig,
+  StellarCoreHoverConfig,
+  StellarFocusCameraConfig,
+  StellarPalette,
+  StellarShellShaders,
+} from './types'
 export { StellarBuilder } from './builder'
 
 export class Stellar extends Fragment {
   readonly group: THREE.Group
   readonly coreMesh: THREE.Mesh
+  /** 星系跟焦：挂在 `group` 下的机位（由 `tickSystemFocus` 每帧更新） */
+  readonly focusCamera: THREE.PerspectiveCamera
   /** 球体/GLB 统一使用的目标半径（与 `StellarConfig.radius` 一致） */
   readonly coreTargetRadius: number
   private readonly coreSlot: THREE.Group
+  private readonly focusCfg: StellarConfig['focusCamera']
+  private systemMaxOrbit = 48
+  private readonly camScratch = {
+    lookTarget: new THREE.Vector3(),
+    focusOffset: new THREE.Vector3(),
+    localDesired: new THREE.Vector3(),
+    lookDirScratch: new THREE.Vector3(),
+    camWorldPos: new THREE.Vector3(),
+  }
   private shellMesh: Nullable<THREE.Mesh> = null
   private shellAnimated = false
   private haloMesh: Nullable<THREE.Mesh> = null
@@ -30,25 +57,18 @@ export class Stellar extends Fragment {
     return this.group
   }
 
-  /** 星系恒星交互命中 `coreMesh`，与 `mergeUserData` 一致 */
-  get userData() {
-    return this.coreMesh.userData
+  /** 射线/交互写在 `coreMesh.userData`，与银河中心球等不同 */
+  protected get userDataTarget() {
+    return this.coreMesh
   }
 
-  mergeUserData(patch: Record<string, unknown>) {
-    Object.assign(this.coreMesh.userData, patch)
-  }
-
-  setUserData(data: Record<string, unknown>) {
-    const ud = this.coreMesh.userData
-    for (const k of Object.keys({ ...ud })) {
-      delete ud[k]
-    }
-    Object.assign(ud, data)
+  get focusOrbitPitchLimit() {
+    return this.focusCfg.orbitPitchLimit
   }
 
   constructor(config: StellarConfig) {
     super()
+    this.focusCfg = config.focusCamera
     this.group = new THREE.Group()
     this.coreSlot = new THREE.Group()
     this.coreTargetRadius = config.radius
@@ -150,6 +170,52 @@ export class Stellar extends Fragment {
       rimLight.position.set(...config.rimLight.position)
       this.group.add(rimLight)
     }
+
+    const fc = config.focusCamera
+    this.focusCamera = new THREE.PerspectiveCamera(fc.fov, 1, fc.near, fc.far)
+    this.focusCamera.name = 'stellarFocusCamera'
+    this.group.add(this.focusCamera)
+  }
+
+  /** 跟焦该星系前由场景传入 `maxOrbitRadius`（行星轨道包络） */
+  prepareSystemFocus(maxOrbitRadius: number) {
+    this.systemMaxOrbit = maxOrbitRadius
+  }
+
+  tickSystemFocus(yawOffset: number, pitchOffset: number, movement: CameraRigMovement) {
+    const fc = this.focusCfg
+    const frameR = this.systemMaxOrbit
+    this.coreMesh.getWorldPosition(this.camScratch.lookTarget)
+    this.camScratch.focusOffset.set(0, fc.heightOffset, frameR * fc.distanceZFactor)
+    const { dist, baseYaw, basePitch } = worldOrbitBaseFromOffsetTowardTarget(
+      this.camScratch.focusOffset.x,
+      this.camScratch.focusOffset.y,
+      this.camScratch.focusOffset.z,
+    )
+
+    movement.targetYaw = unwrapYawNear(baseYaw + yawOffset, movement.yaw)
+    movement.targetPitch = THREE.MathUtils.clamp(basePitch + pitchOffset, -fc.maxPitch, fc.maxPitch)
+
+    movement.yaw = THREE.MathUtils.lerp(movement.yaw, movement.targetYaw, fc.yawLerp)
+    movement.pitch = THREE.MathUtils.lerp(movement.pitch, movement.targetPitch, fc.pitchLerp)
+
+    worldYawPitchToCameraMinusZ(movement.yaw, movement.pitch, this.camScratch.lookDirScratch)
+    this.camScratch.camWorldPos
+      .copy(this.camScratch.lookTarget)
+      .addScaledVector(this.camScratch.lookDirScratch, -dist)
+    clampCameraPosition(this.camScratch.camWorldPos)
+    this.camScratch.localDesired.copy(this.camScratch.camWorldPos)
+    this.group.worldToLocal(this.camScratch.localDesired)
+    this.focusCamera.position.lerp(this.camScratch.localDesired, fc.positionLerp)
+
+    this.focusCamera.getWorldPosition(this.camScratch.camWorldPos)
+    setLocalQuaternionFromWorldLookAt(this.focusCamera, this.camScratch.camWorldPos, this.camScratch.lookTarget)
+  }
+
+  exitSystemFocus(main: THREE.PerspectiveCamera, movement: CameraRigMovement) {
+    this.focusCamera.getWorldPosition(main.position)
+    this.focusCamera.getWorldDirection(this.camScratch.lookDirScratch)
+    syncMainCameraWorldUpView(main, this.camScratch.lookDirScratch, movement)
   }
 
   /**

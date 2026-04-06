@@ -1,4 +1,4 @@
-import { ThemeEnum, type ColorVariables } from 'nfx-ui/themes'
+import { ThemeEnum } from 'nfx-ui/themes'
 
 import type { UniversePalette } from './types'
 
@@ -13,10 +13,7 @@ import rubyNebula from './themes/rubyNebula'
 import solarEmpire from './themes/solarEmpire'
 
 
-export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables): UniversePalette {
-  // Deterministic mapping (no random).
-  void _vars // keep signature compatibility; this mapper is deterministic via hardcoded theme configs.
-
+export function buildUniversePalette(themeEnum: ThemeEnum): UniversePalette {
   switch (themeEnum) {
     case ThemeEnum.DEFAULT:
       return crimsonDominion

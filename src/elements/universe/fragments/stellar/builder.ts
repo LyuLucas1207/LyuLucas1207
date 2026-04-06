@@ -1,6 +1,8 @@
+import { deepClone } from '@/utils'
 import type {
   StellarConfig,
   StellarCoreHoverConfig,
+  StellarFocusCameraConfig,
   StellarHaloConfig,
   StellarLightConfig,
   StellarPalette,
@@ -20,6 +22,27 @@ const DEFAULT_PALETTE: StellarPalette = {
   rimLightColor: '#000000',
 }
 
+/** 与历史 `UNIVERSE_SYSTEM_FOCUS` / `UNIVERSE_MOTION` 对齐的默认跟焦参数（仅 builder 持有，fragment 只读 config） */
+const DEFAULT_STELLAR_FOCUS_CAMERA: StellarFocusCameraConfig = {
+  fov: 68,
+  near: 0.1,
+  far: 2800,
+  heightOffset: 36,
+  distanceZFactor: 2.80,
+  positionLerp: 0.08,
+  yawLerp: 0.08,
+  pitchLerp: 0.08,
+  maxPitch: 1.45,
+  orbitPitchLimit: 0.95,
+}
+
+const DEFAULT_STELLAR_CORE_HOVER: StellarCoreHoverConfig = {
+  systemName: '',
+  label: '',
+  baseScale: 1,
+  hovered: false,
+}
+
 const CORE_STAR_DEFAULTS: StellarConfig = {
   radius: 8,
   segments: 48,
@@ -34,7 +57,8 @@ const CORE_STAR_DEFAULTS: StellarConfig = {
   keyLight: { intensity: { off: 26, on: 36 }, distance: 96, position: [10, 7, 14] },
   rimLight: { intensity: { off: 8, on: 14 }, distance: 120, position: [-16, -10, -18] },
   shellShaders: undefined,
-  coreHover: { systemName: '', label: '', baseScale: 1, hovered: false },
+  coreHover: DEFAULT_STELLAR_CORE_HOVER,
+  focusCamera: DEFAULT_STELLAR_FOCUS_CAMERA,
 }
 
 const SYSTEM_STAR_DEFAULTS: StellarConfig = {
@@ -50,23 +74,24 @@ const SYSTEM_STAR_DEFAULTS: StellarConfig = {
   halo: undefined,
   rimLight: undefined,
   shellShaders: undefined,
-  coreHover: { systemName: '', label: '', baseScale: 1, hovered: false },
+  coreHover: DEFAULT_STELLAR_CORE_HOVER,
+  focusCamera: DEFAULT_STELLAR_FOCUS_CAMERA,
 }
 
 export class StellarBuilder {
   private config: StellarConfig
 
   constructor() {
-    this.config = { ...SYSTEM_STAR_DEFAULTS }
+    this.config = deepClone(SYSTEM_STAR_DEFAULTS)
   }
 
   coreStar() {
-    this.config = { ...CORE_STAR_DEFAULTS }
+    this.config = deepClone(CORE_STAR_DEFAULTS)
     return this
   }
 
   systemStar() {
-    this.config = { ...SYSTEM_STAR_DEFAULTS }
+    this.config = deepClone(SYSTEM_STAR_DEFAULTS)
     return this
   }
 
@@ -135,6 +160,11 @@ export class StellarBuilder {
     return this
   }
 
+  focusCamera(value: StellarFocusCameraConfig) {
+    this.config.focusCamera = value
+    return this
+  }
+
   noHalo() {
     this.config.halo = undefined
     return this
@@ -181,6 +211,6 @@ export class StellarBuilder {
   }
 
   done(): StellarConfig {
-    return { ...this.config }
+    return deepClone(this.config)
   }
 }

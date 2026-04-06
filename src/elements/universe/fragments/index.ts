@@ -2,6 +2,7 @@ export { Fragment } from '../libs/fragment'
 export { Planet, PlanetBuilder } from './planet'
 export type {
   PlanetConfig,
+  PlanetFocusCameraConfig,
   PlanetPalette,
   PlanetPickConfig,
   PlanetRuntime,
@@ -25,7 +26,12 @@ export type {
 } from './starship'
 
 export { Stellar, StellarBuilder } from './stellar'
-export type { StellarConfig, StellarPalette, StellarShellShaders } from './stellar'
+export type {
+  StellarConfig,
+  StellarFocusCameraConfig,
+  StellarPalette,
+  StellarShellShaders,
+} from './stellar'
 
 export { Stream, StreamBuilder } from './stream'
 export type { StreamConfig, StreamPalette, StreamShaders } from './stream'

@@ -56,6 +56,22 @@ export interface StellarCoreHoverConfig {
   hovered: Nilable<boolean>
 }
 
+/** 星系跟焦机位（`focusCamera`）；数值由 `StellarBuilder` 默认，不在 fragment 内读 `constants.ts` */
+export interface StellarFocusCameraConfig {
+  fov: number
+  near: number
+  far: number
+  heightOffset: number
+  /** 本地空间相机偏移 Z = `maxOrbitRadius * distanceZFactor` */
+  distanceZFactor: number
+  positionLerp: number
+  yawLerp: number
+  pitchLerp: number
+  maxPitch: number
+  /** 拖拽 pitch 累计夹紧（弧度），与 `CameraRig` 侧一致 */
+  orbitPitchLimit: number
+}
+
 export interface StellarConfig {
   radius: number
   segments: number
@@ -72,4 +88,5 @@ export interface StellarConfig {
   rimLight: Nilable<StellarLightConfig>
   shellShaders: Nilable<StellarShellShaders>
   coreHover: Nilable<StellarCoreHoverConfig>
+  focusCamera: StellarFocusCameraConfig
 }

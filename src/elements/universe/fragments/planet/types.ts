@@ -23,6 +23,20 @@ export interface PlanetPickConfig {
   hovered?: boolean
 }
 
+/** 行星跟焦机位；默认与历史 `UNIVERSE_PLANET_FOCUS` / `UNIVERSE_MOTION` 对齐，由 `PlanetBuilder` 写入 */
+export interface PlanetFocusCameraConfig {
+  fov: number
+  near: number
+  far: number
+  heightOffset: number
+  radiusToCameraFactor: number
+  positionLerp: number
+  yawLerp: number
+  pitchLerp: number
+  maxPitch: number
+  orbitPitchLimit: number
+}
+
 export interface PlanetConfig {
   planetRadius: number
   segments: number
@@ -33,4 +47,5 @@ export interface PlanetConfig {
   surface: PlanetSurfaceConfig
   /** 星系场景传入；不设则不为碰撞体写交互字段（仅 `planetRadius` / `planetBody` 仍会写入） */
   pick: Nilable<PlanetPickConfig>
+  focusCamera: PlanetFocusCameraConfig
 }

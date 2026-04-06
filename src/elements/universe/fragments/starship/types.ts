@@ -5,7 +5,7 @@ export interface StarshipChaseCamConfig {
   localX: number
   localY: number
   localZ: number
-  /** 跟船拖拽 pitch 夹紧（弧度），与 `CameraRig` 一致 */
+  /** 跟船拖拽 pitch 夹紧（弧度），与 `UniverseFocusCamera.orbitPitchLimit` 一致 */
   orbitPitchLimit: number
 }
 

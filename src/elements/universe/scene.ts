@@ -4,7 +4,7 @@ import type { Nilable, Nullable } from 'nfx-ui/types'
 import { safeNullable, safeOr } from 'nfx-ui/utils'
 
 import { CameraRig } from './libs/camera'
-import type { CameraFocusTarget } from './libs/camera'
+import type { UniverseFocusCamera } from './libs/camera'
 import { Group } from './libs/group'
 import {
   UNIVERSE_CAMERA_POSITION,
@@ -17,6 +17,7 @@ import type { HoverInfo } from './libs/input'
 import {
   collectPlanetWaypoints,
   Nebula, NebulaBuilder,
+  Planet,
   Starship, StarshipBuilder,
   Stellar, StellarBuilder,
   Stream, StreamBuilder,
@@ -32,12 +33,66 @@ import {
   spinUniverseTexture,
 } from './textures/universeTextures'
 import { createStarSystem, createSystemAnchors } from './systems'
+import type { StarSystemRuntime } from './systems'
 import { attachStarshipGlbRoot } from './textures/starshipGlb'
 import type { StarSystemConfig, UniversePalette } from './types'
 import { disposeObject3DSubtree } from './utils/disposeThreeResources'
 import type { UniverseShaders } from './utils/shaders'
 
 export type { HoverInfo } from './libs/input'
+
+function makeStellarFocus(stellar: Stellar, maxOrbit: number): UniverseFocusCamera {
+  stellar.prepareSystemFocus(maxOrbit)
+  return {
+    camera: stellar.focusCamera,
+    orbitPitchLimit: stellar.focusOrbitPitchLimit,
+    resize(w, h) {
+      const a = w / Math.max(h, 1)
+      stellar.focusCamera.aspect = a
+      stellar.focusCamera.updateProjectionMatrix()
+    },
+    tick(yaw, pitch, m) {
+      stellar.tickSystemFocus(yaw, pitch, m)
+    },
+    exitToMainCamera(main, m) {
+      stellar.exitSystemFocus(main, m)
+    },
+  }
+}
+
+function makePlanetFocus(planet: Planet): UniverseFocusCamera {
+  return {
+    camera: planet.focusCamera,
+    orbitPitchLimit: planet.focusOrbitPitchLimit,
+    resize(w, h) {
+      const a = w / Math.max(h, 1)
+      planet.focusCamera.aspect = a
+      planet.focusCamera.updateProjectionMatrix()
+    },
+    tick(yaw, pitch, m) {
+      planet.tickPlanetFocus(yaw, pitch, m)
+    },
+    exitToMainCamera(main, m) {
+      planet.exitPlanetFocus(main, m)
+    },
+  }
+}
+
+function makeStarshipFocus(ship: Starship): UniverseFocusCamera {
+  return {
+    camera: ship.chaseCamera,
+    orbitPitchLimit: ship.config.chaseCam.orbitPitchLimit,
+    resize(w, h) {
+      ship.resizeChaseCamera(w, h)
+    },
+    tick(yaw, pitch, m) {
+      ship.applyChaseOrbit(yaw, pitch, m)
+    },
+    exitToMainCamera(main, m) {
+      ship.exitChaseToMain(main, m)
+    },
+  }
+}
 
 type CreateSceneOptions = {
   host: HTMLDivElement
@@ -135,7 +190,6 @@ export function createUniverseScene({
     return runtime
   })
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime]))
-  const maxGalaxyOrbit = Math.max(1, ...systemRuntimes.map((r) => r.maxOrbitRadius))
   systemRuntimes.forEach((runtime) => {
     runtime.stellar.mergeUserData({ focusSystem: runtime })
     galaxyCore.add(runtime.group)
@@ -216,10 +270,17 @@ export function createUniverseScene({
   const input = new SceneInput(host, () => cameraRig.getRenderCamera(), interactiveObjects)
   cameraRig = new CameraRig(camera)
 
+  const syncViewportToCameras = () => {
+    const w = host.clientWidth
+    const h = host.clientHeight
+    cameraRig.resize(w, h)
+  }
+
   input.onDraggingChange = onDraggingChange
   input.onHoverChange = onHoverChange
   input.onBreakFocus = () => {
     cameraRig.clearFocus()
+    onFocusSystemChange?.(undefined)
     onBreakCameraFollow?.()
   }
   input.onObjectClick = (obj, event) => {
@@ -231,24 +292,23 @@ export function createUniverseScene({
       return
     }
 
-    const runtime = obj.userData.focusSystem as (CameraFocusTarget & { group: THREE.Group }) | undefined
+    const runtime = obj.userData.focusSystem as StarSystemRuntime | undefined
     if (runtime) {
       setFocusSystem(runtime.group.userData.systemId as string | undefined)
     }
   }
-  cameraRig.onFocusSystemChange = onFocusSystemChange
 
   const setFocusSystem = (systemId?: string) => {
     if (!systemId) {
       cameraRig.clearFocus()
+      onFocusSystemChange?.(undefined)
       return
     }
     const rt = safeNullable(systemRuntimeMap.get(systemId))
     if (!rt) return
-    cameraRig.setFocus({
-      group: rt.group,
-      maxOrbitRadius: rt.maxOrbitRadius,
-    })
+    cameraRig.setFocus(makeStellarFocus(rt.stellar, rt.maxOrbitRadius))
+    syncViewportToCameras()
+    onFocusSystemChange?.(systemId)
   }
 
   const setFocusPlanet = (systemId: string, planetId: string) => {
@@ -256,32 +316,23 @@ export function createUniverseScene({
     if (!rt) return
     const entry = rt.planets.find((p) => p.mesh.userData.planetId === planetId)
     if (!entry) return
-    cameraRig.setFocus({
-      group: rt.group,
-      maxOrbitRadius: rt.maxOrbitRadius,
-      follow: entry.body,
-      followFrameRadius: entry.mesh.userData.planetRadius as number,
-      followRole: 'planet',
-    })
+    cameraRig.setFocus(makePlanetFocus(entry.planet))
+    syncViewportToCameras()
+    onFocusSystemChange?.(systemId)
   }
 
   const setFollowStarship = (shipIndex: Nullable<number>) => {
     if (shipIndex === null) {
       cameraRig.clearFocus()
+      onFocusSystemChange?.(undefined)
       return
     }
     const ship = starships[shipIndex]
     if (!ship) return
     ship.resizeChaseCamera(host.clientWidth, host.clientHeight)
-    cameraRig.setFocus({
-      group: galaxyCore,
-      maxOrbitRadius: maxGalaxyOrbit,
-      follow: ship.facing,
-      followFrameRadius: ship.config.modelRadius,
-      followRole: 'starship',
-      starshipChaseCamera: ship.chaseCamera,
-      starshipOrbitPitchLimit: ship.config.chaseCam.orbitPitchLimit,
-    })
+    cameraRig.setFocus(makeStarshipFocus(ship))
+    syncViewportToCameras()
+    onFocusSystemChange?.(undefined)
   }
 
   const timer = new THREE.Timer()

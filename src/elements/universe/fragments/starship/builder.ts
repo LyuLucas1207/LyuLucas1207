@@ -1,3 +1,4 @@
+import { deepClone } from '@/utils'
 import type {
   StarshipChaseCamConfig,
   StarshipConfig,
@@ -55,24 +56,11 @@ const DEFAULTS: StarshipConfig = {
   pose: DEFAULT_POSE,
 }
 
-function cloneConfig(base: StarshipConfig): StarshipConfig {
-  return {
-    ...base,
-    chaseCam: { ...base.chaseCam },
-    glow: { ...base.glow },
-    planetHop: { ...base.planetHop },
-    pose: {
-      ...base.pose,
-      worldUp: [base.pose.worldUp[0], base.pose.worldUp[1], base.pose.worldUp[2]],
-    },
-  }
-}
-
 export class StarshipBuilder {
   private config: StarshipConfig
 
   constructor() {
-    this.config = cloneConfig(DEFAULTS)
+    this.config = deepClone(DEFAULTS)
   }
 
   modelRadius(value: number) {
@@ -120,6 +108,6 @@ export class StarshipBuilder {
   }
 
   done(): StarshipConfig {
-    return cloneConfig(this.config)
+    return deepClone(this.config)
   }
 }

@@ -1,54 +1,148 @@
 import * as THREE from 'three'
 
-import type { Nilable } from 'nfx-ui/types'
-import { safeOr } from 'nfx-ui/utils'
-
 import {
   UNIVERSE_CAMERA_DRIFT,
   UNIVERSE_CAMERA_LIMITS,
   UNIVERSE_MOTION,
-  UNIVERSE_PLANET_FOCUS,
   UNIVERSE_ROTATION_SPEED,
-  UNIVERSE_SYSTEM_FOCUS,
 } from '../constants'
 import type { SceneInput } from './input'
 
-export interface CameraFocusTarget {
-  group: THREE.Group
-  maxOrbitRadius: number
-  /** 若设置，观察目标与相机偏移相对于该物体（如行星 `body`），否则相对 `group`（星系锚点）。 */
-  follow?: THREE.Object3D
-  /** 与 `follow` 配套，用于计算相机距离（通常取行星半径）。 */
-  followFrameRadius?: number
-  /** `follow` 为行星体时用 `planet`；为 `Starship.facing` 时用 `starship`（使用飞船子相机渲染）。 */
-  followRole?: 'planet' | 'starship'
-  /** 跟船：拖拽产生的轨道增量写进该子相机的本地 `rotation`（仍继承 `Starship.facing` 的朝向） */
-  starshipChaseCamera?: THREE.PerspectiveCamera
-  /** 跟船：`StarshipConfig.chaseCam.orbitPitchLimit`，与当前追击相机一致 */
-  starshipOrbitPitchLimit?: number
+/** 与 `CameraRig` 共享的可变状态；跟焦结束时由 fragment `exitToMainCamera` 写回主相机 */
+export type CameraRigMovement = {
+  yaw: number
+  pitch: number
+  targetYaw: number
+  targetPitch: number
+  velocity: THREE.Vector3
+  thrust: number
 }
 
-export interface CameraUpdateOptions {
-  prefersReducedMotion: boolean
-  isLight: boolean
+/**
+ * 各 fragment 自建 `PerspectiveCamera`（恒星 / 行星 / 飞船追击等），由场景组装后交给 `CameraRig`。
+ * 跟焦时每帧 `tick`；离开时 `exitToMainCamera` 把位姿同步到全局主相机。
+ */
+export interface UniverseFocusCamera {
+  readonly camera: THREE.PerspectiveCamera
+  readonly orbitPitchLimit: number
+  resize(width: number, height: number): void
+  tick(yawOffset: number, pitchOffset: number, movement: CameraRigMovement): void
+  exitToMainCamera(main: THREE.PerspectiveCamera, movement: CameraRigMovement): void
 }
 
-export class CameraRig {
-  onFocusSystemChange?: (systemId?: string) => void
+export function clampCameraPosition(position: THREE.Vector3) {
+  position.x = THREE.MathUtils.clamp(position.x, -UNIVERSE_CAMERA_LIMITS.x, UNIVERSE_CAMERA_LIMITS.x)
+  position.y = THREE.MathUtils.clamp(position.y, UNIVERSE_CAMERA_LIMITS.yMin, UNIVERSE_CAMERA_LIMITS.yMax)
+  position.z = THREE.MathUtils.clamp(position.z, -UNIVERSE_CAMERA_LIMITS.z, UNIVERSE_CAMERA_LIMITS.z)
+}
 
-  private readonly camera: THREE.PerspectiveCamera
-  private readonly movement: {
-    yaw: number
-    pitch: number
-    targetYaw: number
-    targetPitch: number
-    velocity: THREE.Vector3
-    thrust: number
+/**
+ * 名义机位：世界空间下从观察目标指向相机的偏移 `target → cam`（`camWorld = target + offset`）。
+ * 返回轨道半径与基座 yaw/pitch（世界 Y 竖直、YXZ、无横滚，与全局主相机一致）。
+ */
+export function worldOrbitBaseFromOffsetTowardTarget(
+  offsetX: number,
+  offsetY: number,
+  offsetZ: number,
+): { dist: number; baseYaw: number; basePitch: number } {
+  const dist = Math.hypot(offsetX, offsetY, offsetZ)
+  if (dist < 1e-8) {
+    return { dist: 1e-3, baseYaw: 0, basePitch: 0 }
   }
+  const dx = -offsetX / dist
+  const dy = -offsetY / dist
+  const dz = -offsetZ / dist
+  return {
+    dist,
+    baseYaw: Math.atan2(-dx, -dz),
+    basePitch: Math.asin(THREE.MathUtils.clamp(dy, -1, 1)),
+  }
+}
 
-  private focusTarget: Nilable<CameraFocusTarget> = null
+export function unwrapYawNear(desiredYaw: number, refYaw: number): number {
+  let y = desiredYaw
+  const twoPi = Math.PI * 2
+  while (y - refYaw > Math.PI) y -= twoPi
+  while (y - refYaw < -Math.PI) y += twoPi
+  return y
+}
+
+/** 世界 Y 竖直：相机 −Z 在世界中的单位方向（由 yaw/pitch 得到） */
+export function worldYawPitchToCameraMinusZ(yaw: number, pitch: number, out: THREE.Vector3) {
+  const cosP = Math.cos(pitch)
+  out.set(-Math.sin(yaw) * cosP, Math.sin(pitch), -Math.cos(yaw) * cosP)
+  return out
+}
+
+/**
+ * 由**世界空间观察方向**（相机 −Z，即 `getWorldDirection`）写主相机：
+ * 强制 **roll=0**、世界 Y 为竖直，与全局自由飞 `YXZ` 一致，避免跟焦相机父级旋转把主相机「拧斜」后变不回来。
+ */
+export function syncMainCameraWorldUpView(
+  main: THREE.PerspectiveCamera,
+  worldViewDir: THREE.Vector3,
+  movement: CameraRigMovement,
+) {
+  const dir = worldViewDir
+  const yaw = Math.atan2(-dir.x, -dir.z)
+  const pitch = Math.asin(THREE.MathUtils.clamp(dir.y, -1, 1))
+  main.rotation.order = 'YXZ'
+  main.rotation.x = pitch
+  main.rotation.y = yaw
+  main.rotation.z = 0
+  movement.yaw = yaw
+  movement.pitch = pitch
+  movement.targetYaw = yaw
+  movement.targetPitch = pitch
+}
+
+const _parentWorldQuat = new THREE.Quaternion()
+const _localFromWorldQuat = new THREE.Quaternion()
+
+const _lookMat = new THREE.Matrix4()
+const _lookDecompPos = new THREE.Vector3()
+const _lookDecompScale = new THREE.Vector3()
+const _lookQuat = new THREE.Quaternion()
+const _worldUpForLookAt = new THREE.Vector3(0, 1, 0)
+
+/**
+ * 跟焦相机朝向：用世界 up=(0,1,0) 做 `lookAt`，消除 `setFromUnitVectors(−Z, dir)` 绕视线任意扭转带来的横滚，
+ * 否则画面倾斜时鼠标「横拖 / 竖拖」在屏幕上会像斜向orbit。
+ */
+export function setLocalQuaternionFromWorldLookAt(
+  object: THREE.Object3D,
+  eyeWorld: THREE.Vector3,
+  targetWorld: THREE.Vector3,
+) {
+  _lookMat.identity()
+  _lookMat.lookAt(eyeWorld, targetWorld, _worldUpForLookAt)
+  _lookMat.decompose(_lookDecompPos, _lookQuat, _lookDecompScale)
+  setLocalQuaternionFromWorld(object, _lookQuat)
+}
+
+/** 子物体在父节点有旋转/缩放时，将世界空间朝向写成正确的 `object.quaternion`（本地） */
+export function setLocalQuaternionFromWorld(object: THREE.Object3D, worldQuaternion: THREE.Quaternion) {
+  const parent = object.parent
+  if (!parent) {
+    object.quaternion.copy(worldQuaternion)
+    return
+  }
+  parent.updateWorldMatrix(true, false)
+  parent.getWorldQuaternion(_parentWorldQuat)
+  _localFromWorldQuat.copy(_parentWorldQuat).invert().multiply(worldQuaternion)
+  object.quaternion.copy(_localFromWorldQuat)
+}
+
+/**
+ * 全局自由飞行主相机 + 跟焦时切换到 fragment 提供的 `UniverseFocusCamera.camera`。
+ * 星系 / 行星 / 飞船的具体机位与轨道在对应 fragment 的 `tick` 内完成。
+ */
+export class CameraRig {
+  private readonly camera: THREE.PerspectiveCamera
+  private readonly movement: CameraRigMovement
+
+  private focus: UniverseFocusCamera | null = null
   private followingFocus = false
-  /** 跟焦时在「朝向目标」基础上的额外 yaw/pitch（拖拽写这里，避免被每帧基准朝向覆盖） */
   private focusYawOffset = 0
   private focusPitchOffset = 0
 
@@ -56,16 +150,6 @@ export class CameraRig {
   private readonly strafe = new THREE.Vector3()
   private readonly worldUp = new THREE.Vector3(0, 1, 0)
   private readonly moveVector = new THREE.Vector3()
-  private readonly desiredPosition = new THREE.Vector3()
-  private readonly lookTarget = new THREE.Vector3()
-  private readonly focusOffset = new THREE.Vector3()
-  private readonly planetWorldPos = new THREE.Vector3()
-  private readonly planetWorldQuat = new THREE.Quaternion()
-  private readonly planetWorldScale = new THREE.Vector3()
-  private readonly planetLocalOffset = new THREE.Vector3()
-  private readonly lookDirScratch = new THREE.Vector3()
-  private readonly chaseSyncQuat = new THREE.Quaternion()
-  private lastStarshipChaseCamera: Nilable<THREE.PerspectiveCamera> = null
 
   constructor(camera: THREE.PerspectiveCamera) {
     this.camera = camera
@@ -79,87 +163,52 @@ export class CameraRig {
     }
   }
 
-  setFocus(target: Nilable<CameraFocusTarget>) {
-    const leavingStarship =
-      this.lastStarshipChaseCamera != null &&
-      (!target ||
-        target.followRole !== 'starship' ||
-        target.starshipChaseCamera !== this.lastStarshipChaseCamera)
-    if (leavingStarship) {
-      this.syncMainCameraFromChase()
+  setFocus(target: UniverseFocusCamera | null) {
+    if (this.focus && this.focus !== target) {
+      this.focus.exitToMainCamera(this.camera, this.movement)
     }
-
-    this.focusTarget = target
+    this.focus = target
     this.followingFocus = target !== null
     this.focusYawOffset = 0
     this.focusPitchOffset = 0
     if (target) {
       this.movement.velocity.set(0, 0, 0)
       this.movement.thrust = 0
-      this.onFocusSystemChange?.(target.group.userData.systemId as string | undefined)
-      if (target.followRole === 'starship' && target.starshipChaseCamera) {
-        this.lastStarshipChaseCamera = target.starshipChaseCamera
-      } else {
-        this.lastStarshipChaseCamera = null
-      }
-    } else {
-      this.lastStarshipChaseCamera = null
     }
   }
 
   clearFocus() {
-    if (this.lastStarshipChaseCamera) {
-      this.syncMainCameraFromChase()
+    if (this.focus) {
+      this.focus.exitToMainCamera(this.camera, this.movement)
     }
-    this.focusTarget = null
+    this.focus = null
     this.followingFocus = false
     this.focusYawOffset = 0
     this.focusPitchOffset = 0
-    this.lastStarshipChaseCamera = null
-    this.onFocusSystemChange?.(undefined)
   }
 
-  /** 主相机用于自由飞行 / 行星跟焦；跟船时用飞船自带追击相机 */
   getRenderCamera(): THREE.PerspectiveCamera {
-    if (
-      this.followingFocus &&
-      this.focusTarget?.followRole === 'starship' &&
-      this.focusTarget.starshipChaseCamera
-    ) {
-      return this.focusTarget.starshipChaseCamera
+    if (this.followingFocus && this.focus) {
+      return this.focus.camera
     }
     return this.camera
   }
 
-  private syncMainCameraFromChase() {
-    const chase = this.lastStarshipChaseCamera
-    if (!chase) return
-    chase.getWorldPosition(this.camera.position)
-    chase.getWorldQuaternion(this.chaseSyncQuat)
-    this.camera.quaternion.copy(this.chaseSyncQuat)
-    this.camera.rotation.setFromQuaternion(this.chaseSyncQuat, 'YXZ')
-    this.movement.yaw = this.camera.rotation.y
-    this.movement.pitch = this.camera.rotation.x
-    this.movement.targetYaw = this.movement.yaw
-    this.movement.targetPitch = this.movement.pitch
-    this.lastStarshipChaseCamera = null
-  }
-
   resize(width: number, height: number) {
-    this.camera.aspect = width / Math.max(height, 1)
+    const aspect = width / Math.max(height, 1)
+    this.camera.aspect = aspect
     this.camera.updateProjectionMatrix()
+    this.focus?.resize(width, height)
   }
 
-  update(input: SceneInput, elapsed: number, options: CameraUpdateOptions) {
+  update(input: SceneInput, elapsed: number, options: { prefersReducedMotion: boolean; isLight: boolean }) {
     const { dx, dy } = input.consumeDragDelta()
-    if (this.focusTarget && this.followingFocus) {
-      this.focusYawOffset -= dx * 0.0024
-      this.focusPitchOffset -= dy * 0.0021
-      const orbitPitchCap =
-        this.focusTarget.followRole === 'starship'
-          ? safeOr(this.focusTarget.starshipOrbitPitchLimit, 1.18)
-          : 0.95
-      this.focusPitchOffset = THREE.MathUtils.clamp(this.focusPitchOffset, -orbitPitchCap, orbitPitchCap)
+    if (this.focus && this.followingFocus) {
+      const k = 0.0024
+      this.focusYawOffset -= dx * k
+      this.focusPitchOffset -= dy * k
+      const cap = this.focus.orbitPitchLimit
+      this.focusPitchOffset = THREE.MathUtils.clamp(this.focusPitchOffset, -cap, cap)
     } else {
       this.movement.targetYaw -= dx * 0.0024
       this.movement.targetPitch -= dy * 0.0021
@@ -173,109 +222,22 @@ export class CameraRig {
       UNIVERSE_MOTION.wheelClamp,
     )
 
-    if (this.focusTarget && this.followingFocus) {
-      const follow = this.focusTarget.follow
-      const planetFollow = follow != null
-      const frameR = planetFollow
-        ? safeOr(this.focusTarget.followFrameRadius, this.focusTarget.maxOrbitRadius)
-        : this.focusTarget.maxOrbitRadius
-
-      if (planetFollow) {
-        const role = safeOr(this.focusTarget.followRole, 'planet')
-
-        if (role === 'starship') {
-          const chaseCam = this.focusTarget.starshipChaseCamera
-          if (chaseCam) {
-            chaseCam.rotation.order = 'YXZ'
-            const pitchCap = safeOr(this.focusTarget.starshipOrbitPitchLimit, 1.18)
-            chaseCam.rotation.y = this.focusYawOffset
-            chaseCam.rotation.x = THREE.MathUtils.clamp(this.focusPitchOffset, -pitchCap, pitchCap)
-            chaseCam.rotation.z = 0
-          }
-        } else {
-          const pc = UNIVERSE_PLANET_FOCUS
-          const dist = frameR * pc.radiusToCameraFactor
-          follow.updateWorldMatrix(true, false)
-          follow.matrixWorld.decompose(this.planetWorldPos, this.planetWorldQuat, this.planetWorldScale)
-          this.lookTarget.copy(this.planetWorldPos)
-          this.planetLocalOffset.set(0, pc.heightOffset, dist)
-          this.planetLocalOffset.applyQuaternion(this.planetWorldQuat)
-          this.desiredPosition.copy(this.planetWorldPos).add(this.planetLocalOffset)
-
-          this.clampPosition(this.desiredPosition)
-          this.camera.position.lerp(this.desiredPosition, UNIVERSE_PLANET_FOCUS.lerp)
-          this.lookDirScratch.copy(this.lookTarget).sub(this.camera.position)
-          if (this.lookDirScratch.lengthSq() < 1e-10) {
-            this.lookDirScratch.set(0, 0, -1)
-          } else {
-            this.lookDirScratch.normalize()
-          }
-          const baseYaw = Math.atan2(-this.lookDirScratch.x, -this.lookDirScratch.z)
-          const basePitch = Math.asin(THREE.MathUtils.clamp(this.lookDirScratch.y, -1, 1))
-          const twoPi = Math.PI * 2
-          let desiredYaw = baseYaw + this.focusYawOffset
-          while (desiredYaw - this.movement.yaw > Math.PI) desiredYaw -= twoPi
-          while (desiredYaw - this.movement.yaw < -Math.PI) desiredYaw += twoPi
-          this.movement.targetYaw = desiredYaw
-          this.movement.targetPitch = THREE.MathUtils.clamp(
-            basePitch + this.focusPitchOffset,
-            -1.45,
-            1.45,
-          )
-        }
-      } else {
-        const sc = UNIVERSE_SYSTEM_FOCUS
-        const anchor = this.focusTarget.group
-        anchor.getWorldPosition(this.lookTarget)
-        this.focusOffset.set(0, sc.heightOffset, frameR * 1.5)
-        this.desiredPosition.copy(anchor.localToWorld(this.focusOffset.clone()))
-
-        this.clampPosition(this.desiredPosition)
-        this.camera.position.lerp(this.desiredPosition, UNIVERSE_SYSTEM_FOCUS.lerp)
-        this.lookDirScratch.copy(this.lookTarget).sub(this.camera.position)
-        if (this.lookDirScratch.lengthSq() < 1e-10) {
-          this.lookDirScratch.set(0, 0, -1)
-        } else {
-          this.lookDirScratch.normalize()
-        }
-        const baseYaw = Math.atan2(-this.lookDirScratch.x, -this.lookDirScratch.z)
-        const basePitch = Math.asin(THREE.MathUtils.clamp(this.lookDirScratch.y, -1, 1))
-        const twoPi = Math.PI * 2
-        let desiredYaw = baseYaw + this.focusYawOffset
-        while (desiredYaw - this.movement.yaw > Math.PI) desiredYaw -= twoPi
-        while (desiredYaw - this.movement.yaw < -Math.PI) desiredYaw += twoPi
-        this.movement.targetYaw = desiredYaw
-        this.movement.targetPitch = THREE.MathUtils.clamp(
-          basePitch + this.focusPitchOffset,
-          -1.45,
-          1.45,
-        )
-      }
-    }
-
-    const useShipChaseCamera =
-      this.followingFocus &&
-      this.focusTarget != null &&
-      safeOr(this.focusTarget.followRole, 'planet') === 'starship'
-
-    if (!useShipChaseCamera) {
+    if (this.focus && this.followingFocus) {
+      this.focus.tick(this.focusYawOffset, this.focusPitchOffset, this.movement)
+      this.movement.velocity.multiplyScalar(0.76)
+      this.movement.thrust = 0
+    } else {
       this.movement.yaw = THREE.MathUtils.lerp(this.movement.yaw, this.movement.targetYaw, UNIVERSE_MOTION.yawLerp)
       this.movement.pitch = THREE.MathUtils.lerp(
         this.movement.pitch,
         this.movement.targetPitch,
         UNIVERSE_MOTION.pitchLerp,
       )
-    }
-    if (!useShipChaseCamera) {
       this.camera.rotation.order = 'YXZ'
       this.camera.rotation.y = this.movement.yaw
       this.camera.rotation.x = this.movement.pitch
-    }
+      this.camera.rotation.z = 0
 
-    if (this.followingFocus) {
-      this.movement.velocity.multiplyScalar(0.76)
-      this.movement.thrust = 0
-    } else {
       this.camera.getWorldDirection(this.forward)
       this.strafe.crossVectors(this.forward, this.worldUp).normalize()
       this.moveVector.set(0, 0, 0)
@@ -298,24 +260,16 @@ export class CameraRig {
       this.movement.thrust *= UNIVERSE_MOTION.thrustDecay
       this.movement.velocity.multiplyScalar(UNIVERSE_MOTION.velocityDecay)
       this.camera.position.add(this.movement.velocity)
-      this.clampPosition(this.camera.position)
+      clampCameraPosition(this.camera.position)
     }
 
-    // 跟焦时禁用漂移，否则相机会在世界里抖动，无法与目标（尤其行星）保持相对静止
     if (!options.prefersReducedMotion && !input.isDragging && !this.followingFocus) {
       this.movement.targetYaw += options.isLight
         ? UNIVERSE_ROTATION_SPEED.driftLight
         : UNIVERSE_ROTATION_SPEED.driftDark
       this.camera.position.x += Math.sin(elapsed * 0.16) * UNIVERSE_CAMERA_DRIFT.xAmplitude
       this.camera.position.y += Math.cos(elapsed * 0.13) * UNIVERSE_CAMERA_DRIFT.yAmplitude
-      this.clampPosition(this.camera.position)
+      clampCameraPosition(this.camera.position)
     }
   }
-
-  private clampPosition(position: THREE.Vector3) {
-    position.x = THREE.MathUtils.clamp(position.x, -UNIVERSE_CAMERA_LIMITS.x, UNIVERSE_CAMERA_LIMITS.x)
-    position.y = THREE.MathUtils.clamp(position.y, UNIVERSE_CAMERA_LIMITS.yMin, UNIVERSE_CAMERA_LIMITS.yMax)
-    position.z = THREE.MathUtils.clamp(position.z, -UNIVERSE_CAMERA_LIMITS.z, UNIVERSE_CAMERA_LIMITS.z)
-  }
-
 }

@@ -4,6 +4,16 @@ import { disposeObject3DSubtree } from '../../utils/disposeThreeResources'
 import { scaleAndCenterModelToRadius } from '../../utils/loadGltf'
 import type { Nullable } from 'nfx-ui/types'
 
+import { UNIVERSE_MOTION } from '../../constants'
+import type { CameraRigMovement } from '../../libs/camera'
+import {
+  clampCameraPosition,
+  setLocalQuaternionFromWorldLookAt,
+  syncMainCameraWorldUpView,
+  unwrapYawNear,
+  worldOrbitBaseFromOffsetTowardTarget,
+  worldYawPitchToCameraMinusZ,
+} from '../../libs/camera'
 import { Fragment } from '../../libs/fragment'
 import { Group } from '../../libs/group'
 import type { StarshipConfig } from './types'
@@ -26,13 +36,14 @@ const scratch = {
   worldUp: new THREE.Vector3(),
   hopA: new THREE.Vector3(),
   hopB: new THREE.Vector3(),
+  orbitOff: new THREE.Vector3(),
 }
 
 /**
  * 宇宙飞船片段（`Fragment`）。
  *
  * **场景层级（单一路径，无重复别名）**  
- * `group`（世界位姿、点光）→ `facing`（机头朝向四元数，`CameraRig` 跟焦用 `follow: ship.facing`）→ `bank`（横滚）→ GLB 模型（`attachGlbRoot` 挂载）。
+ * `group`（世界位姿、点光）→ `facing`（机头朝向四元数；追击相机挂在 `facing` 下）→ `bank`（横滚）→ GLB 模型（`attachGlbRoot` 挂载）。
  *
  * **两阶段与 `Planet` 一致**  
  * 1. `new Starship(config)`：创建 `group` / `facing` / `bank`、追击相机、点光（config **不含** GLB URL，与行星一致）。  
@@ -46,11 +57,11 @@ export class Starship extends Fragment {
   /** 根节点：世界坐标平移、可见性、与 `Fragment.root` 一致 */
   readonly group: THREE.Group
   /**
-   * 机头朝向层：每帧写入四元数；与 `CameraFocusTarget.follow` 对接（场景里 `follow: ship.facing`）。
-   * 其下挂 `chaseCamera`（拖拽轨道）与 `bank`（横滚）→ 模型。
+   * 机头朝向层：每帧写入四元数。
+   * 其下挂 `chaseCamera`（世界 yaw/pitch 轨道，见 `applyChaseOrbit`）与 `bank`（横滚）→ 模型。
    */
   readonly facing: THREE.Group
-  /** 追击相机：本地位姿由 `config.chaseCam` 初值 + `CameraRig` 拖拽增量决定，挂在 `facing` 下 */
+  /** 追击相机：初值来自 `config.chaseCam`，跟焦时每帧由 `applyChaseOrbit` 写世界轨道机位与朝向 */
   readonly chaseCamera: THREE.PerspectiveCamera
 
   /** 构建时快照；运动/姿态参数读 `config` */
@@ -318,6 +329,47 @@ export class Starship extends Fragment {
   resizeChaseCamera(width: number, height: number) {
     this.chaseCamera.aspect = width / Math.max(height, 1)
     this.chaseCamera.updateProjectionMatrix()
+  }
+
+  /** 跟船时拖拽：绕世界 Y / 水平轴（与全局主相机一致），机位由 boom 名义距离 + 世界 yaw/pitch 决定 */
+  applyChaseOrbit(yawOffset: number, pitchOffset: number, movement: CameraRigMovement) {
+    const ch = this.config.chaseCam
+    const pitchCap = ch.orbitPitchLimit
+    const pClamp = THREE.MathUtils.clamp(pitchOffset, -pitchCap, pitchCap)
+
+    this.group.getWorldPosition(scratch.lookAt)
+    scratch.hopA.set(ch.localX, ch.localY, ch.localZ)
+    this.facing.updateWorldMatrix(true, false)
+    scratch.hopA.applyMatrix4(this.facing.matrixWorld)
+
+    scratch.orbitOff.subVectors(scratch.hopA, scratch.lookAt)
+    const { dist, baseYaw, basePitch } = worldOrbitBaseFromOffsetTowardTarget(
+      scratch.orbitOff.x,
+      scratch.orbitOff.y,
+      scratch.orbitOff.z,
+    )
+
+    movement.targetYaw = unwrapYawNear(baseYaw + yawOffset, movement.yaw)
+    movement.targetPitch = THREE.MathUtils.clamp(basePitch + pClamp, -pitchCap, pitchCap)
+
+    movement.yaw = THREE.MathUtils.lerp(movement.yaw, movement.targetYaw, UNIVERSE_MOTION.yawLerp)
+    movement.pitch = THREE.MathUtils.lerp(movement.pitch, movement.targetPitch, UNIVERSE_MOTION.pitchLerp)
+
+    worldYawPitchToCameraMinusZ(movement.yaw, movement.pitch, scratch.dir)
+    scratch.hopB.copy(scratch.lookAt).addScaledVector(scratch.dir, -dist)
+    clampCameraPosition(scratch.hopB)
+    this.facing.worldToLocal(scratch.hopB)
+    this.chaseCamera.position.lerp(scratch.hopB, UNIVERSE_MOTION.yawLerp)
+
+    this.chaseCamera.getWorldPosition(scratch.hopA)
+    setLocalQuaternionFromWorldLookAt(this.chaseCamera, scratch.hopA, scratch.lookAt)
+  }
+
+  /** 脱离跟船时把追击相机位姿同步到全局主相机（世界竖直无横滚，避免主相机被拧斜） */
+  exitChaseToMain(main: THREE.PerspectiveCamera, movement: CameraRigMovement) {
+    this.chaseCamera.getWorldPosition(main.position)
+    this.chaseCamera.getWorldDirection(scratch.dir)
+    syncMainCameraWorldUpView(main, scratch.dir, movement)
   }
 
   private pickNextHopDestination(waypoints: THREE.Object3D[]) {
