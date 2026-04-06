@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import { UNIVERSE_SYSTEM_LAYOUT } from './constants'
+import { Group } from './libs/group'
 import { pickDistinctSatelliteTextureUrls } from './textures/satelliteTexture'
 import {
   Label, LabelBuilder,
@@ -40,14 +41,14 @@ export function createStarSystem(
   palette: UniversePalette,
   anchor: THREE.Vector3,
 ) {
-  const group = new THREE.Group()
+  const group = new Group({ name: `starSystem:${config.id}`, userData: { systemId: config.id } })
   group.position.copy(anchor)
-  group.userData.systemId = config.id
 
   const stellar = new Stellar(
     new StellarBuilder()
       .palette(palette.stellar)
       .isLight(palette.isStellarLight)
+      .coreHover({ systemName: config.name, label: config.name, baseScale: 1, hovered: false })
       .done(),
   )
   const star = stellar.group
@@ -60,11 +61,8 @@ export function createStarSystem(
       .isLight(palette.isLabelLight)
       .done(),
   )
-  starMesh.userData.baseScale = 1
-  starMesh.userData.hovered = false
-  starMesh.userData.systemName = config.name
-  starMesh.userData.label = config.name
-  group.add(star, label.sprite)
+  stellar.attach(group)
+  label.attach(group)
 
   const planets: PlanetRuntime[] = []
   const satellites: Satellite[] = []
@@ -73,12 +71,12 @@ export function createStarSystem(
 
   config.planets.forEach((planetConfig, index) => {
     const variance = Math.random()
-    const pivot = new THREE.Group()
-    const orbitPlane = new THREE.Group()
+    const pivot = new Group({ name: 'planetOrbitPivot' })
+    const orbitPlane = new Group({ name: 'planetOrbitPlane' })
     orbitPlane.rotation.x = Math.PI / 2 + (variance - 0.5) * 0.42
     orbitPlane.rotation.y = variance * Math.PI * 2
     orbitPlane.rotation.z = (variance - 0.5) * 0.36
-    const orbitCarrier = new THREE.Group()
+    const orbitCarrier = new Group({ name: 'planetOrbitCarrier' })
     orbitCarrier.rotation.z =
       (Math.PI * 2 * index) / Math.max(config.planets.length, 1) + variance * Math.PI * 2
 
@@ -98,17 +96,17 @@ export function createStarSystem(
       .planetRadius(planetConfig.planetRadius)
       .palette(planetPalette)
       .isLight(palette.isPlanetLight)
+      .pick({
+        planetId: planetConfig.id,
+        systemName: config.name,
+        label: planetConfig.label,
+        action: planetConfig.onSelect,
+        baseScale: 1,
+        hovered: false,
+      })
       .done()
     const planet = new Planet(builtPlanetConfig)
-    planet.body.position.set(planetConfig.orbitRadius, 0, 0)
-    planet.mesh.userData.planetRadius = planetConfig.planetRadius
-    planet.mesh.userData.planetId = planetConfig.id
-    planet.mesh.userData.planetBody = planet.body
-    planet.mesh.userData.action = planetConfig.onSelect
-    planet.mesh.userData.baseScale = 1
-    planet.mesh.userData.hovered = false
-    planet.mesh.userData.systemName = config.name
-    planet.mesh.userData.label = planetConfig.label
+    planet.setPosition(planetConfig.orbitRadius, 0, 0)
 
     // 星环与卫星二选一（各 50%），避免同时出现；此前并存时卫星轨道常与星环相交，视觉上像「乱飞」。
     const ringOrSatellite = Math.random()
@@ -129,7 +127,7 @@ export function createStarSystem(
           .done(),
       )
       ringForRuntime = ring
-      planet.body.add(ring.group)
+      ring.attach(planet.body)
     } else {
       const satelliteCount = 1 + Math.floor(Math.random() * 3)
       const textureUrls = pickDistinctSatelliteTextureUrls(satelliteCount)
@@ -151,12 +149,12 @@ export function createStarSystem(
             })
             .done(),
         )
-        satellite.group.userData.satelliteTextureUrl = textureUrls[j]
-        const orbitTilt = new THREE.Group()
+        satellite.mergeUserData({ satelliteTextureUrl: textureUrls[j] })
+        const orbitTilt = new Group({ name: 'satelliteOrbitTilt' })
         orbitTilt.rotation.x = (jVar - 0.5) * 1.22
         orbitTilt.rotation.z = ((j + 1) * 0.41 + variance * 0.55) * (j % 2 === 0 ? 1 : -1)
         orbitTilt.rotation.y = j * 0.89 + jVar * 0.74
-        orbitTilt.add(satellite.group)
+        satellite.attach(orbitTilt)
         planet.body.add(orbitTilt)
         satellites.push(satellite)
       }
@@ -170,10 +168,12 @@ export function createStarSystem(
         .isLight(palette.isLabelLight)
         .done(),
     )
-    planetLabel.sprite.position.set(planetConfig.orbitRadius, 2.9, 0)
+    planetLabel.setPosition(planetConfig.orbitRadius, 2.9, 0)
 
-    orbitCarrier.add(planet.body, planetLabel.sprite)
-    orbitPlane.add(orbit.mesh, orbitCarrier)
+    planet.attach(orbitCarrier)
+    planetLabel.attach(orbitCarrier)
+    orbit.attach(orbitPlane)
+    orbitPlane.add(orbitCarrier)
     pivot.add(orbitPlane)
     group.add(pivot)
     planets.push({
@@ -199,7 +199,7 @@ export function createStarSystem(
     maxOrbitRadius,
   } satisfies StarSystemRuntime
   for (const p of planets) {
-    p.mesh.userData.focusSystem = runtime
+    p.planet.mergeUserData({ focusSystem: runtime })
   }
   return runtime
 }

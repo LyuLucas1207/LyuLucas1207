@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import { pickColor, randomBetween, toRgbaWithAlpha } from 'nfx-ui/utils'
+import { Fragment } from '../../libs/fragment'
 import type { NebulaConfig } from './types'
 
 export type { NebulaConfig, NebulaPalette } from './types'
@@ -28,10 +29,15 @@ function createNebulaTexture(color: string) {
   return texture
 }
 
-export class Nebula {
+export class Nebula extends Fragment {
   readonly group: THREE.Group
 
+  get root() {
+    return this.group
+  }
+
   constructor(config: NebulaConfig) {
+    super()
     this.group = new THREE.Group()
 
     for (let index = 0; index < 3; index += 1) {
@@ -45,12 +51,12 @@ export class Nebula {
           opacity: 0.08 + index * 0.03,
           blending: config.isLight ? THREE.AdditiveBlending : THREE.NormalBlending,
           depthWrite: false,
+          rotation: randomBetween(0, Math.PI * 2),
         }),
       )
 
       sprite.position.set(randomBetween(-280, 280), randomBetween(-80, 80), -randomBetween(220, 460))
       sprite.scale.set(randomBetween(160, 260), randomBetween(96, 180), 1)
-      ;(sprite.material as THREE.SpriteMaterial).rotation = randomBetween(0, Math.PI * 2)
       this.group.add(sprite)
     }
   }

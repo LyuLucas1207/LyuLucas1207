@@ -1,18 +1,19 @@
 import { useEffect, useRef } from 'react'
 import { Rocket } from 'lucide-react'
 import gsap from 'gsap'
+import type { Nullable } from 'nfx-ui/types'
 
 import styles from './styles.module.css'
 
 type Props = {
-  activeLaneIndex: number | null
+  activeLaneIndex: Nullable<number>
   onSelectLane: (laneIndex: number) => void
   title: string
   shipLabels: readonly string[]
 }
 
 export function HomeStarshipBar({ activeLaneIndex, onSelectLane, title, shipLabels }: Props) {
-  const panelRef = useRef<HTMLDivElement | null>(null)
+  const panelRef = useRef<Nullable<HTMLDivElement>>(null)
 
   useEffect(() => {
     if (activeLaneIndex != null) return

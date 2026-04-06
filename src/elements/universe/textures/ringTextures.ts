@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import type { Ring } from '../fragments/ring'
-import { RING_RADIAL_STRIP_URLS } from '../utils/universeAssets'
+import { RING_RADIAL_STRIP_URLS } from './universeAssets'
 
 /** 径向用 Clamp、周向 Repeat（与 UV 里 v 已乘 circumRepeat 配合） */
 export function configureRadialStripTexture(t: THREE.Texture) {

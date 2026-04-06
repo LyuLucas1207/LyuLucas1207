@@ -2,6 +2,8 @@ import * as THREE from 'three'
 
 import { pickColor, randomBetween } from 'nfx-ui/utils'
 import { buildStarMaterial } from '../../utils/material'
+import { Fragment } from '../../libs/fragment'
+import { getBufferAttribute } from '../../utils/threeAttributes'
 import type { StreamConfig } from './types'
 
 export type { StreamConfig, StreamPalette, StreamShaders } from './types'
@@ -13,14 +15,19 @@ type StreamBand = {
   phases: Float32Array
 }
 
-export class Stream {
+export class Stream extends Fragment {
   readonly group: THREE.Group
   readonly materials: THREE.ShaderMaterial[] = []
   private bands: StreamBand[] = []
   private animated: boolean
   private offset: number
 
+  get root() {
+    return this.group
+  }
+
   constructor(config: StreamConfig) {
+    super()
     this.group = new THREE.Group()
     this.animated = config.ifanimate
     this.offset = config.animateOffset
@@ -39,7 +46,8 @@ export class Stream {
       this.materials.push(material)
 
       if (this.animated) {
-        const pos = geometry.getAttribute('position') as THREE.BufferAttribute
+        const pos = getBufferAttribute(geometry, 'position')
+        if (!pos) continue
         const count = pos.count
         const baseY = new Float32Array(count)
         const phases = new Float32Array(count)
@@ -56,7 +64,8 @@ export class Stream {
     if (!this.animated) return
 
     for (const band of this.bands) {
-      const pos = band.geometry.getAttribute('position') as THREE.BufferAttribute
+      const pos = getBufferAttribute(band.geometry, 'position')
+      if (!pos) continue
       for (let i = 0; i < band.baseY.length; i++) {
         pos.setY(i, band.baseY[i] + Math.sin(elapsed * 0.4 + band.phases[i]) * this.offset)
       }

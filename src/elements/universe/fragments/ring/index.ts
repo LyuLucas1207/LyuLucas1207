@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import { pickColor } from 'nfx-ui/utils'
+import { Fragment } from '../../libs/fragment'
 import type { RingConfig } from './types'
 
 export type { RingConfig, RingPalette } from './types'
@@ -16,8 +17,9 @@ function remapRingRadialStripUVs(
   bandOuter: number,
   circumRepeat: number,
 ) {
-  const pos = geometry.attributes.position
-  const uvAttr = geometry.attributes.uv as THREE.BufferAttribute
+  const pos = geometry.getAttribute('position')
+  const uvAttr = geometry.getAttribute('uv')
+  if (!(pos instanceof THREE.BufferAttribute) || !(uvAttr instanceof THREE.BufferAttribute)) return
   const rSpan = bandOuter - bandInner
 
   for (let i = 0; i < pos.count; i++) {
@@ -32,10 +34,13 @@ function remapRingRadialStripUVs(
   uvAttr.needsUpdate = true
 }
 
-export class Ring {
+export class Ring extends Fragment {
   readonly group: THREE.Group
 
-  private readonly bands: { mesh: THREE.Mesh; bandColor: THREE.Color }[] = []
+  private readonly bands: {
+    mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>
+    bandColor: THREE.Color
+  }[] = []
   private readonly isLight: boolean
   private readonly circumRepeat: number
 
@@ -44,7 +49,12 @@ export class Ring {
     return this.bands.length
   }
 
+  get root() {
+    return this.group
+  }
+
   constructor(config: RingConfig) {
+    super()
     this.group = new THREE.Group()
     this.isLight = config.isLight
     this.circumRepeat = 10 + Math.floor(Math.random() * 12)
@@ -98,8 +108,7 @@ export class Ring {
   applyRadialStripMap(map: THREE.Texture) {
     const emissiveIntensity = this.isLight ? 2.6 : 2.15
     for (const { mesh, bandColor } of this.bands) {
-      const oldMat = mesh.material as THREE.MeshStandardMaterial
-      oldMat.dispose()
+      mesh.material.dispose()
       mesh.material = new THREE.MeshStandardMaterial({
         map,
         emissiveMap: map,

@@ -62,6 +62,8 @@ export const UNIVERSE_BACKGROUND_URLS: string[] = [
   '/textures/universes/universe2.jpg',
 ]
 
+export const STARSHIP_GLB_URLS: string[] = ['/textures/starship/StellarWing.glb']
+
 export const UNIVERSE_SHADERS = {
   starfield: {
     vertex: '/shaders/starfield.vert.glsl',

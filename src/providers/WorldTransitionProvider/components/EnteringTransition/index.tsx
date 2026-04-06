@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { useTheme } from 'nfx-ui/themes'
+import type { Nullable } from 'nfx-ui/types'
 
 import { prefetchWorldEntryAssets } from '@/elements/universe/utils/prefetchWorldEntry'
 import { useReducedMotion } from '@/hooks'
@@ -22,7 +23,7 @@ export function EnteringTransition() {
   const { t } = useTranslation(['components', 'WorldPage'])
   const reducedMotion = useReducedMotion()
   const { currentTheme } = useTheme()
-  const ref = useRef<HTMLDivElement | null>(null)
+  const ref = useRef<Nullable<HTMLDivElement>>(null)
   const [done, setDone] = useState(false)
 
   const isWorld = location.pathname === ROUTES.WORLD
@@ -62,7 +63,7 @@ export function EnteringTransition() {
     if (!shell || !veil) return
 
     let cancelled = false
-    let exitTween: gsap.core.Tween | gsap.core.Timeline | null = null
+    let exitTween: Nullable<gsap.core.Tween | gsap.core.Timeline> = null
 
     paths.forEach((path) => {
       const length = path.getTotalLength()

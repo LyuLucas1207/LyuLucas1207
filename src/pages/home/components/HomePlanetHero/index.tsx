@@ -11,11 +11,11 @@ import { ROUTES } from '@/navigations/routes'
 import { playWorldTransition } from '@/stores/transitionStore'
 import { createUniverseScene } from '@/elements/universe/scene'
 import type { HoverInfo } from '@/elements/universe/scene'
-import type { Nilable } from 'nfx-ui/types'
+import type { Nilable, Nullable } from 'nfx-ui/types'
 import { loadUniverseShaders } from '@/elements/universe/utils/shaders'
 import { buildUniversePalette } from '@/elements/universe/theme'
 import type { StarSystemConfig } from '@/elements/universe/types'
-import { STARSHIP_SCENE_I18N_KEYS } from '@/elements/universe/utils/universeAssets'
+import { STARSHIP_SCENE_I18N_KEYS } from '@/elements/universe/textures/universeAssets'
 import styles from './styles.module.css'
 import { HomePlanetsPanel } from '../HomePlanetsPanel'
 import { HomeSystemSidebar } from '../HomeSystemSidebar'
@@ -37,7 +37,7 @@ const themeOptions: ThemeEnum[] = [
 ]
 
 type HomePlanetHeroProps = {
-  /** 飞船数量，与舰队面板、场景 `createStarshipFleet` 一致 */
+  /** 飞船数量，与场景 `starshipCount` 一致 */
   starshipCount?: number
 }
 
@@ -48,15 +48,15 @@ function HomePlanetHero({ starshipCount = 5 }: HomePlanetHeroProps) {
   const { getThemeDisplayName } = useThemeLabel()
   const { getLanguageDisplayName } = useLanguageLabel()
   const prefersReducedMotion = useReducedMotion()
-  const sceneHostRef = useRef<HTMLDivElement | null>(null)
-  const sceneControllerRef = useRef<ReturnType<typeof createUniverseScene> | null>(null)
+  const sceneHostRef = useRef<Nullable<HTMLDivElement>>(null)
+  const sceneControllerRef = useRef<Nullable<ReturnType<typeof createUniverseScene>>>(null)
   const [, setDragging] = useState(false)
   const palette = useMemo(
     () => buildUniversePalette(currentTheme.colors.name as ThemeEnum, currentTheme.colors.variables),
     [currentTheme],
   )
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
-  const [followStarship, setFollowStarship] = useState<number | null>(null)
+  const [followStarship, setFollowStarship] = useState<Nullable<number>>(null)
   const [hoverInfo, setHoverInfo] = useState<Nilable<HoverInfo>>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 

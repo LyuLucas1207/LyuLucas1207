@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react'
 import gsap from 'gsap'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { useEffect, useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import type { StarSystemConfig } from '@/elements/universe/types'
 
@@ -26,9 +27,9 @@ export function HomeSystemSidebar({
   activeSystemName,
   selectGalaxyLabel,
 }: Props) {
-  const sidebarRef = useRef<HTMLElement | null>(null)
-  const panelRef = useRef<HTMLElement | null>(null)
-  const toggleIndicatorRef = useRef<HTMLSpanElement | null>(null)
+  const sidebarRef = useRef<Nullable<HTMLElement>>(null)
+  const panelRef = useRef<Nullable<HTMLElement>>(null)
+  const toggleIndicatorRef = useRef<Nullable<HTMLSpanElement>>(null)
 
   // Entrance (no dependency on universe palette).
   useEffect(() => {

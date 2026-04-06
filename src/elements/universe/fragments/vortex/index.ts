@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 
+import type { Nullable } from 'nfx-ui/types'
 import { pickColor, randomBetween } from 'nfx-ui/utils'
 import { buildStarMaterial } from '../../utils/material'
+import { getBufferAttribute } from '../../utils/threeAttributes'
+import { Fragment } from '../../libs/fragment'
 import type { VortexConfig } from './types'
 
 export type { VortexConfig, VortexPalette, VortexShaders } from './types'
@@ -75,7 +78,7 @@ function spiralProfileVolumePoint(
   alpha: number,
   rhoRel: number,
   R0: number,
-  model: SpiralConeModel | null,
+  model: Nullable<SpiralConeModel>,
   arm: number,
   armCount: number,
 ): { x: number; y: number; z: number } {
@@ -96,7 +99,7 @@ function sampleParticleInSpiralTube(
   arm: number,
   armCount: number,
   R0: number,
-  model: SpiralConeModel | null,
+  model: Nullable<SpiralConeModel>,
 ): { x: number; y: number; z: number } {
   const t = Math.min(1 - 1e-4, Math.max(1e-4, linear))
   const alpha = randomBetween(0, Math.PI * 2)
@@ -121,7 +124,7 @@ function sampleParticleInSpiralTube(
 const VORTEX_PROFILE_SPIRAL_TURN = 11.4
 
 /** 沿臂线参数 t∈[0,1] 映射到锥面进度 u（与粒子一致） */
-function spiralProfileU(t: number, model: SpiralConeModel | null): number {
+function spiralProfileU(t: number, model: Nullable<SpiralConeModel>): number {
   if (model) return coneProgressFromLinear(t, model)
   return t
 }
@@ -129,7 +132,7 @@ function spiralProfileU(t: number, model: SpiralConeModel | null): number {
 /** 螺旋中心线：r_disk(u)、θ=u·spiralScale+臂相位 — 与粒子同一盘面路径 */
 function spiralCenterOnDisk(
   t: number,
-  model: SpiralConeModel | null,
+  model: Nullable<SpiralConeModel>,
   arm: number,
   armCount: number,
 ): { x: number; y: number; z: number } {
@@ -144,7 +147,7 @@ function spiralCenterOnDisk(
   }
 }
 
-function profileSectionRadius(t: number, R0: number, model: SpiralConeModel | null): number {
+function profileSectionRadius(t: number, R0: number, model: Nullable<SpiralConeModel>): number {
   if (model) {
     const u = spiralProfileU(t, model)
     return coneCrossSectionRadius(u, R0)
@@ -157,7 +160,7 @@ function profileSectionRadius(t: number, R0: number, model: SpiralConeModel | nu
  */
 function spiralProfileFrame(
   t: number,
-  model: SpiralConeModel | null,
+  model: Nullable<SpiralConeModel>,
   arm: number,
   armCount: number,
 ): {
@@ -216,15 +219,20 @@ function spiralProfileFrame(
   }
 }
 
-export class Vortex {
+export class Vortex extends Fragment {
   readonly points: THREE.Points
   readonly material: THREE.ShaderMaterial
-  private baseY: Float32Array | null = null
-  private phases: Float32Array | null = null
+  private baseY: Nullable<Float32Array> = null
+  private phases: Nullable<Float32Array> = null
   private animated: boolean
   private offset: number
 
+  get root() {
+    return this.points
+  }
+
   constructor(config: VortexConfig) {
+    super()
     const count = config.particleCount
     const geometry = this.buildGeometry(count, config)
 
@@ -240,12 +248,16 @@ export class Vortex {
     this.offset = config.animateOffset
 
     if (this.animated) {
-      const pos = geometry.getAttribute('position') as THREE.BufferAttribute
-      this.baseY = new Float32Array(count)
-      this.phases = new Float32Array(count)
-      for (let i = 0; i < count; i++) {
-        this.baseY[i] = pos.getY(i)
-        this.phases[i] = randomBetween(0, Math.PI * 2)
+      const pos = getBufferAttribute(geometry, 'position')
+      if (pos) {
+        this.baseY = new Float32Array(count)
+        this.phases = new Float32Array(count)
+        for (let i = 0; i < count; i++) {
+          this.baseY[i] = pos.getY(i)
+          this.phases[i] = randomBetween(0, Math.PI * 2)
+        }
+      } else {
+        this.animated = false
       }
     }
   }
@@ -253,7 +265,8 @@ export class Vortex {
   update(elapsed: number) {
     if (!this.animated || !this.baseY || !this.phases) return
 
-    const pos = this.points.geometry.getAttribute('position') as THREE.BufferAttribute
+    const pos = getBufferAttribute(this.points.geometry, 'position')
+    if (!pos) return
     for (let i = 0; i < this.baseY.length; i++) {
       pos.setY(i, this.baseY[i] + Math.sin(elapsed * 0.6 + this.phases[i]) * this.offset)
     }

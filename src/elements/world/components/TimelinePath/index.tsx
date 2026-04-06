@@ -1,10 +1,11 @@
 import { useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useSvgDrawMotion } from '../../hooks/useSvgDrawMotion'
 import styles from './styles.module.css'
 
 function TimelinePath() {
-  const ref = useRef<SVGSVGElement | null>(null)
+  const ref = useRef<Nullable<SVGSVGElement>>(null)
 
   useSvgDrawMotion(ref)
 

@@ -1,6 +1,8 @@
 import { useGSAP } from '@gsap/react'
 import { useMemo, useRef } from 'react'
 
+import type { Nullable } from 'nfx-ui/types'
+
 import { useReducedMotion } from '@/hooks'
 import type { TransitionRequest } from '@/stores/transitionStore'
 import gsap from 'gsap'
@@ -9,13 +11,13 @@ import styles from './styles.module.css'
 import { getThemeMoodShellBackground, ThemeMoodGraphics } from '../ThemeMoodGraphics'
 
 type Props = {
-  request: TransitionRequest | null
+  request: Nullable<TransitionRequest>
   onMidpoint: () => void
   onComplete: () => void
 }
 
 export function ThemeTransitionOverlay({ request, onMidpoint, onComplete }: Props) {
-  const ref = useRef<HTMLDivElement | null>(null)
+  const ref = useRef<Nullable<HTMLDivElement>>(null)
   const reducedMotion = useReducedMotion()
 
   const themeRequest = request?.type === 'theme' ? request : null

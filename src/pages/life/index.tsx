@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dropdown } from 'nfx-ui/components'
+import type { Nullable } from 'nfx-ui/types'
 
 import { Reveal } from '@/animations'
 import { PageIntro } from '@/components'
@@ -18,7 +19,7 @@ function LifePage() {
   const { t } = useTranslation(['components', 'LifePage'])
   const [type, setType] = useState('all')
   const { data: records = [] } = useLifeRecordsQuery()
-  const gridRef = useRef<HTMLElement | null>(null)
+  const gridRef = useRef<Nullable<HTMLElement>>(null)
 
   const filteredRecords = useMemo(() => {
     return records.filter((record) => type === 'all' || record.type === type)

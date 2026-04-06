@@ -1,4 +1,4 @@
-import type { Nilable } from 'nfx-ui/types'
+import type { Nilable, Nullable } from 'nfx-ui/types'
 
 import type { HoverInfo } from '@/elements/universe/scene'
 import gsap from 'gsap'
@@ -11,8 +11,8 @@ type Props = {
 }
 
 export function HomeHoverTooltip({ hoverInfo }: Props) {
-  const rootRef = useRef<HTMLDivElement | null>(null)
-  const labelRef = useRef<HTMLElement | null>(null)
+  const rootRef = useRef<Nullable<HTMLDivElement>>(null)
+  const labelRef = useRef<Nullable<HTMLElement>>(null)
 
   useEffect(() => {
     if (!rootRef.current) return

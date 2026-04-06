@@ -1,6 +1,8 @@
 import type { LanguageEnum } from 'nfx-ui/languages'
 import { makeStore } from 'nfx-ui/stores'
 import type { ThemeEnum } from 'nfx-ui/themes'
+import type { Nullable } from 'nfx-ui/types'
+import { safeNullable } from 'nfx-ui/utils'
 
 import { ROUTES } from '@/navigations/routes'
 
@@ -55,7 +57,7 @@ export type PlayWorldTransitionOptions =
     })
 
 type TransitionState = {
-  request: TransitionRequest | null
+  request: Nullable<TransitionRequest>
 }
 
 type TransitionActions = {
@@ -65,7 +67,7 @@ type TransitionActions = {
 }
 
 let runningRef = false
-let pendingActionRef: (() => void) | null = null
+let pendingActionRef: Nullable<() => void> = null
 
 /** 页面过场导航到 World 结束时置位，供 EnteringTransition 吞掉「过场结束后误当作冷启动」的一帧 */
 let worldEntryHandledByPageTransition = false
@@ -85,7 +87,7 @@ const { store: TransitionStore, useStore: useTransitionStore } = makeStore<Trans
       if (runningRef) return
 
       runningRef = true
-      pendingActionRef = options.action ?? null
+      pendingActionRef = safeNullable(options.action)
 
       const id = Date.now()
 

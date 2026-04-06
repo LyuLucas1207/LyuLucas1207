@@ -2,6 +2,7 @@ import * as THREE from 'three'
 
 import { toRgbaWithAlpha } from 'nfx-ui/utils'
 
+import { Fragment } from '../../libs/fragment'
 import type { LabelConfig } from './types'
 
 export type { LabelConfig, LabelPalette, LabelVariant } from './types'
@@ -12,10 +13,15 @@ const VARIANT = {
   planet: { w: 248, h: 68, inset: 10, radius: 7, font: '600 28px "Segoe UI"', fillA: 0.065, fillB: 0.014, stroke: 0.12, scaleX: 13.8, scaleY: 3.8, posY: 3.25 },
 } as const
 
-export class Label {
+export class Label extends Fragment {
   readonly sprite: THREE.Sprite
 
+  get root() {
+    return this.sprite
+  }
+
   constructor(config: LabelConfig) {
+    super()
     const v = VARIANT[config.variant]
     const palette = config.palette
     const startColor = 'startColor' in palette ? palette.startColor : palette.color

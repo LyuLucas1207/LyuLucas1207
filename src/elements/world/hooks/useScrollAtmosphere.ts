@@ -1,5 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useReducedMotion } from '@/hooks'
 import gsap from 'gsap'
@@ -11,7 +12,7 @@ type UseScrollAtmosphereOptions = {
 }
 
 export function useScrollAtmosphere(
-  ref: RefObject<HTMLElement | null>,
+  ref: RefObject<Nullable<HTMLElement>>,
   options: UseScrollAtmosphereOptions = {},
 ) {
   const reducedMotion = useReducedMotion()

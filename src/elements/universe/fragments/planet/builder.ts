@@ -1,4 +1,6 @@
-import type { PlanetConfig, PlanetPalette, PlanetSurfaceConfig } from './types'
+import type { Nilable } from 'nfx-ui/types'
+
+import type { PlanetConfig, PlanetPalette, PlanetPickConfig, PlanetSurfaceConfig } from './types'
 
 const DEFAULT_PALETTE: PlanetPalette = {
   surfaceColorPool: ['#ffffff'],
@@ -11,6 +13,7 @@ const DEFAULTS: PlanetConfig = {
   palette: DEFAULT_PALETTE,
   isLight: false,
   surface: { roughness: 0.34, metalness: 0.12, emissive: { off: 0.6, on: 1.2 } },
+  pick: undefined,
 }
 
 export class PlanetBuilder {
@@ -47,6 +50,11 @@ export class PlanetBuilder {
 
   surface(value: PlanetSurfaceConfig) {
     this.config.surface = value
+    return this
+  }
+
+  pick(value: Nilable<PlanetPickConfig>) {
+    this.config.pick = value
     return this
   }
 

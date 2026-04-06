@@ -1,5 +1,6 @@
 import gsap from 'gsap'
 import { useEffect, useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useReducedMotion } from '@/hooks'
 
@@ -13,7 +14,7 @@ type Props = {
 }
 
 export function HomeActionDock({ onReload, buttonTitle, buttonLabel }: Props) {
-  const dockRef = useRef<HTMLDivElement | null>(null)
+  const dockRef = useRef<Nullable<HTMLDivElement>>(null)
   const reducedMotion = useReducedMotion()
 
   useEffect(() => {

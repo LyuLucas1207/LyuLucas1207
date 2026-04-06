@@ -1,5 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import { useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useReducedMotion } from '@/hooks'
 import gsap from 'gsap'
@@ -11,7 +12,7 @@ type WorldMarkProps = {
 
 function WorldMark({ className }: WorldMarkProps) {
   const reducedMotion = useReducedMotion()
-  const markRef = useRef<SVGSVGElement | null>(null)
+  const markRef = useRef<Nullable<SVGSVGElement>>(null)
 
   useGSAP(
     (context) => {

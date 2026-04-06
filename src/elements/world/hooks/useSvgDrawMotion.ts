@@ -1,5 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import type { RefObject } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useReducedMotion } from '@/hooks'
 import gsap from 'gsap'
@@ -9,7 +10,7 @@ type UseSvgDrawMotionOptions = {
 }
 
 export function useSvgDrawMotion(
-  ref: RefObject<HTMLElement | SVGElement | null>,
+  ref: RefObject<Nullable<HTMLElement | SVGElement>>,
   options: UseSvgDrawMotionOptions = {},
 ) {
   const reducedMotion = useReducedMotion()

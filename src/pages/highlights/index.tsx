@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { Nullable } from 'nfx-ui/types'
 
 import { Reveal } from '@/animations'
 import { PageIntro } from '@/components'
@@ -15,7 +16,7 @@ function HighlightsPage() {
   const { t } = useTranslation(['components', 'HighlightsPage'])
   const { data: highlights = [] } = useHighlightsQuery()
   const { data: timeline = [] } = useTimelineQuery()
-  const gridRef = useRef<HTMLDivElement | null>(null)
+  const gridRef = useRef<Nullable<HTMLDivElement>>(null)
 
   useScrollAtmosphere(gridRef, { selector: '[data-highlight-card]' })
 

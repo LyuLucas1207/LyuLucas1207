@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button, Input, Textarea } from 'nfx-ui/components'
+import type { Nullable } from 'nfx-ui/types'
 import { z } from 'zod'
 
 import { Reveal } from '@/animations'
@@ -24,7 +25,7 @@ function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const { t } = useTranslation(['components', 'ContactPage'])
   const { data: profile } = useProfileQuery()
-  const gridRef = useRef<HTMLElement | null>(null)
+  const gridRef = useRef<Nullable<HTMLElement>>(null)
   const contactSchema = useMemo(
     () =>
       z.object({

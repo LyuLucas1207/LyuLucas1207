@@ -22,7 +22,7 @@ export interface CameraFocusTarget {
   followFrameRadius?: number
   /** `follow` 为行星体时用 `planet`；为 `Starship.facing` 时用 `starship`（使用飞船子相机渲染）。 */
   followRole?: 'planet' | 'starship'
-  /** 跟船：拖拽产生的轨道增量写进该子相机的本地 `rotation`（仍继承 `attitude` 朝向目的地） */
+  /** 跟船：拖拽产生的轨道增量写进该子相机的本地 `rotation`（仍继承 `Starship.facing` 的朝向） */
   starshipChaseCamera?: THREE.PerspectiveCamera
   /** 跟船：`StarshipConfig.chaseCam.orbitPitchLimit`，与当前追击相机一致 */
   starshipOrbitPitchLimit?: number

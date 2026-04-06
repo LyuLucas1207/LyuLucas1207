@@ -2,12 +2,13 @@ import * as THREE from 'three'
 
 import type { Nullable } from 'nfx-ui/types'
 
+import { Fragment } from '../../libs/fragment'
 import type { SatelliteConfig } from './types'
 
 export type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './types'
 export { SatelliteBuilder } from './builder'
 
-export class Satellite {
+export class Satellite extends Fragment {
   readonly group: THREE.Group
   /** 球体半径（与贴图缩放一致） */
   readonly targetRadius: number
@@ -16,12 +17,17 @@ export class Satellite {
   private orbitPivot: THREE.Group
   private visualSlot: THREE.Group
   private speed: number
-  private visualMesh: Nullable<THREE.Mesh> = null
+  private visualMesh: Nullable<THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>> = null
   private readonly pointLight: THREE.PointLight
   /** 与配置 `emissive` 一致，贴图加载后驱动 `emissiveIntensity` */
   private readonly glowStrength: number
 
+  get root() {
+    return this.group
+  }
+
   constructor(config: SatelliteConfig) {
+    super()
     this.group = new THREE.Group()
     this.speed = config.speed
     this.carrier = new THREE.Group()
@@ -65,7 +71,7 @@ export class Satellite {
   applySurfaceMap(map: THREE.Texture) {
     if (!this.visualMesh) return
 
-    const mat = this.visualMesh.material as THREE.MeshStandardMaterial
+    const mat = this.visualMesh.material
     mat.map = map
     mat.emissiveMap = map
     mat.color.set(0xffffff)

@@ -2,6 +2,7 @@ import type {
   StarshipChaseCamConfig,
   StarshipConfig,
   StarshipGlowConfig,
+  StarshipPlanetHopConfig,
   StarshipPoseConfig,
 } from './types'
 
@@ -16,12 +17,19 @@ const DEFAULT_CHASE_CAM: StarshipChaseCamConfig = {
 }
 
 const DEFAULT_GLOW: StarshipGlowConfig = {
-  emissiveHex: 0x9ce8ff,
-  emissiveIntensity: 9.5,
   pointColor: 0xd6f0ff,
   pointIntensity: 14,
   pointDistance: 0,
   pointDecay: 1,
+}
+
+const DEFAULT_PLANET_HOP: StarshipPlanetHopConfig = {
+  minChord: 7,
+  spawnJitterMin: 0.6,
+  spawnJitterMax: 3.2,
+  arrivalZoneRadius: 5,
+  restSecondsMin: 0.35,
+  restSecondsMax: 2.2,
 }
 
 const DEFAULT_POSE: StarshipPoseConfig = {
@@ -37,13 +45,13 @@ const DEFAULT_POSE: StarshipPoseConfig = {
 }
 
 const DEFAULTS: StarshipConfig = {
-  glbUrl: '',
   modelRadius: 1.05,
   cruiseSpeed: 3,
   alongAcceleration: 5,
   alongDeceleration: 7,
   chaseCam: DEFAULT_CHASE_CAM,
   glow: DEFAULT_GLOW,
+  planetHop: DEFAULT_PLANET_HOP,
   pose: DEFAULT_POSE,
 }
 
@@ -52,6 +60,7 @@ function cloneConfig(base: StarshipConfig): StarshipConfig {
     ...base,
     chaseCam: { ...base.chaseCam },
     glow: { ...base.glow },
+    planetHop: { ...base.planetHop },
     pose: {
       ...base.pose,
       worldUp: [base.pose.worldUp[0], base.pose.worldUp[1], base.pose.worldUp[2]],
@@ -64,11 +73,6 @@ export class StarshipBuilder {
 
   constructor() {
     this.config = cloneConfig(DEFAULTS)
-  }
-
-  glbUrl(value: string) {
-    this.config.glbUrl = value
-    return this
   }
 
   modelRadius(value: number) {
@@ -98,6 +102,11 @@ export class StarshipBuilder {
 
   glow(value: Partial<StarshipGlowConfig>) {
     this.config.glow = { ...this.config.glow, ...value }
+    return this
+  }
+
+  planetHop(value: Partial<StarshipPlanetHopConfig>) {
+    this.config.planetHop = { ...this.config.planetHop, ...value }
     return this
   }
 

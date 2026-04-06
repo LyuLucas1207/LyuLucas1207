@@ -1,5 +1,6 @@
 import type {
   StellarConfig,
+  StellarCoreHoverConfig,
   StellarHaloConfig,
   StellarLightConfig,
   StellarPalette,
@@ -33,6 +34,7 @@ const CORE_STAR_DEFAULTS: StellarConfig = {
   keyLight: { intensity: { off: 26, on: 36 }, distance: 96, position: [10, 7, 14] },
   rimLight: { intensity: { off: 8, on: 14 }, distance: 120, position: [-16, -10, -18] },
   shellShaders: undefined,
+  coreHover: { systemName: '', label: '', baseScale: 1, hovered: false },
 }
 
 const SYSTEM_STAR_DEFAULTS: StellarConfig = {
@@ -48,6 +50,7 @@ const SYSTEM_STAR_DEFAULTS: StellarConfig = {
   halo: undefined,
   rimLight: undefined,
   shellShaders: undefined,
+  coreHover: { systemName: '', label: '', baseScale: 1, hovered: false },
 }
 
 export class StellarBuilder {
@@ -124,6 +127,11 @@ export class StellarBuilder {
 
   shellShaders(value: Nilable<StellarShellShaders>) {
     this.config.shellShaders = value
+    return this
+  }
+
+  coreHover(value: Nilable<StellarCoreHoverConfig>) {
+    this.config.coreHover = value
     return this
   }
 

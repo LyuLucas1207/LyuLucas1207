@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import { UNIVERSE_BACKGROUND_Y_RADIANS_PER_SEC } from '../constants'
-import { UNIVERSE_BACKGROUND_URLS } from '../utils/universeAssets'
+import { UNIVERSE_BACKGROUND_URLS } from './universeAssets'
 
 /** 随机选一张等距全景 JPG，赋给 `scene.background`（equirectangular → cubemap 缓存） */
 export function attachRandomUniverseTexture(scene: THREE.Scene) {

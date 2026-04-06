@@ -2,7 +2,7 @@ import type { PlanetRuntime } from '../fragments/planet'
 
 import { safeNum, safeOr } from 'nfx-ui/utils'
 import { loadGltfRoot, scaleAndCenterModelToRadius } from '../utils/loadGltf'
-import { PLANET_GLB_URLS } from '../utils/universeAssets'
+import { PLANET_GLB_URLS } from './universeAssets'
 
 export async function attachRandomPlanetGlb(planet: PlanetRuntime) {
   const url = PLANET_GLB_URLS[Math.floor(Math.random() * PLANET_GLB_URLS.length)]!

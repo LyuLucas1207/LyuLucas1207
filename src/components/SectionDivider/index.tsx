@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import { useSvgDrawMotion } from '@/elements/world/hooks/useSvgDrawMotion'
 import styles from './styles.module.css'
@@ -8,7 +9,7 @@ type SectionDividerProps = {
 }
 
 function SectionDivider({ mirrored = false }: SectionDividerProps) {
-  const ref = useRef<SVGSVGElement | null>(null)
+  const ref = useRef<Nullable<SVGSVGElement>>(null)
 
   useSvgDrawMotion(ref)
 

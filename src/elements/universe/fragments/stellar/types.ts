@@ -46,6 +46,16 @@ export interface StellarShellShaders {
   fragment: string
 }
 
+/** 星系中心恒星供 `SceneInput` 射线命中时展示；不设则不写 `coreMesh.userData`（如银河中心 `coreStar`） */
+export interface StellarCoreHoverConfig {
+  systemName: string
+  label: string
+  /** 悬停缩放基准，写入 `coreMesh.userData`；默认 1 */
+  baseScale: Nilable<number>  
+  /** 初始悬停状态，`SceneInput` 运行中会改写；默认 false */
+  hovered: Nilable<boolean>
+}
+
 export interface StellarConfig {
   radius: number
   segments: number
@@ -61,4 +71,5 @@ export interface StellarConfig {
   halo: Nilable<StellarHaloConfig>
   rimLight: Nilable<StellarLightConfig>
   shellShaders: Nilable<StellarShellShaders>
+  coreHover: Nilable<StellarCoreHoverConfig>
 }

@@ -2,12 +2,14 @@ import * as THREE from 'three'
 
 import type { Nullable } from 'nfx-ui/types'
 import { safeZeroable } from 'nfx-ui/utils'
+import { Fragment } from '../../libs/fragment'
+import { disposeMaterials, disposeObject3DSubtree } from '../../utils/disposeThreeResources'
 import type { StellarConfig } from './types'
 
-export type { StellarConfig, StellarPalette, StellarShellShaders } from './types'
+export type { StellarConfig, StellarCoreHoverConfig, StellarPalette, StellarShellShaders } from './types'
 export { StellarBuilder } from './builder'
 
-export class Stellar {
+export class Stellar extends Fragment {
   readonly group: THREE.Group
   readonly coreMesh: THREE.Mesh
   /** 球体/GLB 统一使用的目标半径（与 `StellarConfig.radius` 一致） */
@@ -24,7 +26,29 @@ export class Stellar {
   private readonly coreSpinSpeed: number
   private readonly coreSpinPhase: number
 
+  get root() {
+    return this.group
+  }
+
+  /** 星系恒星交互命中 `coreMesh`，与 `mergeUserData` 一致 */
+  get userData() {
+    return this.coreMesh.userData
+  }
+
+  mergeUserData(patch: Record<string, unknown>) {
+    Object.assign(this.coreMesh.userData, patch)
+  }
+
+  setUserData(data: Record<string, unknown>) {
+    const ud = this.coreMesh.userData
+    for (const k of Object.keys({ ...ud })) {
+      delete ud[k]
+    }
+    Object.assign(ud, data)
+  }
+
   constructor(config: StellarConfig) {
+    super()
     this.group = new THREE.Group()
     this.coreSlot = new THREE.Group()
     this.coreTargetRadius = config.radius
@@ -52,6 +76,15 @@ export class Stellar {
     )
 
     this.coreMesh = sphere
+    const hover = config.coreHover
+    if (hover) {
+      this.mergeUserData({
+        baseScale: hover.baseScale ?? 1,
+        hovered: hover.hovered ?? false,
+        systemName: hover.systemName,
+        label: hover.label,
+      })
+    }
     this.coreSlot.add(sphere)
     this.group.add(this.coreSlot)
 
@@ -125,14 +158,13 @@ export class Stellar {
   attachGlbCore(root: THREE.Object3D) {
     if (this.glbCore) {
       this.coreSlot.remove(this.glbCore)
-      Stellar.disposeObject3DResources(this.glbCore)
+      disposeObject3DSubtree(this.glbCore)
       this.glbCore = null
     }
 
     this.coreSlot.remove(this.coreMesh)
     this.coreMesh.geometry.dispose()
-    const oldMat = this.coreMesh.material as THREE.Material
-    oldMat.dispose()
+    disposeMaterials(this.coreMesh.material)
 
     const pickSeg = Math.max(12, Math.min(28, Math.floor(this.coreTargetRadius * 2)))
     this.coreMesh.geometry = new THREE.SphereGeometry(this.coreTargetRadius, pickSeg, pickSeg)
@@ -148,36 +180,19 @@ export class Stellar {
     Stellar.applyGlbCoreEmissive(root, this.glbEmissiveColor, this.glbEmissiveIntensity)
   }
 
-  /** 给 GLB 内 MeshStandard / Physical / Phong / Lambert 叠主题色自发光 */
+  /** 给 GLB 内带 `emissive` / `emissiveIntensity` 的材质叠主题色自发光 */
   private static applyGlbCoreEmissive(root: THREE.Object3D, color: THREE.Color, intensity: number) {
     root.traverse((child) => {
-      const mesh = child as THREE.Mesh
-      if (!mesh.isMesh || !mesh.material) return
-      const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+      if (!(child instanceof THREE.Mesh) || !child.material) return
+      const list = Array.isArray(child.material) ? child.material : [child.material]
       for (const m of list) {
         if (!m || typeof m !== 'object') continue
         if (!('emissive' in m) || !('emissiveIntensity' in m)) continue
-        const mat = m as THREE.MeshStandardMaterial
-        if (!(mat.emissive instanceof THREE.Color)) continue
-        mat.emissive.copy(color)
+        if (!(m.emissive instanceof THREE.Color)) continue
+        m.emissive.copy(color)
         const boosted = intensity * 1.4
-        mat.emissiveIntensity = Math.max(safeZeroable(mat.emissiveIntensity), boosted)
+        m.emissiveIntensity = Math.max(safeZeroable(m.emissiveIntensity), boosted)
       }
-    })
-  }
-
-  private static disposeObject3DResources(obj: THREE.Object3D) {
-    obj.traverse((child) => {
-      const node = child as THREE.Mesh
-      node.geometry?.dispose()
-      const mats = node.material
-      if (!mats) return
-      const list = Array.isArray(mats) ? mats : [mats]
-      list.forEach((m) => {
-        const mat = m as THREE.MeshStandardMaterial & { map?: THREE.Texture | null }
-        mat.map?.dispose()
-        m.dispose()
-      })
     })
   }
 

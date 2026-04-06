@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import { Satellite } from '../fragments/satellite'
-import { SATELLITES_TEXTURE_URLS } from '../utils/universeAssets'
+import { SATELLITES_TEXTURE_URLS } from './universeAssets'
 
 const textureByUrl = new Map<string, Promise<THREE.Texture>>()
 

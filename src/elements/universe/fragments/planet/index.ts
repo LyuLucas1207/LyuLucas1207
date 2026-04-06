@@ -2,11 +2,13 @@ import * as THREE from 'three'
 
 import { pickColor } from 'nfx-ui/utils'
 
-import  type { Nullable } from 'nfx-ui/types'
+import type { Nullable } from 'nfx-ui/types'
 import type { Ring } from '../ring'
+import { Fragment } from '../../libs/fragment'
+import { disposeMaterials, disposeObject3DSubtree } from '../../utils/disposeThreeResources'
 import type { PlanetConfig } from './types'
 
-export type { PlanetConfig, PlanetPalette, PlanetSurfaceConfig } from './types'
+export type { PlanetConfig, PlanetPalette, PlanetPickConfig, PlanetSurfaceConfig } from './types'
 export { PlanetBuilder } from './builder'
 
 export type PlanetRuntime = {
@@ -20,7 +22,7 @@ export type PlanetRuntime = {
   ring?: Ring
 }
 
-export class Planet {
+export class Planet extends Fragment {
   readonly body: THREE.Group
   /** 球体 / GLB 挂在下述节点上自转；碰撞体与星环/卫星仍在 `body` */
   readonly coreSlot: THREE.Group
@@ -30,7 +32,29 @@ export class Planet {
   private readonly spinSpeed: number
   private readonly spinPhase: number
 
+  get root() {
+    return this.body
+  }
+
+  /** 射线命中透明碰撞球，与 `mergeUserData` 写入目标一致 */
+  get userData() {
+    return this.mesh.userData
+  }
+
+  mergeUserData(patch: Record<string, unknown>) {
+    Object.assign(this.mesh.userData, patch)
+  }
+
+  setUserData(data: Record<string, unknown>) {
+    const ud = this.mesh.userData
+    for (const k of Object.keys({ ...ud })) {
+      delete ud[k]
+    }
+    Object.assign(ud, data)
+  }
+
   constructor(config: PlanetConfig) {
+    super()
     this.body = new THREE.Group()
     this.coreSlot = new THREE.Group()
     this.spinSpeed = config.spinSpeed * (0.28 + Math.random() * 0.18)
@@ -62,6 +86,22 @@ export class Planet {
 
     this.coreSlot.add(this.visual)
     this.body.add(this.coreSlot, this.mesh)
+
+    const pick = config.pick
+    this.mergeUserData({
+      planetRadius: config.planetRadius,
+      planetBody: this.body,
+      ...(pick
+        ? {
+            planetId: pick.planetId,
+            action: pick.action,
+            baseScale: pick.baseScale ?? 1,
+            hovered: pick.hovered ?? false,
+            systemName: pick.systemName,
+            label: pick.label,
+          }
+        : {}),
+    })
   }
 
   update(elapsed: number) {
@@ -74,14 +114,13 @@ export class Planet {
   attachGlbRoot(root: THREE.Object3D) {
     if (this.glbRoot) {
       this.coreSlot.remove(this.glbRoot)
-      Planet.disposeObject3DResources(this.glbRoot)
+      disposeObject3DSubtree(this.glbRoot)
       this.glbRoot = null
     }
     if (this.visual) {
       this.coreSlot.remove(this.visual)
-      this.visual.geometry.dispose();
-      const material = this.visual.material as THREE.Material
-      if (material) material.dispose()
+      this.visual.geometry.dispose()
+      disposeMaterials(this.visual.material)
       this.visual = null
     }
     this.body.remove(this.mesh)
@@ -90,18 +129,4 @@ export class Planet {
     this.body.add(this.mesh)
   }
 
-  private static disposeObject3DResources(obj: THREE.Object3D) {
-    obj.traverse((child) => {
-      const node = child as THREE.Mesh
-      node.geometry?.dispose()
-      const mats = node.material
-      if (!mats) return
-      const list = Array.isArray(mats) ? mats : [mats]
-      list.forEach((m) => {
-        const mat = m as THREE.MeshStandardMaterial & { map?: THREE.Texture | null }
-        mat.map?.dispose()
-        m.dispose()
-      })
-    })
-  }
 }

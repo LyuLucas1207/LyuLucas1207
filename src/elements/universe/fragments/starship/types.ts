@@ -9,13 +9,26 @@ export interface StarshipChaseCamConfig {
   orbitPitchLimit: number
 }
 
+/** 飞船周身的点光；GLB 材质与行星一样保持资源原样，不在此处改 emissive */
 export interface StarshipGlowConfig {
-  emissiveHex: number
-  emissiveIntensity: number
   pointColor: number
   pointIntensity: number
   pointDistance: number
   pointDecay: number
+}
+
+/** 在行星路点间跳跃：选目标、到达圈内减速、休息；由 `Starship` / `bootstrapPlanetHop` / `tickPlanetHop` 使用 */
+export interface StarshipPlanetHopConfig {
+  /** 过短弦长重抽（从飞船当前世界坐标到候选目标球心） */
+  minChord: number
+  /** 首曝时在世界水平面内相对行星球心的随机偏移（世界单位），避免多船叠在同一点 */
+  spawnJitterMin: number
+  spawnJitterMax: number
+  /** 与目标行星球心距离 ≤ 此值视为进入到达范围，开始休息计时；休息内仍朝球心飞 */
+  arrivalZoneRadius: number
+  /** 进入到达范围后的休息时长区间（秒）；到时换下一目标，不吸附球心 */
+  restSecondsMin: number
+  restSecondsMax: number
 }
 
 export interface StarshipPoseConfig {
@@ -38,7 +51,6 @@ export interface StarshipPoseConfig {
 }
 
 export interface StarshipConfig {
-  glbUrl: string
   modelRadius: number
   /** 世界单位/秒，每帧朝终点方向推进 */
   cruiseSpeed: number
@@ -48,5 +60,6 @@ export interface StarshipConfig {
   alongDeceleration: number
   chaseCam: StarshipChaseCamConfig
   glow: StarshipGlowConfig
+  planetHop: StarshipPlanetHopConfig
   pose: StarshipPoseConfig
 }

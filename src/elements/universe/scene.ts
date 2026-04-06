@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 
-import type { Nilable } from 'nfx-ui/types'
+import type { Nilable, Nullable } from 'nfx-ui/types'
 import { safeNullable, safeOr } from 'nfx-ui/utils'
 
 import { CameraRig } from './libs/camera'
 import type { CameraFocusTarget } from './libs/camera'
+import { Group } from './libs/group'
 import {
   UNIVERSE_CAMERA_POSITION,
   UNIVERSE_FOG,
@@ -14,7 +15,9 @@ import {
 import { SceneInput } from './libs/input'
 import type { HoverInfo } from './libs/input'
 import {
+  collectPlanetWaypoints,
   Nebula, NebulaBuilder,
+  Starship, StarshipBuilder,
   Stellar, StellarBuilder,
   Stream, StreamBuilder,
   Vortex, VortexBuilder,
@@ -29,8 +32,9 @@ import {
   spinUniverseTexture,
 } from './textures/universeTextures'
 import { createStarSystem, createSystemAnchors } from './systems'
-import { createStarshipFleet } from './textures/starshipGlb'
+import { attachStarshipGlbRoot } from './textures/starshipGlb'
 import type { StarSystemConfig, UniversePalette } from './types'
+import { disposeObject3DSubtree } from './utils/disposeThreeResources'
 import type { UniverseShaders } from './utils/shaders'
 
 export type { HoverInfo } from './libs/input'
@@ -54,8 +58,8 @@ export type UniverseSceneController = {
   destroy: () => void
   setFocusSystem: (systemId?: string) => void
   setFocusPlanet: (systemId: string, planetId: string) => void
-  /** `shipIndex` 对应 `STARSHIP_GLB_URLS` 循环；`null` 取消跟船 */
-  setFollowStarship: (shipIndex: number | null) => void
+  /** `shipIndex` 对应舰队下标（与 `attachStarshipGlbRoot` 取模同一列表）；`null` 取消跟船 */
+  setFollowStarship: (shipIndex: Nullable<number>) => void
 }
 
 export function createUniverseScene({
@@ -109,7 +113,7 @@ export function createUniverseScene({
       .done(),
   )
 
-  const galaxyCore = new THREE.Group()
+  const galaxyCore = new Group({ name: 'galaxyCore' })
   const coreStarInstance = new Stellar(
     new StellarBuilder().coreStar()
       .palette(palette.stellar)
@@ -117,7 +121,9 @@ export function createUniverseScene({
       .shellShaders({ vertex: shaders.coreShellVertex, fragment: shaders.coreShellFragment })
       .done(),
   )
-  galaxyCore.add(vortex.points, stream.group, coreStarInstance.group)
+  vortex.attach(galaxyCore)
+  stream.attach(galaxyCore)
+  coreStarInstance.attach(galaxyCore)
 
   const systemAnchors = createSystemAnchors(Math.min(systems.length, 3))
   // The 3 visible "galaxy systems" felt a bit too small visually, so we
@@ -131,7 +137,7 @@ export function createUniverseScene({
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime]))
   const maxGalaxyOrbit = Math.max(1, ...systemRuntimes.map((r) => r.maxOrbitRadius))
   systemRuntimes.forEach((runtime) => {
-    runtime.starMesh.userData.focusSystem = runtime
+    runtime.stellar.mergeUserData({ focusSystem: runtime })
     galaxyCore.add(runtime.group)
     void attachRandomSystemStellarGlb(runtime.stellar)
     runtime.planets.forEach((p) => {
@@ -139,7 +145,7 @@ export function createUniverseScene({
       if (p.ring) void attachRandomRingStripTexture(p.ring)
     })
     runtime.satellites.forEach((sat) => {
-      const u = sat.group.userData.satelliteTextureUrl
+      const u = sat.userData.satelliteTextureUrl
       void attachSatelliteSurfaceTexture(sat, typeof u === 'string' ? u : undefined)
     })
   })
@@ -158,18 +164,43 @@ export function createUniverseScene({
     }
   }
 
-  const starshipFleet = createStarshipFleet(systemRuntimes, {
-    shipCount: starshipCount,
-    onAllShipsLoaded: () => {
+  const planetWaypoints = collectPlanetWaypoints(systemRuntimes)
+  const starshipRoot = new Group({ name: 'starships' })
+  const starships: Starship[] = []
+  const shipN = Math.max(1, Math.floor(starshipCount))
+  let starshipLoadsPending = shipN
+  const onStarshipLoadDone = () => {
+    starshipLoadsPending -= 1
+    if (starshipLoadsPending <= 0) {
       requestAnimationFrame(() => {
-        starshipFleet.resizeChaseCameras(host.clientWidth, host.clientHeight)
+        for (const s of starships) {
+          s.resizeChaseCamera(host.clientWidth, host.clientHeight)
+        }
         warmRendererPrograms()
       })
-    },
-    getChaseViewport: () => ({ width: host.clientWidth, height: host.clientHeight }),
-  })
-  scene.add(nebula.group, galaxyCore, starshipFleet.group)
-  starshipFleet.resizeChaseCameras(host.clientWidth, host.clientHeight)
+    }
+  }
+  for (let i = 0; i < shipN; i++) {
+    const ship = new Starship(new StarshipBuilder().done())
+    ship.setPlanetHopLaunchDelay(i * 1.05 + Math.random() * 1.6)
+    ship.attach(starshipRoot)
+    starships.push(ship)
+    void attachStarshipGlbRoot(ship, i)
+      .then(() => {
+        ship.bootstrapPlanetHop(planetWaypoints)
+        ship.resizeChaseCamera(host.clientWidth, host.clientHeight)
+        onStarshipLoadDone()
+      })
+      .catch((err) => {
+        console.warn('[universe] starship GLB failed', i, err)
+        onStarshipLoadDone()
+      })
+  }
+  nebula.attach(scene)
+  scene.add(galaxyCore, starshipRoot)
+  for (const s of starships) {
+    s.resizeChaseCamera(host.clientWidth, host.clientHeight)
+  }
 
   requestAnimationFrame(() => {
     requestAnimationFrame(warmRendererPrograms)
@@ -234,12 +265,12 @@ export function createUniverseScene({
     })
   }
 
-  const setFollowStarship = (shipIndex: number | null) => {
+  const setFollowStarship = (shipIndex: Nullable<number>) => {
     if (shipIndex === null) {
       cameraRig.clearFocus()
       return
     }
-    const ship = starshipFleet.getStarship(shipIndex)
+    const ship = starships[shipIndex]
     if (!ship) return
     ship.resizeChaseCamera(host.clientWidth, host.clientHeight)
     cameraRig.setFocus({
@@ -262,7 +293,8 @@ export function createUniverseScene({
   const animate = () => {
     timer.update()
     const elapsed = timer.getElapsed()
-    spinUniverseTexture(scene, timer.getDelta(), !prefersReducedMotion)
+    const delta = timer.getDelta()
+    spinUniverseTexture(scene, delta, !prefersReducedMotion)
 
     coreStarInstance.update(elapsed)
     vortex.update(elapsed)
@@ -294,7 +326,9 @@ export function createUniverseScene({
     })
 
     /* 航线端点必须用 **本帧** galaxyCore + 轨道角更新后的 world 矩阵，否则船会相对行星中心漂移 */
-    starshipFleet.update(timer.getDelta(), prefersReducedMotion)
+    for (const ship of starships) {
+      ship.tickPlanetHop(planetWaypoints, delta, prefersReducedMotion)
+    }
 
     nebula.group.children.forEach((child: THREE.Object3D, index: number) => {
       child.position.x += Math.sin(elapsed * 0.08 + index) * 0.014
@@ -317,7 +351,9 @@ export function createUniverseScene({
     const height = host.clientHeight
     renderer.setSize(width, height)
     cameraRig.resize(width, height)
-    starshipFleet.resizeChaseCameras(width, height)
+    for (const s of starships) {
+      s.resizeChaseCamera(width, height)
+    }
   })
   resizeObserver.observe(host)
 
@@ -326,22 +362,11 @@ export function createUniverseScene({
     resizeObserver.disconnect()
     timer.dispose()
     input.destroy()
-    starshipFleet.destroy()
+    for (const s of starships) {
+      s.dispose()
+    }
     disposeUniverseTexture(scene)
-    scene.traverse((child) => {
-      const target = child as THREE.Mesh | THREE.Points | THREE.Sprite
-      if ('geometry' in target && target.geometry) {
-        target.geometry.dispose()
-      }
-      if ('material' in target && target.material) {
-        const materialsToDispose = Array.isArray(target.material) ? target.material : [target.material]
-        materialsToDispose.forEach((material) => {
-          const materialWithMap = material as THREE.Material & { map?: THREE.Texture | null }
-          materialWithMap.map?.dispose()
-          material.dispose()
-        })
-      }
-    })
+    disposeObject3DSubtree(scene)
     renderer.dispose()
     host.replaceChildren()
   }

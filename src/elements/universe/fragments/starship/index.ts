@@ -1,11 +1,20 @@
 import * as THREE from 'three'
 
+import { disposeObject3DSubtree } from '../../utils/disposeThreeResources'
 import { scaleAndCenterModelToRadius } from '../../utils/loadGltf'
 import type { Nullable } from 'nfx-ui/types'
 
-import type { StarshipConfig, StarshipGlowConfig } from './types'
+import { Fragment } from '../../libs/fragment'
+import { Group } from '../../libs/group'
+import type { StarshipConfig } from './types'
 
-export type { StarshipChaseCamConfig, StarshipConfig, StarshipGlowConfig, StarshipPoseConfig } from './types'
+export type {
+  StarshipChaseCamConfig,
+  StarshipConfig,
+  StarshipGlowConfig,
+  StarshipPlanetHopConfig,
+  StarshipPoseConfig,
+} from './types'
 export { StarshipBuilder } from './builder'
 
 const scratch = {
@@ -15,22 +24,37 @@ const scratch = {
   planarB: new THREE.Vector3(),
   cross: new THREE.Vector3(),
   worldUp: new THREE.Vector3(),
+  hopA: new THREE.Vector3(),
+  hopB: new THREE.Vector3(),
 }
 
 /**
- * 宇宙飞船：与 `Planet` 同款两阶段 —— **`new Starship(config)`** 搭好 `group` / 追击相机 / 光，`attachGlbRoot` 再挂 GLB。
- * `group` → `attitude` → `bank` → **模型**；位移用 `updateSeekDestination` / `updateFlightChord`，停泊用 `updateParked`。
+ * 宇宙飞船片段（`Fragment`）。
+ *
+ * **场景层级（单一路径，无重复别名）**  
+ * `group`（世界位姿、点光）→ `facing`（机头朝向四元数，`CameraRig` 跟焦用 `follow: ship.facing`）→ `bank`（横滚）→ GLB 模型（`attachGlbRoot` 挂载）。
+ *
+ * **两阶段与 `Planet` 一致**  
+ * 1. `new Starship(config)`：创建 `group` / `facing` / `bank`、追击相机、点光（config **不含** GLB URL，与行星一致）。  
+ * 2. 场景侧 `attachStarshipGlbRoot(ship, shipIndex)` 从 `STARSHIP_GLB_URLS` 加载后再调 `attachGlbRoot(root, clips)`。
+ *
+ * **运动**  
+ * 位移在 `group`；`tickPlanetHop` / `updateSeekDestination` 等推进目标；`applyFacingAndBank` 把飞行方向写入 `facing.quaternion`；停泊用 `updateParked`。  
+ * 参数一律读 `this.config`（构建时快照）。
  */
-export class Starship {
+export class Starship extends Fragment {
+  /** 根节点：世界坐标平移、可见性、与 `Fragment.root` 一致 */
   readonly group: THREE.Group
-  /** 机头朝向节点（与姿态 `attitude` 同一 Group） */
+  /**
+   * 机头朝向层：每帧写入四元数；与 `CameraFocusTarget.follow` 对接（场景里 `follow: ship.facing`）。
+   * 其下挂 `chaseCamera`（拖拽轨道）与 `bank`（横滚）→ 模型。
+   */
   readonly facing: THREE.Group
-  /** 挂在 `attitude` 下，局部位姿由 `config.chaseCam` + `CameraRig` 拖拽增量决定 */
+  /** 追击相机：本地位姿由 `config.chaseCam` 初值 + `CameraRig` 拖拽增量决定，挂在 `facing` 下 */
   readonly chaseCamera: THREE.PerspectiveCamera
 
   /** 构建时快照；运动/姿态参数读 `config` */
   readonly config: StarshipConfig
-  private readonly attitude: THREE.Group
   private readonly bank: THREE.Group
   private readonly glowLight: THREE.PointLight
   private glbRoot: Nullable<THREE.Object3D> = null
@@ -49,15 +73,23 @@ export class Starship {
   private alongSpeed = 0
   private readonly seekPos = new THREE.Vector3()
   private readonly seekDir = new THREE.Vector3()
+  /** 行星间跳跃 */
+  private hopEndBody: Nullable<THREE.Object3D> = null
+  private readonly hopHold = new THREE.Vector3()
+  private hopLaunchLeft = 0
+  private hopRestLeft = 0
+
+  get root() {
+    return this.group
+  }
 
   constructor(config: StarshipConfig) {
+    super()
     this.config = config
 
-    this.group = new THREE.Group()
-    this.group.name = 'starship'
-    this.attitude = new THREE.Group()
-    this.facing = this.attitude
-    this.bank = new THREE.Group()
+    this.group = new Group({ name: 'starship' })
+    this.facing = new Group({ name: 'starshipFacing' })
+    this.bank = new Group({ name: 'starshipBank' })
     const ch = config.chaseCam
     this.chaseCamera = new THREE.PerspectiveCamera(ch.fov, 1, ch.near, ch.far)
     this.chaseCamera.name = 'starshipChaseCamera'
@@ -66,8 +98,8 @@ export class Starship {
 
     const g = config.glow
     this.glowLight = new THREE.PointLight(g.pointColor, g.pointIntensity, g.pointDistance, g.pointDecay)
-    this.group.add(this.glowLight, this.attitude)
-    this.attitude.add(this.chaseCamera, this.bank)
+    this.group.add(this.glowLight, this.facing)
+    this.facing.add(this.chaseCamera, this.bank)
   }
 
   /**
@@ -76,7 +108,7 @@ export class Starship {
   attachGlbRoot(root: THREE.Object3D, clips: THREE.AnimationClip[]) {
     if (this.glbRoot) {
       this.bank.remove(this.glbRoot)
-      Starship.disposeObject3DResources(this.glbRoot)
+      disposeObject3DSubtree(this.glbRoot)
       this.glbRoot = null
     }
     this.mixer?.stopAllAction()
@@ -86,7 +118,6 @@ export class Starship {
     const fix = this.config.pose
     root.rotation.order = 'YXZ'
     root.rotation.set(fix.modelPitchCorrection, fix.modelYawCorrection, fix.modelRollCorrection)
-    Starship.applyEmissiveToVisual(root, this.config.glow)
 
     this.bank.add(root)
     this.glbRoot = root
@@ -98,86 +129,73 @@ export class Starship {
     }
   }
 
-  private static disposeObject3DResources(obj: THREE.Object3D) {
-    obj.traverse((child) => {
-      const node = child as THREE.Mesh
-      node.geometry?.dispose()
-      const mats = node.material
-      if (!mats) return
-      const list = Array.isArray(mats) ? mats : [mats]
-      list.forEach((m) => {
-        const mat = m as THREE.MeshStandardMaterial & { map?: THREE.Texture | null }
-        mat.map?.dispose()
-        m.dispose()
-      })
-    })
-  }
-
-  private static applyEmissiveToVisual(root: THREE.Object3D, glow: StarshipGlowConfig) {
-    const emissiveColor = new THREE.Color(glow.emissiveHex)
-    const boost = glow.emissiveIntensity
-    root.traverse((child) => {
-      const mesh = child as THREE.Mesh
-      const mat = mesh.material
-      if (!mat) return
-
-      const upgrade = (raw: THREE.Material): THREE.Material => {
-        if (
-          raw instanceof THREE.MeshStandardMaterial ||
-          raw instanceof THREE.MeshPhysicalMaterial ||
-          raw instanceof THREE.MeshLambertMaterial ||
-          raw instanceof THREE.MeshPhongMaterial ||
-          raw instanceof THREE.MeshToonMaterial
-        ) {
-          raw.fog = false
-          if (raw.emissiveMap) {
-            raw.emissive.set(0xffffff)
-          } else {
-            raw.emissive.copy(emissiveColor)
-          }
-          raw.emissiveIntensity = Math.max(raw.emissiveIntensity, boost)
-          return raw
-        }
-
-        if (raw instanceof THREE.MeshBasicMaterial) {
-          const next = new THREE.MeshStandardMaterial({
-            map: raw.map,
-            lightMap: raw.lightMap,
-            aoMap: raw.aoMap,
-            vertexColors: raw.vertexColors,
-            color: raw.color.clone(),
-            emissive: emissiveColor.clone(),
-            emissiveIntensity: boost,
-            roughness: 0.55,
-            metalness: 0.12,
-            fog: false,
-            transparent: raw.transparent,
-            opacity: raw.opacity,
-            side: raw.side,
-            alphaMap: raw.alphaMap,
-            depthWrite: raw.depthWrite,
-            depthTest: raw.depthTest,
-          })
-          raw.dispose()
-          return next
-        }
-
-        return raw
-      }
-
-      if (Array.isArray(mat)) {
-        mesh.material = mat.map((m) => upgrade(m))
-      } else {
-        mesh.material = upgrade(mat)
-      }
-    })
-  }
-
   /**
    * 换一段追击前把沿线速度拉回巡航初值（进入到达圈、换行星目标等时由编排层调用）。
    */
   prepareSeek() {
     this.alongSpeed = this.config.cruiseSpeed
+  }
+
+  /** GLB 就绪后由场景调用：随机出生点与第一个目标行星 */
+  bootstrapPlanetHop(waypoints: THREE.Object3D[]) {
+    if (waypoints.length < 2) return
+    const pair = this.pickRandomBootstrapPair(waypoints)
+    if (!pair) return
+    const [spawnWp, endWp] = Math.random() < 0.5 ? pair : [pair[1], pair[0]]
+    this.hopEndBody = endWp
+    spawnWp.getWorldPosition(this.hopHold)
+    this.applySpawnJitter(this.hopHold)
+    this.group.position.copy(this.hopHold)
+    this.prepareSeek()
+  }
+
+  /** 首曝前「停在出生点」的倒计时（秒） */
+  setPlanetHopLaunchDelay(seconds: number) {
+    this.hopLaunchLeft = seconds
+  }
+
+  /** 与行星 `update` 同级：每帧朝当前目标飞，进圈减速、休息、换终点 */
+  tickPlanetHop(waypoints: THREE.Object3D[], delta: number, prefersReducedMotion: boolean) {
+    if (waypoints.length < 2 || !this.hopEndBody) return
+
+    let dt = Number.isFinite(delta) && delta > 0 ? delta : 0
+    if (dt > 0 && dt < 1 / 1200) {
+      dt = 1 / 1200
+    }
+
+    if (prefersReducedMotion) {
+      this.group.visible = false
+      return
+    }
+
+    this.group.visible = true
+
+    const { arrivalZoneRadius, restSecondsMin, restSecondsMax } = this.config.planetHop
+
+    this.hopEndBody.getWorldPosition(scratch.hopB)
+
+    if (this.hopLaunchLeft > 0) {
+      this.hopLaunchLeft -= dt
+      this.group.position.copy(this.hopHold)
+      this.updateParked(this.hopHold, scratch.hopB, dt)
+      return
+    }
+
+    const distToEnd = this.group.position.distanceTo(scratch.hopB)
+
+    if (this.hopRestLeft <= 0 && distToEnd <= arrivalZoneRadius) {
+      this.hopRestLeft = restSecondsMin + Math.random() * Math.max(0, restSecondsMax - restSecondsMin)
+      this.prepareSeek()
+    }
+
+    this.updateSeekDestination(scratch.hopB, dt, this.hopRestLeft > 0)
+
+    if (this.hopRestLeft > 0) {
+      this.hopRestLeft -= dt
+      if (this.hopRestLeft <= 0) {
+        this.pickNextHopDestination(waypoints)
+      }
+    }
   }
 
   /**
@@ -264,7 +282,7 @@ export class Starship {
     scratch.lookAt.copy(this.group.position).add(this.smoothedFlightDir)
     scratch.m.lookAt(this.group.position, scratch.lookAt, scratch.worldUp)
     this.targetQuat.setFromRotationMatrix(scratch.m)
-    this.attitude.quaternion.copy(this.targetQuat)
+    this.facing.quaternion.copy(this.targetQuat)
 
     // 横滚：由**瞬时**弦线在水平面内的转弯角速度驱动；机头仍只靠 smoothedFlightDir 柔顺。
     scratch.planarB.copy(dir)
@@ -302,12 +320,99 @@ export class Starship {
     this.chaseCamera.updateProjectionMatrix()
   }
 
+  private pickNextHopDestination(waypoints: THREE.Object3D[]) {
+    if (!this.hopEndBody) return
+    const prev = this.hopEndBody
+    this.hopEndBody = this.pickNextDestinationWaypoint(this.group.position, waypoints, prev)
+    this.prepareSeek()
+  }
+
+  private static chordDistance(x: THREE.Object3D, y: THREE.Object3D): number {
+    x.getWorldPosition(scratch.hopA)
+    y.getWorldPosition(scratch.hopB)
+    return scratch.hopA.distanceTo(scratch.hopB)
+  }
+
+  private static distancePointToWaypoint(from: THREE.Vector3, w: THREE.Object3D): number {
+    w.getWorldPosition(scratch.hopB)
+    return from.distanceTo(scratch.hopB)
+  }
+
+  private static pickTwoDistinct(bodies: THREE.Object3D[]): Nullable<[THREE.Object3D, THREE.Object3D]> {
+    if (bodies.length < 2) return null
+    const i = Math.floor(Math.random() * bodies.length)
+    let j = Math.floor(Math.random() * (bodies.length - 1))
+    if (j >= i) j += 1
+    return [bodies[i]!, bodies[j]!]
+  }
+
+  private static pickRandomFrom<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)]!
+  }
+
+  private static pickFarthestWaypointFromPoint(
+    from: THREE.Vector3,
+    waypoints: THREE.Object3D[],
+    exclude: Nullable<THREE.Object3D>,
+  ): THREE.Object3D {
+    let best = exclude !== waypoints[0] ? waypoints[0]! : waypoints[1]!
+    let bestD = Starship.distancePointToWaypoint(from, best)
+    for (const w of waypoints) {
+      if (exclude !== null && w === exclude) continue
+      const d = Starship.distancePointToWaypoint(from, w)
+      if (d > bestD) {
+        bestD = d
+        best = w
+      }
+    }
+    return best
+  }
+
+  private pickNextDestinationWaypoint(
+    from: THREE.Vector3,
+    waypoints: THREE.Object3D[],
+    preferExclude: Nullable<THREE.Object3D>,
+  ): THREE.Object3D {
+    const { minChord } = this.config.planetHop
+    const candidates =
+      preferExclude !== null ? waypoints.filter((w) => w !== preferExclude) : [...waypoints]
+    const pool = candidates.length > 0 ? candidates : waypoints
+
+    let pick = Starship.pickRandomFrom(pool)
+    for (let k = 0; k < 24; k++) {
+      if (Starship.distancePointToWaypoint(from, pick) >= minChord) return pick
+      pick = Starship.pickRandomFrom(pool)
+    }
+    return Starship.pickFarthestWaypointFromPoint(from, waypoints, preferExclude)
+  }
+
+  private pickRandomBootstrapPair(waypoints: THREE.Object3D[]): Nullable<[THREE.Object3D, THREE.Object3D]> {
+    if (waypoints.length < 2) return null
+    const minLen = this.config.planetHop.minChord * 1.35
+    for (let k = 0; k < 26; k++) {
+      const pair = Starship.pickTwoDistinct(waypoints)
+      if (!pair) return null
+      if (Starship.chordDistance(pair[0]!, pair[1]!) >= minLen) return pair
+    }
+    return Starship.pickTwoDistinct(waypoints)
+  }
+
+  private applySpawnJitter(pos: THREE.Vector3): void {
+    const { spawnJitterMin, spawnJitterMax } = this.config.planetHop
+    const r = spawnJitterMin + Math.random() * Math.max(0, spawnJitterMax - spawnJitterMin)
+    const ang = Math.random() * Math.PI * 2
+    pos.x += Math.cos(ang) * r
+    pos.z += Math.sin(ang) * r
+    pos.y += (Math.random() - 0.5) * r * 0.55
+  }
+
   dispose() {
+    this.hopEndBody = null
     this.mixer?.stopAllAction()
     this.mixer = null
     if (this.glbRoot) {
       this.bank.remove(this.glbRoot)
-      Starship.disposeObject3DResources(this.glbRoot)
+      disposeObject3DSubtree(this.glbRoot)
       this.glbRoot = null
     }
   }

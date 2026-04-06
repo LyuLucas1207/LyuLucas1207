@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalLink } from 'lucide-react'
 import { Dropdown, SearchInput } from 'nfx-ui/components'
+import type { Nullable } from 'nfx-ui/types'
 
 import { Reveal } from '@/animations'
 import { PageIntro } from '@/components'
@@ -17,7 +18,7 @@ function ProjectsPage() {
   const [query, setQuery] = useState('')
   const [group, setGroup] = useState('all')
   const { data: projects = [] } = useProjectsQuery()
-  const gridRef = useRef<HTMLElement | null>(null)
+  const gridRef = useRef<Nullable<HTMLElement>>(null)
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {

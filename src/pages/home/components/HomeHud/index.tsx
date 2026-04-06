@@ -1,6 +1,7 @@
 import { Sparkles } from 'lucide-react'
 import gsap from 'gsap'
 import { useEffect, useRef } from 'react'
+import type { Nullable } from 'nfx-ui/types'
 
 import styles from './styles.module.css'
 
@@ -11,9 +12,9 @@ type Props = {
 }
 
 export function HomeHud({ label, title, description }: Props) {
-  const hudRef = useRef<HTMLDivElement | null>(null)
-  const titleRef = useRef<HTMLElement | null>(null)
-  const descRef = useRef<HTMLParagraphElement | null>(null)
+  const hudRef = useRef<Nullable<HTMLDivElement>>(null)
+  const titleRef = useRef<Nullable<HTMLElement>>(null)
+  const descRef = useRef<Nullable<HTMLParagraphElement>>(null)
 
   useEffect(() => {
     if (!hudRef.current) return

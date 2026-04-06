@@ -7,7 +7,7 @@ import {
   SATELLITES_TEXTURE_URLS,
   STELLAR_GLB_URLS,
   UNIVERSE_BACKGROUND_URLS,
-} from './universeAssets'
+} from '../textures/universeAssets'
 
 /**
  * 在 World 入场全屏过渡期间调用：预热与首页宇宙相关的异步资源（与 scene / attachRandom 使用同一加载器缓存）。
