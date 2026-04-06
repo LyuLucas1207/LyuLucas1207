@@ -1,3 +1,4 @@
+export { EnteringTransition } from './EnteringTransition'
 export { ThemeTransitionOverlay } from './ThemeTransitionOverlay'
 export { PageTransitionOverlay } from './PageTransitionOverlay'
 export { LanguageTransitionOverlay } from './LanguageTransitionOverlay'

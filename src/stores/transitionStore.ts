@@ -2,6 +2,8 @@ import type { LanguageEnum } from 'nfx-ui/languages'
 import { makeStore } from 'nfx-ui/stores'
 import type { ThemeEnum } from 'nfx-ui/themes'
 
+import { ROUTES } from '@/navigations/routes'
+
 export type TransitionType = 'theme' | 'page' | 'language'
 
 type PageKey = string
@@ -65,6 +67,15 @@ type TransitionActions = {
 let runningRef = false
 let pendingActionRef: (() => void) | null = null
 
+/** 页面过场导航到 World 结束时置位，供 EnteringTransition 吞掉「过场结束后误当作冷启动」的一帧 */
+let worldEntryHandledByPageTransition = false
+
+export function consumeWorldEntryHandledByPageTransition(): boolean {
+  const v = worldEntryHandledByPageTransition
+  worldEntryHandledByPageTransition = false
+  return v
+}
+
 const { store: TransitionStore, useStore: useTransitionStore } = makeStore<TransitionState, TransitionActions>(
   {
     request: null,
@@ -121,6 +132,11 @@ const { store: TransitionStore, useStore: useTransitionStore } = makeStore<Trans
     },
 
     handleComplete: () => {
+      const req = TransitionStore.getState().request
+      const wasPageWorld = req?.type === 'page' && req.page === ROUTES.WORLD
+      if (wasPageWorld) {
+        worldEntryHandledByPageTransition = true
+      }
       runningRef = false
       pendingActionRef = null
       set({ request: null })

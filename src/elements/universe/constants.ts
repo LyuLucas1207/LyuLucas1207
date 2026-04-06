@@ -57,7 +57,7 @@ export const UNIVERSE_SYSTEM_LAYOUT = {
 
 /** 跟焦整个星系（`group` 锚点 / 恒星） */
 export const UNIVERSE_SYSTEM_FOCUS = {
-  heightOffset: 26,
+  heightOffset: 16,
   distanceOffset: 26,
   lerp: 0.08,
 }

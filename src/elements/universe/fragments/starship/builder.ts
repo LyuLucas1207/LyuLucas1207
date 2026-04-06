@@ -37,7 +37,7 @@ const DEFAULT_POSE: StarshipPoseConfig = {
 const DEFAULTS: StarshipConfig = {
   glbUrl: '',
   modelRadius: 1.05,
-  cruiseSpeed: 19,
+  cruiseSpeed: 12,
   chaseCam: DEFAULT_CHASE_CAM,
   glow: DEFAULT_GLOW,
   pose: DEFAULT_POSE,

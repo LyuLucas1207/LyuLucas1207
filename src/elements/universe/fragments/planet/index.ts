@@ -33,7 +33,7 @@ export class Planet {
   constructor(config: PlanetConfig) {
     this.body = new THREE.Group()
     this.coreSlot = new THREE.Group()
-    this.spinSpeed = config.spinSpeed * (0.88 + Math.random() * 0.28)
+    this.spinSpeed = config.spinSpeed * (0.28 + Math.random() * 0.18)
     this.spinPhase = Math.random() * Math.PI * 2
 
     const color = new THREE.Color(pickColor(config.palette.surfaceColorPool))

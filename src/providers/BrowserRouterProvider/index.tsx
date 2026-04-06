@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 
 import { BrowserRouter } from 'react-router-dom'
 
-import { AppRouter } from '@/navigations/AppRouter'
 import { useRouterEvents } from './hooks/useRouterEvents'
 
 interface BrowserRouterProviderProps {
@@ -17,10 +16,7 @@ function RouterEventsHandler({ children }: { children: ReactNode }) {
 function BrowserRouterProvider({ children }: BrowserRouterProviderProps) {
   return (
     <BrowserRouter>
-      <RouterEventsHandler>
-        <AppRouter />
-        {children}
-      </RouterEventsHandler>
+      <RouterEventsHandler>{children}</RouterEventsHandler>
     </BrowserRouter>
   )
 }
