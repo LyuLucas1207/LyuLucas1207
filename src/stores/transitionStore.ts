@@ -58,12 +58,16 @@ export type PlayWorldTransitionOptions =
 
 type TransitionState = {
   request: Nullable<TransitionRequest>
+  /** 「重新飞入」：`EndingTransition` 与 `PageTransitionOverlay` 同源入场，无收口，播完即 reload */
+  endingRefly: boolean
 }
 
 type TransitionActions = {
   playWorldTransition: (options: PlayWorldTransitionOptions) => void
   handleMidpoint: () => void
   handleComplete: () => void
+  startEndingRefly: () => void
+  clearEndingRefly: () => void
 }
 
 let runningRef = false
@@ -81,8 +85,16 @@ export function consumeWorldEntryHandledByPageTransition(): boolean {
 const { store: TransitionStore, useStore: useTransitionStore } = makeStore<TransitionState, TransitionActions>(
   {
     request: null,
+    endingRefly: false,
   },
   (set) => ({
+    startEndingRefly: () => {
+      if (runningRef || TransitionStore.getState().request != null) return
+      set({ endingRefly: true })
+    },
+
+    clearEndingRefly: () => set({ endingRefly: false }),
+
     playWorldTransition: (options) => {
       if (runningRef) return
 
@@ -150,3 +162,5 @@ export { TransitionStore, useTransitionStore }
 
 export const playWorldTransition = (options: PlayWorldTransitionOptions) =>
   TransitionStore.getState().playWorldTransition(options)
+
+export const startEndingRefly = () => TransitionStore.getState().startEndingRefly()

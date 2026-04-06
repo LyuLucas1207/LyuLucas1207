@@ -8,7 +8,7 @@ import { ThemeEnum, useTheme } from 'nfx-ui/themes'
 import { useReducedMotion } from '@/hooks'
 import { routerEventEmitter } from '@/events/router'
 import { ROUTES } from '@/navigations/routes'
-import { playWorldTransition } from '@/stores/transitionStore'
+import { playWorldTransition, startEndingRefly } from '@/stores/transitionStore'
 import { createUniverseScene } from '@/elements/universe/scene'
 import type { HoverInfo } from '@/elements/universe/scene'
 import type { Nilable, Nullable } from 'nfx-ui/types'
@@ -250,13 +250,7 @@ function HomePlanetHero({ starshipCount = 5 }: HomePlanetHeroProps) {
 
   const activeSystem = systems.find((system) => system.id === focusedSystemId)
   const handleReloadWorld = () => {
-    playWorldTransition({
-      type: 'page',
-      page: ROUTES.WORLD,
-      title: t('brand.title'),
-      subtitle: t('brand.subtitle'),
-      action: () => window.location.reload(),
-    })
+    startEndingRefly()
   }
 
   useEffect(() => {

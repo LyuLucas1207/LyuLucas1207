@@ -21,6 +21,7 @@ import styles from '../PageTransitionOverlay/styles.module.css'
 export function EnteringTransition() {
   const location = useLocation()
   const request = useTransitionStore((s) => s.request)
+  const endingRefly = useTransitionStore((s) => s.endingRefly)
   const { t } = useTranslation(['components', 'WorldPage'])
   const reducedMotion = useReducedMotion()
   const { currentTheme } = useTheme()
@@ -28,7 +29,7 @@ export function EnteringTransition() {
   const [done, setDone] = useState(false)
 
   const isWorld = location.pathname === ROUTES.WORLD
-  const showOverlay = isWorld && !done && request === null
+  const showOverlay = isWorld && !done && request === null && !endingRefly
 
   const shellBackground = useMemo(() => {
     const vars = currentTheme.colors.variables as unknown as Record<string, string | undefined>
