@@ -71,14 +71,15 @@ export const UNIVERSE_PLANET_FOCUS = {
 }
 
 /**
- * 多船航线编排（条数由 `STARSHIP_SCENE_I18N_KEYS.length` 等与 UI 一致处决定）。
- * 单艘飞船可调字段默认在 `StarshipBuilder`（与 `PlanetBuilder` 等同系）。
+ * 多船航线编排；条数由场景 `starshipLaneCount` / Home 传入决定。
+ * 单艘飞船 `cruiseSpeed`、`alongAcceleration` 等在 `StarshipBuilder`。
  */
 export const UNIVERSE_STARSHIP_LANES = {
-  /** 过短弦长重抽，避免「肉眼几乎不动」 */
+  /** 过短弦长重抽（从飞船当前世界坐标到候选目标球心） */
   minChord: 7,
-  /** 到港等待下一段时只关 `visible` */
-  hideWhileDocked: true,
-  /** 与终点行星中心距离小于此值（世界单位）视为到港 */
-  arrivalEpsilon: 0.35,
+  /** 与目标行星球心距离 ≤ 此值（世界单位）视为进入到达范围，开始休息计时；休息内仍朝球心飞 */
+  arrivalZoneRadius: 5,
+  /** 进入到达范围后的休息时长区间（秒）；到时无论如何换下一目标，不吸附球心 */
+  restSecondsMin: 0.35,
+  restSecondsMax: 2.2,
 } as const

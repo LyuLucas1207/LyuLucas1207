@@ -48,7 +48,9 @@
     "starshipBarTitle": "Flotte",
     "starshipAstralDrift": "Astral Drift",
     "starshipNebulaCraft": "Nebula Craft",
-    "starshipStellarWing": "Stellar Wing"
+    "starshipStellarWing": "Stellar Wing",
+    "starshipHorizonRunner": "Horizon Runner",
+    "starshipVoidRelay": "Relais du vide"
   },
   "signals": {
     "premium": {

@@ -31,6 +31,8 @@ export class Starship {
 
   readonly modelRadius: number
   readonly cruiseSpeed: number
+  readonly alongAcceleration: number
+  readonly alongDeceleration: number
   /** 供 `CameraRig` 跟船拖拽 pitch 夹紧 */
   readonly chaseOrbitPitchLimit: number
 
@@ -41,6 +43,8 @@ export class Starship {
   private glbRoot: Nullable<THREE.Object3D> = null
   private mixer: Nullable<THREE.AnimationMixer> = null
   private readonly targetQuat = new THREE.Quaternion()
+  /** 和弦线方向做指数趋近，避免换终点时机头/横滚一帧拧死 */
+  private readonly smoothedFlightDir = new THREE.Vector3(0, 0, 1)
   private readonly lastPlanarDir = new THREE.Vector3(0, 0, 1)
   private readonly lastFlightDir = new THREE.Vector3(0, 0, 1)
   private bankAngle = 0
@@ -50,6 +54,8 @@ export class Starship {
     this.config = config
     this.modelRadius = config.modelRadius
     this.cruiseSpeed = config.cruiseSpeed
+    this.alongAcceleration = config.alongAcceleration
+    this.alongDeceleration = config.alongDeceleration
     this.chaseOrbitPitchLimit = config.chaseCam.orbitPitchLimit
 
     this.group = new THREE.Group()
@@ -207,16 +213,25 @@ export class Starship {
   }
 
   private applyFacingAndBank(dir: THREE.Vector3, delta: number) {
-    const { bankSlerp, maxBank, bankGain, worldUp: wu } = this.config.pose
+    const { headingSlerp, bankSlerp, maxBank, bankGain, worldUp: wu } = this.config.pose
+    const ht = 1 - Math.exp(-delta * headingSlerp)
+    if (dir.lengthSq() > 1e-10) {
+      this.smoothedFlightDir.lerp(dir, ht)
+      if (this.smoothedFlightDir.lengthSq() > 1e-10) {
+        this.smoothedFlightDir.normalize()
+      } else {
+        this.smoothedFlightDir.copy(dir)
+      }
+    }
+
     scratch.worldUp.set(wu[0], wu[1], wu[2])
 
-    scratch.lookAt.copy(this.group.position).add(dir)
+    scratch.lookAt.copy(this.group.position).add(this.smoothedFlightDir)
     scratch.m.lookAt(this.group.position, scratch.lookAt, scratch.worldUp)
     this.targetQuat.setFromRotationMatrix(scratch.m)
-    /* 不对姿态做 slerp：目的地（行星世界坐标 + galaxyCore 自转）每帧在变，慢了就会「头不跟目标转」 */
     this.attitude.quaternion.copy(this.targetQuat)
 
-    scratch.planarA.copy(dir)
+    scratch.planarA.copy(this.smoothedFlightDir)
     scratch.planarA.y = 0
     if (scratch.planarA.lengthSq() < 1e-8) {
       this.targetBank = THREE.MathUtils.lerp(this.targetBank, 0, 1 - Math.exp(-delta * bankSlerp))

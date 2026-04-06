@@ -4,17 +4,19 @@ import { Starship, StarshipBuilder } from '../fragments/starship'
 import { UNIVERSE_STARSHIP_LANES } from '../constants'
 import type { StarSystemRuntime } from '../systems'
 import { loadGltfSceneAndClips } from './loadGltf'
-import { STARSHIP_GLB_URLS, STARSHIP_SCENE_I18N_KEYS } from './universeAssets'
+import { STARSHIP_GLB_URLS } from './universeAssets'
 import type { Nullable } from 'nfx-ui/types'
 
 type LaneState = {
   starship: Nullable<Starship>
-  startBody: Nullable<THREE.Object3D>
+  /** 当前目标行星（碰撞球 mesh 世界球心） */
   endBody: Nullable<THREE.Object3D>
-  lastArrivalBody: Nullable<THREE.Object3D>
-  /** 起飞前在起点「趴窝」倒计时（秒），错开各条航线 */
+  /** 首发趴窝期间固定的世界坐标 */
+  launchHold: THREE.Vector3
   launchDelayLeft: number
+  /** >0：休息中，仍朝当前 `endBody` 球心飞；到时换下一目标 */
   restLeft: number
+  alongSpeed: number
   laneIndex: number
 }
 
@@ -25,14 +27,25 @@ const scratch = {
   dir: new THREE.Vector3(),
 }
 
-function collectPlanetBodies(runtimes: StarSystemRuntime[]): THREE.Object3D[] {
-  const bodies: THREE.Object3D[] = []
+function chordDistance(a: THREE.Object3D, b: THREE.Object3D): number {
+  a.getWorldPosition(scratch.a)
+  b.getWorldPosition(scratch.b)
+  return scratch.a.distanceTo(scratch.b)
+}
+
+function distancePointToWaypoint(from: THREE.Vector3, w: THREE.Object3D): number {
+  w.getWorldPosition(scratch.b)
+  return from.distanceTo(scratch.b)
+}
+
+function collectPlanetWaypoints(runtimes: StarSystemRuntime[]): THREE.Object3D[] {
+  const out: THREE.Object3D[] = []
   for (const rt of runtimes) {
     for (const p of rt.planets) {
-      bodies.push(p.body)
+      out.push(p.mesh)
     }
   }
-  return bodies
+  return out
 }
 
 function pickTwoDistinct(bodies: THREE.Object3D[]): [THREE.Object3D, THREE.Object3D] | null {
@@ -43,82 +56,131 @@ function pickTwoDistinct(bodies: THREE.Object3D[]): [THREE.Object3D, THREE.Objec
   return [bodies[a]!, bodies[b]!]
 }
 
-function pickRandomEndFrom(start: THREE.Object3D, bodies: THREE.Object3D[]): THREE.Object3D {
-  const candidates = bodies.filter((b) => b !== start)
-  if (candidates.length === 0) return bodies[0]!
-  return candidates[Math.floor(Math.random() * candidates.length)]!
+function pickRandomFrom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]!
 }
 
-/** 只更新起点/终点引用，并把飞船放到起点行星中心；飞行由 `update` 每帧按 `cruiseSpeed` 追终点。 */
-function pickLeg(lane: LaneState, bodies: THREE.Object3D[]): void {
-  if (bodies.length < 2 || !lane.starship) return
+function pickFarthestWaypointFromPoint(
+  from: THREE.Vector3,
+  waypoints: THREE.Object3D[],
+  exclude: THREE.Object3D | null,
+): THREE.Object3D {
+  let best = exclude !== waypoints[0] ? waypoints[0]! : waypoints[1]!
+  let bestD = distancePointToWaypoint(from, best)
+  for (const w of waypoints) {
+    if (exclude !== null && w === exclude) continue
+    const d = distancePointToWaypoint(from, w)
+    if (d > bestD) {
+      bestD = d
+      best = w
+    }
+  }
+  return best
+}
 
-  let start: THREE.Object3D
-  let end: THREE.Object3D
+/** 从飞船当前世界坐标选下一目标：优先弦长 ≥ minChord，否则取最远 */
+function pickNextDestinationWaypoint(
+  from: THREE.Vector3,
+  waypoints: THREE.Object3D[],
+  preferExclude: THREE.Object3D | null,
+): THREE.Object3D {
+  const candidates =
+    preferExclude !== null ? waypoints.filter((w) => w !== preferExclude) : [...waypoints]
+  const pool = candidates.length > 0 ? candidates : waypoints
 
-  if (lane.lastArrivalBody) {
-    start = lane.lastArrivalBody
-    end = pickRandomEndFrom(start, bodies)
-    let ok = false
-    for (let k = 0; k < 24; k++) {
-      start.getWorldPosition(scratch.a)
-      end.getWorldPosition(scratch.b)
-      if (scratch.a.distanceTo(scratch.b) >= UNIVERSE_STARSHIP_LANES.minChord) {
-        ok = true
-        break
+  let pick = pickRandomFrom(pool)
+  for (let k = 0; k < 24; k++) {
+    if (distancePointToWaypoint(from, pick) >= UNIVERSE_STARSHIP_LANES.minChord) return pick
+    pick = pickRandomFrom(pool)
+  }
+  return pickFarthestWaypointFromPoint(from, waypoints, preferExclude)
+}
+
+function pickFarthestPair(waypoints: THREE.Object3D[]): [THREE.Object3D, THREE.Object3D] | null {
+  if (waypoints.length < 2) return null
+  let bestI = 0
+  let bestJ = 1
+  let bestD = -1
+  for (let i = 0; i < waypoints.length; i++) {
+    for (let j = i + 1; j < waypoints.length; j++) {
+      const d = chordDistance(waypoints[i]!, waypoints[j]!)
+      if (d > bestD) {
+        bestD = d
+        bestI = i
+        bestJ = j
       }
-      end = pickRandomEndFrom(start, bodies)
     }
-    if (!ok) {
-      start.getWorldPosition(scratch.a)
-      end.getWorldPosition(scratch.b)
-    }
+  }
+  return [waypoints[bestI]!, waypoints[bestJ]!]
+}
+
+/** 首次生成：选一目标 + 另一颗上作为出生点；无「起点」状态，仅首帧坐标 */
+function bootstrapLane(lane: LaneState, waypoints: THREE.Object3D[]): void {
+  const ship = lane.starship
+  if (!ship || waypoints.length < 2) return
+
+  const pair = pickFarthestPair(waypoints) ?? pickTwoDistinct(waypoints)
+  if (!pair) return
+  const [spawnWp, endWp] = Math.random() < 0.5 ? pair : [pair[1], pair[0]]
+
+  lane.endBody = endWp
+  spawnWp.getWorldPosition(lane.launchHold)
+  ship.group.position.copy(lane.launchHold)
+  lane.alongSpeed = ship.cruiseSpeed
+}
+
+function pickNextDestination(lane: LaneState, waypoints: THREE.Object3D[], shipWorld: THREE.Vector3): void {
+  const ship = lane.starship
+  if (!ship || !lane.endBody) return
+  const prev = lane.endBody
+  lane.endBody = pickNextDestinationWaypoint(shipWorld, waypoints, prev)
+  lane.alongSpeed = ship.cruiseSpeed
+}
+
+/** `arrivalCoast`：已进入到达范围且处于休息计时，沿线改为减速靠向球心 */
+function integrateTowardEndWorld(
+  ship: Starship,
+  lane: LaneState,
+  endWorld: THREE.Vector3,
+  dt: number,
+  arrivalCoast: boolean,
+): void {
+  scratch.pos.copy(ship.group.position)
+  scratch.dir.subVectors(endWorld, scratch.pos)
+  const dist = scratch.dir.length()
+  if (dist < 1e-9) return
+  scratch.dir.multiplyScalar(1 / dist)
+  if (arrivalCoast) {
+    lane.alongSpeed = Math.max(0, lane.alongSpeed - ship.alongDeceleration * dt)
   } else {
-    let chosen: [THREE.Object3D, THREE.Object3D] | null = null
-    for (let k = 0; k < 22; k++) {
-      const pair = pickTwoDistinct(bodies)
-      if (!pair) return
-      pair[0].getWorldPosition(scratch.a)
-      pair[1].getWorldPosition(scratch.b)
-      if (scratch.a.distanceTo(scratch.b) >= UNIVERSE_STARSHIP_LANES.minChord) {
-        chosen = pair
-        break
-      }
-    }
-    if (!chosen) {
-      chosen = pickTwoDistinct(bodies)
-      if (!chosen) return
-    }
-    start = chosen[0]
-    end = chosen[1]
+    lane.alongSpeed += ship.alongAcceleration * dt
   }
-
-  lane.startBody = start
-  lane.endBody = end
-  start.getWorldPosition(scratch.a)
-  lane.starship.group.position.copy(scratch.a)
-  if (UNIVERSE_STARSHIP_LANES.hideWhileDocked) {
-    lane.starship.group.visible = true
-  }
+  const step = Math.min(dist, lane.alongSpeed * dt)
+  scratch.pos.addScaledVector(scratch.dir, step)
+  ship.updateFlightChord(scratch.pos, endWorld, dt)
 }
 
-export function createStarshipLanes(
-  systemRuntimes: StarSystemRuntime[],
-  onAllShipsLoaded?: () => void,
-  getChaseViewport?: () => { width: number; height: number },
-) {
-  const planetBodies = collectPlanetBodies(systemRuntimes)
+export type CreateStarshipLanesOptions = {
+  laneCount: number
+  onAllShipsLoaded?: () => void
+  getChaseViewport?: () => { width: number; height: number }
+}
+
+export function createStarshipLanes(systemRuntimes: StarSystemRuntime[], options: CreateStarshipLanesOptions) {
+  const { laneCount: rawLaneCount, onAllShipsLoaded, getChaseViewport } = options
+  const laneCount = Math.max(1, Math.floor(rawLaneCount))
+
+  const waypoints = collectPlanetWaypoints(systemRuntimes)
   const root = new THREE.Group()
   root.name = 'starshipLanes'
 
-  const laneCount = STARSHIP_SCENE_I18N_KEYS.length
   const lanes: LaneState[] = Array.from({ length: laneCount }, (_, laneIndex) => ({
     starship: null,
-    startBody: null,
     endBody: null,
-    lastArrivalBody: null,
+    launchHold: new THREE.Vector3(),
     launchDelayLeft: 0,
     restLeft: 0,
+    alongSpeed: 0,
     laneIndex,
   }))
 
@@ -136,7 +198,7 @@ export function createStarshipLanes(
     void loadGltfSceneAndClips(url)
       .then(({ scene, clips }) => {
         ship.attachGlbRoot(scene.clone(true), clips)
-        pickLeg(lane, planetBodies)
+        bootstrapLane(lane, waypoints)
         lane.launchDelayLeft = lane.laneIndex * 1.05 + Math.random() * 1.6
         const vp = getChaseViewport?.()
         if (vp) ship.resizeChaseCamera(vp.width, vp.height)
@@ -152,31 +214,22 @@ export function createStarshipLanes(
     return lanes[laneIndex]?.starship ?? null
   }
 
-  const eps = UNIVERSE_STARSHIP_LANES.arrivalEpsilon
+  const { arrivalZoneRadius, restSecondsMin, restSecondsMax } = UNIVERSE_STARSHIP_LANES
 
   function update(delta: number, prefersReducedMotion: boolean) {
-    if (planetBodies.length < 2) return
+    if (waypoints.length < 2) return
+
+    let dt = Number.isFinite(delta) && delta > 0 ? delta : 0
+    if (dt > 0 && dt < 1 / 1200) {
+      dt = 1 / 1200
+    }
 
     for (const lane of lanes) {
       const ship = lane.starship
-      if (!ship || !lane.startBody || !lane.endBody) continue
+      if (!ship || !lane.endBody) continue
 
       if (prefersReducedMotion) {
         ship.group.visible = false
-        continue
-      }
-
-      if (lane.restLeft > 0) {
-        if (UNIVERSE_STARSHIP_LANES.hideWhileDocked) {
-          ship.group.visible = false
-        }
-        lane.restLeft -= delta
-        lane.endBody.getWorldPosition(scratch.b)
-        ship.updateParked(scratch.b, scratch.b, delta)
-        if (lane.restLeft <= 0) {
-          pickLeg(lane, planetBodies)
-          lane.launchDelayLeft = Math.random() * 0.75
-        }
         continue
       }
 
@@ -185,26 +238,27 @@ export function createStarshipLanes(
       lane.endBody.getWorldPosition(scratch.b)
 
       if (lane.launchDelayLeft > 0) {
-        lane.launchDelayLeft -= delta
-        lane.startBody.getWorldPosition(scratch.pos)
-        ship.group.position.copy(scratch.pos)
-        ship.updateParked(scratch.pos, scratch.b, delta)
+        lane.launchDelayLeft -= dt
+        ship.group.position.copy(lane.launchHold)
+        ship.updateParked(lane.launchHold, scratch.b, dt)
         continue
       }
 
-      scratch.pos.copy(ship.group.position)
-      scratch.dir.subVectors(scratch.b, scratch.pos)
-      const dist = scratch.dir.length()
-      if (dist <= eps) {
-        lane.lastArrivalBody = lane.endBody
-        lane.restLeft = 0.35 + Math.random() * 1.85
-        continue
+      const distToEnd = ship.group.position.distanceTo(scratch.b)
+
+      if (lane.restLeft <= 0 && distToEnd <= arrivalZoneRadius) {
+        lane.restLeft = restSecondsMin + Math.random() * Math.max(0, restSecondsMax - restSecondsMin)
+        lane.alongSpeed = ship.cruiseSpeed
       }
 
-      scratch.dir.multiplyScalar(1 / dist)
-      const step = Math.min(dist, ship.cruiseSpeed * delta)
-      scratch.pos.addScaledVector(scratch.dir, step)
-      ship.updateFlightChord(scratch.pos, scratch.b, delta)
+      integrateTowardEndWorld(ship, lane, scratch.b, dt, lane.restLeft > 0)
+
+      if (lane.restLeft > 0) {
+        lane.restLeft -= dt
+        if (lane.restLeft <= 0) {
+          pickNextDestination(lane, waypoints, ship.group.position)
+        }
+      }
     }
   }
 

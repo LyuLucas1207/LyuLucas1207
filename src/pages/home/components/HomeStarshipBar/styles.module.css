@@ -17,7 +17,7 @@
   position: relative;
   pointer-events: auto;
   width: 100%;
-  max-width: 26rem;
+  max-width: 32rem;
   padding: 0.85rem 1rem 0.95rem;
   border: 1px solid color-mix(in srgb, var(--space-star-primary) 16%, transparent);
   border-radius: var(--radius-card) var(--radius-card) var(--radius-input) var(--radius-card);
@@ -33,6 +33,12 @@
     0 18px 44px rgba(0, 0, 0, 0.16),
     inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .panel::before {
@@ -84,16 +90,31 @@
   position: relative;
   z-index: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.35rem;
   padding: 0.35rem;
   border-radius: var(--radius-input);
   background: color-mix(in srgb, var(--space-bg) 55%, transparent);
   border: 1px solid color-mix(in srgb, var(--space-star-primary) 8%, transparent);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--space-star-primary) 35%, transparent) transparent;
+}
+
+.segments::-webkit-scrollbar {
+  height: 5px;
+}
+
+.segments::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--space-star-primary) 32%, transparent);
 }
 
 .segment {
-  flex: 1 1 5.5rem;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 0.45rem;
@@ -165,8 +186,6 @@
   letter-spacing: 0.03em;
   color: color-mix(in srgb, var(--space-star-primary) 88%, var(--space-text));
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 @media (max-width: 960px) {
@@ -175,7 +194,7 @@
   }
 
   .panel {
-    max-width: min(22rem, 100%);
+    max-width: min(28rem, 100%);
     padding: 0.72rem 0.8rem 0.85rem;
   }
 
@@ -185,7 +204,7 @@
   }
 
   .segment {
-    flex: 1 1 100%;
+    flex: 0 0 auto;
     padding: 0.42rem 0.5rem;
   }
 

@@ -25,6 +25,7 @@ const DEFAULT_GLOW: StarshipGlowConfig = {
 }
 
 const DEFAULT_POSE: StarshipPoseConfig = {
+  headingSlerp: 7,
   bankSlerp: 8,
   maxBank: 0.45,
   bankGain: 2.4,
@@ -37,7 +38,9 @@ const DEFAULT_POSE: StarshipPoseConfig = {
 const DEFAULTS: StarshipConfig = {
   glbUrl: '',
   modelRadius: 1.05,
-  cruiseSpeed: 12,
+  cruiseSpeed: 3,
+  alongAcceleration: 5,
+  alongDeceleration: 7,
   chaseCam: DEFAULT_CHASE_CAM,
   glow: DEFAULT_GLOW,
   pose: DEFAULT_POSE,
@@ -74,6 +77,16 @@ export class StarshipBuilder {
 
   cruiseSpeed(value: number) {
     this.config.cruiseSpeed = value
+    return this
+  }
+
+  alongAcceleration(value: number) {
+    this.config.alongAcceleration = value
+    return this
+  }
+
+  alongDeceleration(value: number) {
+    this.config.alongDeceleration = value
     return this
   }
 

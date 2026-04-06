@@ -36,7 +36,12 @@ const themeOptions: ThemeEnum[] = [
   ThemeEnum.COFFEE,
 ]
 
-function HomePlanetHero() {
+type HomePlanetHeroProps = {
+  /** 航线飞船数量，与舰队面板、场景 `createStarshipLanes` 一致 */
+  starshipLaneCount?: number
+}
+
+function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
   const location = useLocation()
   const { t, i18n } = useTranslation(['components', 'WorldPage'])
   const { currentTheme, setTheme } = useTheme()
@@ -61,8 +66,12 @@ function HomePlanetHero() {
   }, [])
 
   const starshipShipLabels = useMemo(
-    () => STARSHIP_SCENE_I18N_KEYS.map((key) => t(`WorldPage:scene.${key}`)),
-    [t],
+    () =>
+      Array.from({ length: starshipLaneCount }, (_, i) => {
+        const key = STARSHIP_SCENE_I18N_KEYS[i]
+        return key ? t(`WorldPage:scene.${key}`) : `${t('WorldPage:scene.starshipBarTitle')} ${i + 1}`
+      }),
+    [starshipLaneCount, t],
   )
 
   const handleStarshipLaneClick = useCallback((lane: number) => {
@@ -266,6 +275,7 @@ function HomePlanetHero() {
         prefersReducedMotion,
         onDraggingChange: setDragging,
         systems,
+        starshipLaneCount,
         onFocusSystemChange: handleFocusSystemChange,
         onBreakCameraFollow: handleBreakCameraFollow,
         onHoverChange: setHoverInfo,
@@ -278,7 +288,15 @@ function HomePlanetHero() {
       sceneControllerRef.current?.destroy()
       sceneControllerRef.current = null
     }
-  }, [palette, prefersReducedMotion, systems, location.pathname, handleFocusSystemChange, handleBreakCameraFollow])
+  }, [
+    palette,
+    prefersReducedMotion,
+    systems,
+    starshipLaneCount,
+    location.pathname,
+    handleFocusSystemChange,
+    handleBreakCameraFollow,
+  ])
 
   useEffect(() => {
     const ctrl = sceneControllerRef.current

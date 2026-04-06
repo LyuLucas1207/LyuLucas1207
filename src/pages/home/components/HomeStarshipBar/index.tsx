@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react'
 import { Rocket } from 'lucide-react'
 import gsap from 'gsap'
 
-import { STARSHIP_SCENE_I18N_KEYS } from '@/elements/universe/utils/universeAssets'
-
 import styles from './styles.module.css'
 
 type Props = {
@@ -36,6 +34,12 @@ export function HomeStarshipBar({ activeLaneIndex, onSelectLane, title, shipLabe
     )
   }, [])
 
+  useEffect(() => {
+    if (activeLaneIndex == null || !panelRef.current) return
+    const btn = panelRef.current.querySelector<HTMLElement>(`[data-lane-index="${activeLaneIndex}"]`)
+    btn?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' })
+  }, [activeLaneIndex])
+
   return (
     <div className={styles.wrap}>
       <div ref={panelRef} className={styles.panel} role="toolbar" aria-label={title}>
@@ -47,18 +51,19 @@ export function HomeStarshipBar({ activeLaneIndex, onSelectLane, title, shipLabe
         </div>
 
         <div className={styles.segments}>
-          {STARSHIP_SCENE_I18N_KEYS.map((_, index) => {
+          {shipLabels.map((label, index) => {
             const active = activeLaneIndex === index
             return (
               <button
-                key={STARSHIP_SCENE_I18N_KEYS[index]}
+                key={`starship-lane-${index}`}
                 type="button"
+                data-lane-index={index}
                 className={active ? `${styles.segment} ${styles.segmentActive}` : styles.segment}
                 aria-pressed={active}
                 onClick={() => onSelectLane(index)}
               >
                 <span className={styles.segmentDot} aria-hidden />
-                <span className={styles.segmentName}>{shipLabels[index] ?? '—'}</span>
+                <span className={styles.segmentName}>{label}</span>
               </button>
             )
           })}

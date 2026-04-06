@@ -41,6 +41,8 @@ type CreateSceneOptions = {
   prefersReducedMotion: boolean
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
+  /** 航线飞船数量，由 Home / World 页面传入 */
+  starshipLaneCount: number
   onFocusSystemChange?: (systemId?: string) => void
   /** 用户拖拽打断跟焦时触发（清空 React 里的跟船状态等） */
   onBreakCameraFollow?: () => void
@@ -62,6 +64,7 @@ export function createUniverseScene({
   prefersReducedMotion,
   onDraggingChange,
   systems,
+  starshipLaneCount,
   onFocusSystemChange,
   onBreakCameraFollow,
   onHoverChange,
@@ -154,16 +157,16 @@ export function createUniverseScene({
     }
   }
 
-  const starshipLanes = createStarshipLanes(
-    systemRuntimes,
-    () => {
+  const starshipLanes = createStarshipLanes(systemRuntimes, {
+    laneCount: starshipLaneCount,
+    onAllShipsLoaded: () => {
       requestAnimationFrame(() => {
         starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
         warmRendererPrograms()
       })
     },
-    () => ({ width: host.clientWidth, height: host.clientHeight }),
-  )
+    getChaseViewport: () => ({ width: host.clientWidth, height: host.clientHeight }),
+  })
   scene.add(nebula.group, galaxyCore, starshipLanes.group)
   starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
 

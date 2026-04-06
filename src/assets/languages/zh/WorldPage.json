@@ -48,7 +48,9 @@
     "starshipBarTitle": "舰队航线",
     "starshipAstralDrift": "星流漂移",
     "starshipNebulaCraft": "星云工艺",
-    "starshipStellarWing": "恒星翼"
+    "starshipStellarWing": "恒星翼",
+    "starshipHorizonRunner": "天际疾行",
+    "starshipVoidRelay": "虚空中继"
   },
   "signals": {
     "premium": {
