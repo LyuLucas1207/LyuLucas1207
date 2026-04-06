@@ -56,6 +56,7 @@ export class CameraRig {
   private readonly planetWorldQuat = new THREE.Quaternion()
   private readonly planetWorldScale = new THREE.Vector3()
   private readonly planetLocalOffset = new THREE.Vector3()
+  private readonly lookDirScratch = new THREE.Vector3()
 
   constructor(camera: THREE.PerspectiveCamera) {
     this.camera = camera
@@ -139,10 +140,20 @@ export class CameraRig {
       this.clampPosition(this.desiredPosition)
       const focusLerp = planetFollow ? UNIVERSE_PLANET_FOCUS.lerp : UNIVERSE_SYSTEM_FOCUS.lerp
       this.camera.position.lerp(this.desiredPosition, focusLerp)
-      const direction = this.lookTarget.clone().sub(this.camera.position).normalize()
-      const baseYaw = Math.atan2(-direction.x, -direction.z)
-      const basePitch = Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))
-      this.movement.targetYaw = baseYaw + this.focusYawOffset
+      this.lookDirScratch.copy(this.lookTarget).sub(this.camera.position)
+      if (this.lookDirScratch.lengthSq() < 1e-10) {
+        this.lookDirScratch.set(0, 0, -1)
+      } else {
+        this.lookDirScratch.normalize()
+      }
+      const baseYaw = Math.atan2(-this.lookDirScratch.x, -this.lookDirScratch.z)
+      const basePitch = Math.asin(THREE.MathUtils.clamp(this.lookDirScratch.y, -1, 1))
+      // `atan2` 在 ±π 处不连续，跟轨时方向扫过该处会让 targetYaw 突变 2π；按当前 yaw 取等价角最短路径。
+      const twoPi = Math.PI * 2
+      let desiredYaw = baseYaw + this.focusYawOffset
+      while (desiredYaw - this.movement.yaw > Math.PI) desiredYaw -= twoPi
+      while (desiredYaw - this.movement.yaw < -Math.PI) desiredYaw += twoPi
+      this.movement.targetYaw = desiredYaw
       this.movement.targetPitch = THREE.MathUtils.clamp(
         basePitch + this.focusPitchOffset,
         -1.45,
