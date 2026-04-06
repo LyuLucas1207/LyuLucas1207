@@ -44,7 +44,11 @@
     "enterPlanet": "进入",
     "reflySystem": "重新飞入世界",
     "reflyIdle": "重新初始化当前宇宙",
-    "selectGalaxy": "选择星系"
+    "selectGalaxy": "选择星系",
+    "starshipBarTitle": "舰队航线",
+    "starshipAstralDrift": "星流漂移",
+    "starshipNebulaCraft": "星云工艺",
+    "starshipStellarWing": "恒星翼"
   },
   "signals": {
     "premium": {

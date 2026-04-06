@@ -44,7 +44,11 @@
     "enterPlanet": "Entrer",
     "reflySystem": "Réentrer dans le monde",
     "reflyIdle": "Réinitialiser cet univers",
-    "selectGalaxy": "Choisir galaxie"
+    "selectGalaxy": "Choisir galaxie",
+    "starshipBarTitle": "Flotte",
+    "starshipAstralDrift": "Astral Drift",
+    "starshipNebulaCraft": "Nebula Craft",
+    "starshipStellarWing": "Stellar Wing"
   },
   "signals": {
     "premium": {

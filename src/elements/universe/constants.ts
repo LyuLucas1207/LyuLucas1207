@@ -69,3 +69,16 @@ export const UNIVERSE_PLANET_FOCUS = {
   /** 行星局部 +Z 视距 = planetRadius × 该系数（原先用 1.5 过近） */
   radiusToCameraFactor: 3.45,
 }
+
+/**
+ * 多船航线编排（条数由 `STARSHIP_SCENE_I18N_KEYS.length` 等与 UI 一致处决定）。
+ * 单艘飞船可调字段默认在 `StarshipBuilder`（与 `PlanetBuilder` 等同系）。
+ */
+export const UNIVERSE_STARSHIP_LANES = {
+  /** 过短弦长重抽，避免「肉眼几乎不动」 */
+  minChord: 7,
+  /** 到港等待下一段时只关 `visible` */
+  hideWhileDocked: true,
+  /** 与终点行星中心距离小于此值（世界单位）视为到港 */
+  arrivalEpsilon: 0.35,
+} as const

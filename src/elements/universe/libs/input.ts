@@ -43,7 +43,7 @@ export class SceneInput {
   private readonly raycaster = new THREE.Raycaster()
 
   private readonly host: HTMLDivElement
-  private readonly camera: THREE.Camera
+  private readonly getCamera: () => THREE.Camera
   private readonly interactiveObjects: THREE.Object3D[]
 
   private readonly handlePointerDown: (e: PointerEvent) => void
@@ -53,9 +53,9 @@ export class SceneInput {
   private readonly handleKeyDown: (e: KeyboardEvent) => void
   private readonly handleKeyUp: (e: KeyboardEvent) => void
 
-  constructor(host: HTMLDivElement, camera: THREE.Camera, interactiveObjects: THREE.Object3D[]) {
+  constructor(host: HTMLDivElement, getCamera: () => THREE.Camera, interactiveObjects: THREE.Object3D[]) {
     this.host = host
-    this.camera = camera
+    this.getCamera = getCamera
     this.interactiveObjects = interactiveObjects
 
     this.handlePointerDown = this.onPointerDown.bind(this)
@@ -103,7 +103,7 @@ export class SceneInput {
     const bounds = this.host.getBoundingClientRect()
     this.pointer.x = ((clientX - bounds.left) / bounds.width) * 2 - 1
     this.pointer.y = -((clientY - bounds.top) / bounds.height) * 2 + 1
-    this.raycaster.setFromCamera(this.pointer, this.camera)
+    this.raycaster.setFromCamera(this.pointer, this.getCamera())
     const hit = this.raycaster.intersectObjects(this.interactiveObjects, false)[0]?.object ?? null
 
     if (this.hoveredObject !== hit) {
@@ -171,25 +171,43 @@ export class SceneInput {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    const key = event.key.toLowerCase()
-    if (key === 'w' || key === 'a' || key === 's' || key === 'd' || key === 'q' || key === 'e') {
-      this.onBreakFocus?.()
-      if (key === 'w') this.keys.forward = true
-      if (key === 's') this.keys.backward = true
-      if (key === 'a') this.keys.left = true
-      if (key === 'd') this.keys.right = true
-      if (key === 'q') this.keys.up = true
-      if (key === 'e') this.keys.down = true
+    const k = event.key
+    const lower = k.toLowerCase()
+    const isMove =
+      lower === 'w' ||
+      lower === 'a' ||
+      lower === 's' ||
+      lower === 'd' ||
+      lower === 'q' ||
+      lower === 'e' ||
+      k === 'ArrowUp' ||
+      k === 'ArrowDown' ||
+      k === 'ArrowLeft' ||
+      k === 'ArrowRight'
+    if (!isMove) return
+
+    if (k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight') {
+      event.preventDefault()
     }
+
+    this.onBreakFocus?.()
+
+    if (lower === 'w' || k === 'ArrowUp') this.keys.forward = true
+    if (lower === 's' || k === 'ArrowDown') this.keys.backward = true
+    if (lower === 'a' || k === 'ArrowLeft') this.keys.left = true
+    if (lower === 'd' || k === 'ArrowRight') this.keys.right = true
+    if (lower === 'q') this.keys.up = true
+    if (lower === 'e') this.keys.down = true
   }
 
   private onKeyUp(event: KeyboardEvent) {
-    const key = event.key.toLowerCase()
-    if (key === 'w') this.keys.forward = false
-    if (key === 's') this.keys.backward = false
-    if (key === 'a') this.keys.left = false
-    if (key === 'd') this.keys.right = false
-    if (key === 'q') this.keys.up = false
-    if (key === 'e') this.keys.down = false
+    const k = event.key
+    const lower = k.toLowerCase()
+    if (lower === 'w' || k === 'ArrowUp') this.keys.forward = false
+    if (lower === 's' || k === 'ArrowDown') this.keys.backward = false
+    if (lower === 'a' || k === 'ArrowLeft') this.keys.left = false
+    if (lower === 'd' || k === 'ArrowRight') this.keys.right = false
+    if (lower === 'q') this.keys.up = false
+    if (lower === 'e') this.keys.down = false
   }
 }

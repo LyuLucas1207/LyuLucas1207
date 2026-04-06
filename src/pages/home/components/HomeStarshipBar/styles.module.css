@@ -1,0 +1,195 @@
+/* 全宽条带 + 内层玻璃面板居中（与 HomeHud / ActionDock 同系 tokens，继承 .hero 的 --space-*） */
+.wrap {
+  position: absolute;
+  top: 1.35rem;
+  left: 0;
+  width: 100%;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding-inline: max(0.85rem, env(safe-area-inset-left, 0px)) max(0.85rem, env(safe-area-inset-right, 0px));
+  pointer-events: none;
+}
+
+.panel {
+  position: relative;
+  pointer-events: auto;
+  width: 100%;
+  max-width: 26rem;
+  padding: 0.85rem 1rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--space-star-primary) 16%, transparent);
+  border-radius: var(--radius-card) var(--radius-card) var(--radius-input) var(--radius-card);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--space-bg-2) 92%, transparent),
+      color-mix(in srgb, var(--space-bg) 88%, rgba(255, 255, 255, 0.03))
+    );
+  color: var(--space-star-primary);
+  backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--space-star-primary) 16%, transparent), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 32%);
+  pointer-events: none;
+}
+
+.panel::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1.2rem;
+  top: 0.62rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--space-star-primary), transparent 82%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.panelHeader {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.62rem;
+}
+
+.panelIcon {
+  display: inline-flex;
+  color: color-mix(in srgb, var(--space-star-primary) 78%, var(--space-text) 22%);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--space-star-primary) 35%, transparent));
+}
+
+.panelTitle {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--space-star-primary) 76%, var(--space-text) 24%);
+}
+
+.segments {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: var(--radius-input);
+  background: color-mix(in srgb, var(--space-bg) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--space-star-primary) 8%, transparent);
+}
+
+.segment {
+  flex: 1 1 5.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.48rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--space-text);
+  text-align: left;
+  cursor: pointer;
+  /* 避免点击后保留系统默认 focus 轮廓（粗黑框）；键盘导航用 :focus-visible */
+  outline: none;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.segment:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--space-star-highlight) 72%, var(--space-star-primary) 28%);
+  outline-offset: 2px;
+}
+
+.segment:hover {
+  background: color-mix(in srgb, var(--space-star-primary) 8%, transparent);
+  border-color: color-mix(in srgb, var(--space-star-primary) 18%, transparent);
+}
+
+.segmentActive {
+  background: color-mix(in srgb, var(--space-star-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--space-star-highlight) 48%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--space-star-primary) 14%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.segmentActive .segmentDot {
+  background: var(--space-star-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--space-star-primary) 55%, transparent);
+  transform: scale(1.25);
+}
+
+.segmentActive .segmentName {
+  color: var(--space-star-primary);
+  font-weight: 650;
+}
+
+.segmentDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--space-text) 38%, transparent);
+  transition:
+    background 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.segment:hover .segmentDot {
+  background: color-mix(in srgb, var(--space-star-primary) 62%, transparent);
+}
+
+.segmentName {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, var(--space-star-primary) 88%, var(--space-text));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 960px) {
+  .wrap {
+    top: 0.75rem;
+  }
+
+  .panel {
+    max-width: min(22rem, 100%);
+    padding: 0.72rem 0.8rem 0.85rem;
+  }
+
+  .panelTitle {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .segment {
+    flex: 1 1 100%;
+    padding: 0.42rem 0.5rem;
+  }
+
+  .segmentName {
+    font-size: 0.68rem;
+  }
+}

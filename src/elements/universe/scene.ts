@@ -28,6 +28,7 @@ import {
   spinUniverseBackground,
 } from './utils/universeBackground'
 import { createStarSystem, createSystemAnchors } from './systems'
+import { createStarshipLanes } from './utils/starshipLanes'
 import type { StarSystemConfig, UniversePalette } from './types'
 import type { UniverseShaders } from './utils/shaders'
 
@@ -41,6 +42,8 @@ type CreateSceneOptions = {
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
   onFocusSystemChange?: (systemId?: string) => void
+  /** 用户拖拽打断跟焦时触发（清空 React 里的跟船状态等） */
+  onBreakCameraFollow?: () => void
   onHoverChange?: (info: Nilable<HoverInfo>) => void
 }
 
@@ -48,6 +51,8 @@ export type UniverseSceneController = {
   destroy: () => void
   setFocusSystem: (systemId?: string) => void
   setFocusPlanet: (systemId: string, planetId: string) => void
+  /** `laneIndex` 对应 `STARSHIP_GLB_URLS`；`null` 取消跟船 */
+  setFollowStarshipLane: (laneIndex: number | null) => void
 }
 
 export function createUniverseScene({
@@ -58,6 +63,7 @@ export function createUniverseScene({
   onDraggingChange,
   systems,
   onFocusSystemChange,
+  onBreakCameraFollow,
   onHoverChange,
 }: CreateSceneOptions) {
   const renderer = new THREE.WebGLRenderer({
@@ -119,6 +125,7 @@ export function createUniverseScene({
     return runtime
   })
   const systemRuntimeMap = new Map(systemRuntimes.map((runtime, index) => [systems[index]?.id, runtime]))
+  const maxGalaxyOrbit = Math.max(1, ...systemRuntimes.map((r) => r.maxOrbitRadius))
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
@@ -139,15 +146,47 @@ export function createUniverseScene({
       .isLight(palette.isNebulaLight)
       .done(),
   )
-  scene.add(nebula.group, galaxyCore)
+  const warmRendererPrograms = () => {
+    try {
+      renderer.compile(scene, camera)
+    } catch {
+      /* compile 在极个别环境下可能抛错，忽略即可 */
+    }
+  }
+
+  const starshipLanes = createStarshipLanes(
+    systemRuntimes,
+    () => {
+      requestAnimationFrame(() => {
+        starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
+        warmRendererPrograms()
+      })
+    },
+    () => ({ width: host.clientWidth, height: host.clientHeight }),
+  )
+  scene.add(nebula.group, galaxyCore, starshipLanes.group)
+  starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(warmRendererPrograms)
+  })
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(warmRendererPrograms, { timeout: 2500 })
+  } else {
+    window.setTimeout(warmRendererPrograms, 1200)
+  }
 
   const interactiveObjects = systemRuntimes.flatMap((runtime) => runtime.interactiveObjects)
-  const input = new SceneInput(host, camera, interactiveObjects)
-  const cameraRig = new CameraRig(camera)
+  let cameraRig!: CameraRig
+  const input = new SceneInput(host, () => cameraRig.getRenderCamera(), interactiveObjects)
+  cameraRig = new CameraRig(camera)
 
   input.onDraggingChange = onDraggingChange
   input.onHoverChange = onHoverChange
-  input.onBreakFocus = () => cameraRig.clearFocus()
+  input.onBreakFocus = () => {
+    cameraRig.clearFocus()
+    onBreakCameraFollow?.()
+  }
   input.onObjectClick = (obj, event) => {
     if (event.button !== 0) return
 
@@ -187,6 +226,26 @@ export function createUniverseScene({
       maxOrbitRadius: rt.maxOrbitRadius,
       follow: entry.body,
       followFrameRadius: entry.mesh.userData.planetRadius as number,
+      followRole: 'planet',
+    })
+  }
+
+  const setFollowStarshipLane = (laneIndex: number | null) => {
+    if (laneIndex === null) {
+      cameraRig.clearFocus()
+      return
+    }
+    const ship = starshipLanes.getStarship(laneIndex)
+    if (!ship) return
+    ship.resizeChaseCamera(host.clientWidth, host.clientHeight)
+    cameraRig.setFocus({
+      group: galaxyCore,
+      maxOrbitRadius: maxGalaxyOrbit,
+      follow: ship.facing,
+      followFrameRadius: ship.modelRadius,
+      followRole: 'starship',
+      starshipChaseCamera: ship.chaseCamera,
+      starshipOrbitPitchLimit: ship.chaseOrbitPitchLimit,
     })
   }
 
@@ -230,6 +289,9 @@ export function createUniverseScene({
       runtime.stellar.update(elapsed)
     })
 
+    /* 航线端点必须用 **本帧** galaxyCore + 轨道角更新后的 world 矩阵，否则船会相对行星中心漂移 */
+    starshipLanes.update(timer.getDelta(), prefersReducedMotion)
+
     nebula.group.children.forEach((child: THREE.Object3D, index: number) => {
       child.position.x += Math.sin(elapsed * 0.08 + index) * 0.014
       child.position.y += Math.cos(elapsed * 0.06 + index * 1.3) * 0.012
@@ -240,7 +302,7 @@ export function createUniverseScene({
       material.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2)
     })
 
-    renderer.render(scene, camera)
+    renderer.render(scene, cameraRig.getRenderCamera())
     frameId = window.requestAnimationFrame(animate)
   }
 
@@ -251,6 +313,7 @@ export function createUniverseScene({
     const height = host.clientHeight
     renderer.setSize(width, height)
     cameraRig.resize(width, height)
+    starshipLanes.resizeChaseCameras(width, height)
   })
   resizeObserver.observe(host)
 
@@ -259,6 +322,7 @@ export function createUniverseScene({
     resizeObserver.disconnect()
     timer.dispose()
     input.destroy()
+    starshipLanes.destroy()
     disposeSceneBackground(scene)
     scene.traverse((child) => {
       const target = child as THREE.Mesh | THREE.Points | THREE.Sprite
@@ -282,5 +346,6 @@ export function createUniverseScene({
     destroy,
     setFocusSystem,
     setFocusPlanet,
+    setFollowStarshipLane,
   } satisfies UniverseSceneController
 }

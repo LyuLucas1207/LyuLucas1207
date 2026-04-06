@@ -7,6 +7,14 @@ export type { RingConfig, RingPalette } from './ring'
 export { Satellite, SatelliteBuilder } from './satellite'
 export type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './satellite'
 
+export { Starship, StarshipBuilder } from './starship'
+export type {
+  StarshipChaseCamConfig,
+  StarshipConfig,
+  StarshipGlowConfig,
+  StarshipPoseConfig,
+} from './starship'
+
 export { Stellar, StellarBuilder } from './stellar'
 export type { StellarConfig, StellarPalette, StellarShellShaders } from './stellar'
 
