@@ -28,14 +28,8 @@ export class Starship {
   /** 挂在 `attitude` 下，局部位姿由 `config.chaseCam` + `CameraRig` 拖拽增量决定 */
   readonly chaseCamera: THREE.PerspectiveCamera
 
-  readonly modelRadius: number
-  readonly cruiseSpeed: number
-  readonly alongAcceleration: number
-  readonly alongDeceleration: number
-  /** 供 `CameraRig` 跟船拖拽 pitch 夹紧 */
-  readonly chaseOrbitPitchLimit: number
-
-  private readonly config: StarshipConfig
+  /** 构建时快照；运动/姿态参数读 `config` */
+  readonly config: StarshipConfig
   private readonly attitude: THREE.Group
   private readonly bank: THREE.Group
   private readonly glowLight: THREE.PointLight
@@ -58,11 +52,6 @@ export class Starship {
 
   constructor(config: StarshipConfig) {
     this.config = config
-    this.modelRadius = config.modelRadius
-    this.cruiseSpeed = config.cruiseSpeed
-    this.alongAcceleration = config.alongAcceleration
-    this.alongDeceleration = config.alongDeceleration
-    this.chaseOrbitPitchLimit = config.chaseCam.orbitPitchLimit
 
     this.group = new THREE.Group()
     this.group.name = 'starship'
@@ -188,7 +177,7 @@ export class Starship {
    * 换一段追击前把沿线速度拉回巡航初值（进入到达圈、换行星目标等时由编排层调用）。
    */
   prepareSeek() {
-    this.alongSpeed = this.cruiseSpeed
+    this.alongSpeed = this.config.cruiseSpeed
   }
 
   /**
@@ -207,9 +196,9 @@ export class Starship {
     }
     this.seekDir.multiplyScalar(1 / dist)
     if (arrivalCoast) {
-      this.alongSpeed = Math.max(0, this.alongSpeed - this.alongDeceleration * delta)
+      this.alongSpeed = Math.max(0, this.alongSpeed - this.config.alongDeceleration * delta)
     } else {
-      this.alongSpeed += this.alongAcceleration * delta
+      this.alongSpeed += this.config.alongAcceleration * delta
     }
     const step = Math.min(dist, this.alongSpeed * delta)
     this.seekPos.addScaledVector(this.seekDir, step)

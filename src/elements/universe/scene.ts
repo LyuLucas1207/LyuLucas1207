@@ -246,10 +246,10 @@ export function createUniverseScene({
       group: galaxyCore,
       maxOrbitRadius: maxGalaxyOrbit,
       follow: ship.facing,
-      followFrameRadius: ship.modelRadius,
+      followFrameRadius: ship.config.modelRadius,
       followRole: 'starship',
       starshipChaseCamera: ship.chaseCamera,
-      starshipOrbitPitchLimit: ship.chaseOrbitPitchLimit,
+      starshipOrbitPitchLimit: ship.config.chaseCam.orbitPitchLimit,
     })
   }
 
