@@ -5,6 +5,12 @@ export interface SatellitePalette {
   surfaceColorPool: string[]
 }
 
+/** 与 `PlanetSurfaceConfig` 的 PBR 参数一致，便于与行星程序化表面观感对齐 */
+export interface SatelliteSurfaceConfig {
+  roughness: number
+  metalness: number
+}
+
 export interface SatelliteConfig {
   radius: number
   segments: number
@@ -13,4 +19,5 @@ export interface SatelliteConfig {
   palette: SatellitePalette
   emissive: GlowOnOff
   isLight: boolean
+  surface: SatelliteSurfaceConfig
 }

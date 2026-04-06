@@ -1,5 +1,5 @@
 import type { GlowOnOff } from '../types'
-import type { SatelliteConfig, SatellitePalette } from './types'
+import type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './types'
 
 const DEFAULT_PALETTE: SatellitePalette = {
   surfaceColorPool: ['#aaaaaa'],
@@ -13,6 +13,7 @@ const DEFAULTS: SatelliteConfig = {
   palette: DEFAULT_PALETTE,
   emissive: { off: 0.4, on: 1.8 },
   isLight: false,
+  surface: { roughness: 0.34, metalness: 0.12 },
 }
 
 export class SatelliteBuilder {
@@ -54,6 +55,11 @@ export class SatelliteBuilder {
 
   isLight(value: boolean) {
     this.config.isLight = value
+    return this
+  }
+
+  surface(value: SatelliteSurfaceConfig) {
+    this.config.surface = value
     return this
   }
 

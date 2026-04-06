@@ -1,4 +1,5 @@
 import type { Nullable } from 'nfx-ui/types'
+import { UNIVERSE_SHADERS } from './universeAssets'
 
 export type UniverseShaders = {
   starfieldVertex: string
@@ -20,10 +21,10 @@ export async function loadUniverseShaders(): Promise<UniverseShaders> {
 
   const [starfieldVertex, starfieldFragment, coreShellVertex, coreShellFragment] =
     await Promise.all([
-      fetchGlsl('/shaders/starfield.vert.glsl'),
-      fetchGlsl('/shaders/starfield.frag.glsl'),
-      fetchGlsl('/shaders/coreShell.vert.glsl'),
-      fetchGlsl('/shaders/coreShell.frag.glsl'),
+      fetchGlsl(UNIVERSE_SHADERS.starfield.vertex), 
+      fetchGlsl(UNIVERSE_SHADERS.starfield.fragment),
+      fetchGlsl(UNIVERSE_SHADERS.coreShell.vertex),
+      fetchGlsl(UNIVERSE_SHADERS.coreShell.fragment),
     ])
 
   cached = { starfieldVertex, starfieldFragment, coreShellVertex, coreShellFragment }

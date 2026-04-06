@@ -5,7 +5,7 @@ export { Ring, RingBuilder } from './ring'
 export type { RingConfig, RingPalette } from './ring'
 
 export { Satellite, SatelliteBuilder } from './satellite'
-export type { SatelliteConfig, SatellitePalette } from './satellite'
+export type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './satellite'
 
 export { Stellar, StellarBuilder } from './stellar'
 export type { StellarConfig, StellarPalette, StellarShellShaders } from './stellar'

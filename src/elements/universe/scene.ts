@@ -18,6 +18,7 @@ import {
   Stream, StreamBuilder,
   Vortex, VortexBuilder,
 } from './fragments'
+import { attachRandomPlanetGlb } from './utils/planetGlb'
 import { createStarSystem, createSystemAnchors } from './systems'
 import type { StarSystemConfig, UniversePalette } from './types'
 import type { UniverseShaders } from './utils/shaders'
@@ -111,6 +112,9 @@ export function createUniverseScene({
   systemRuntimes.forEach((runtime) => {
     runtime.starMesh.userData.focusSystem = runtime
     galaxyCore.add(runtime.group)
+    runtime.planets.forEach((planet) => {
+      void attachRandomPlanetGlb(planet)
+    })
   })
 
   const nebula = new Nebula(

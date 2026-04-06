@@ -93,21 +93,23 @@ export function createStarSystem(
       ? { surfaceColorPool: [planetConfig.accent] }
       : palette.planet
 
-    const planet = new Planet(
-      new PlanetBuilder()
-        .planetRadius(planetConfig.planetRadius)
-        .palette(planetPalette)
-        .isLight(palette.isPlanetLight)
-        .done(),
-    )
+    const builtPlanetConfig = new PlanetBuilder()
+      .planetRadius(planetConfig.planetRadius)
+      .palette(planetPalette)
+      .isLight(palette.isPlanetLight)
+      .done()
+    const planet = new Planet(builtPlanetConfig)
     planet.body.position.set(planetConfig.orbitRadius, 0, 0)
+    planet.mesh.userData.planetRadius = planetConfig.planetRadius
     planet.mesh.userData.action = planetConfig.onSelect
     planet.mesh.userData.baseScale = 1
     planet.mesh.userData.hovered = false
     planet.mesh.userData.systemName = config.name
     planet.mesh.userData.label = planetConfig.label
 
-    if (variance > 0.52) {
+    // 星环与卫星二选一（各 50%），避免同时出现；此前并存时卫星轨道常与星环相交，视觉上像「乱飞」。
+    const ringOrSatellite = Math.random()
+    if (ringOrSatellite < 0.5) {
       const ringPalette = planetConfig.accent
         ? { bandColorPool: [planetConfig.accent] }
         : palette.ring
@@ -123,16 +125,18 @@ export function createStarSystem(
           .done(),
       )
       planet.body.add(ring.group)
-    }
-
-    if (variance > 0.62) {
+    } else {
       const satellite = new Satellite(
         new SatelliteBuilder()
           .radius(planetConfig.planetRadius * 0.2)
-          .orbitRadius(planetConfig.planetRadius * 2.2)
+          .orbitRadius(planetConfig.planetRadius * (3.0 + Math.random() * 0.55))
           .speed(0.015 + variance * 0.02)
           .palette(palette.satellite)
           .isLight(palette.isSatelliteLight)
+          .surface({
+            roughness: builtPlanetConfig.surface.roughness,
+            metalness: builtPlanetConfig.surface.metalness,
+          })
           .done(),
       )
       planet.body.add(satellite.group)
@@ -154,6 +158,7 @@ export function createStarSystem(
     pivot.add(orbitPlane)
     group.add(pivot)
     planets.push({
+      planet,
       orbitCarrier,
       body: planet.body,
       mesh: planet.mesh,

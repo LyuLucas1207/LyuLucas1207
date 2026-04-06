@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { pickColor } from 'nfx-ui/utils'
 import type { SatelliteConfig } from './types'
 
-export type { SatelliteConfig, SatellitePalette } from './types'
+export type { SatelliteConfig, SatellitePalette, SatelliteSurfaceConfig } from './types'
 export { SatelliteBuilder } from './builder'
 
 export class Satellite {
@@ -24,8 +24,8 @@ export class Satellite {
         emissive: color,
         // `isLight` means `glowOn` -> stronger emissive when glow is on.
         emissiveIntensity: config.isLight ? config.emissive.on : config.emissive.off,
-        roughness: 0.5,
-        metalness: 0.1,
+        roughness: config.surface.roughness,
+        metalness: config.surface.metalness,
       }),
     )
     mesh.position.set(config.orbitRadius, 0, 0)
