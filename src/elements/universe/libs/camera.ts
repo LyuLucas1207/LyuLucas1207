@@ -52,6 +52,10 @@ export class CameraRig {
   private readonly desiredPosition = new THREE.Vector3()
   private readonly lookTarget = new THREE.Vector3()
   private readonly focusOffset = new THREE.Vector3()
+  private readonly planetWorldPos = new THREE.Vector3()
+  private readonly planetWorldQuat = new THREE.Quaternion()
+  private readonly planetWorldScale = new THREE.Vector3()
+  private readonly planetLocalOffset = new THREE.Vector3()
 
   constructor(camera: THREE.PerspectiveCamera) {
     this.camera = camera
@@ -112,16 +116,29 @@ export class CameraRig {
     if (this.focusTarget && this.followingFocus) {
       const follow = this.focusTarget.follow
       const planetFollow = follow != null
-      const anchor = planetFollow ? follow : this.focusTarget.group
       const frameR = planetFollow
         ? (this.focusTarget.followFrameRadius ?? this.focusTarget.maxOrbitRadius)
         : this.focusTarget.maxOrbitRadius
-      const cam = planetFollow ? UNIVERSE_PLANET_FOCUS : UNIVERSE_SYSTEM_FOCUS
-      anchor.getWorldPosition(this.lookTarget)
-      this.focusOffset.set(0, cam.heightOffset, frameR * 1.5)
-      this.desiredPosition.copy(anchor.localToWorld(this.focusOffset.clone()))
+
+      if (planetFollow) {
+        const pc = UNIVERSE_PLANET_FOCUS
+        follow.updateWorldMatrix(true, false)
+        follow.matrixWorld.decompose(this.planetWorldPos, this.planetWorldQuat, this.planetWorldScale)
+        this.lookTarget.copy(this.planetWorldPos)
+        this.planetLocalOffset.set(0, pc.heightOffset, frameR * pc.radiusToCameraFactor)
+        this.planetLocalOffset.applyQuaternion(this.planetWorldQuat)
+        this.desiredPosition.copy(this.planetWorldPos).add(this.planetLocalOffset)
+      } else {
+        const sc = UNIVERSE_SYSTEM_FOCUS
+        const anchor = this.focusTarget.group
+        anchor.getWorldPosition(this.lookTarget)
+        this.focusOffset.set(0, sc.heightOffset, frameR * 1.5)
+        this.desiredPosition.copy(anchor.localToWorld(this.focusOffset.clone()))
+      }
+
       this.clampPosition(this.desiredPosition)
-      this.camera.position.lerp(this.desiredPosition, cam.lerp)
+      const focusLerp = planetFollow ? UNIVERSE_PLANET_FOCUS.lerp : UNIVERSE_SYSTEM_FOCUS.lerp
+      this.camera.position.lerp(this.desiredPosition, focusLerp)
       const direction = this.lookTarget.clone().sub(this.camera.position).normalize()
       const baseYaw = Math.atan2(-direction.x, -direction.z)
       const basePitch = Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))

@@ -14,6 +14,8 @@ export interface PlanetSurfaceConfig {
 export interface PlanetConfig {
   planetRadius: number
   segments: number
+  /** 绕本地 Y 自转角速度，弧度/秒 */
+  spinSpeed: number
   palette: PlanetPalette
   isLight: boolean
   surface: PlanetSurfaceConfig

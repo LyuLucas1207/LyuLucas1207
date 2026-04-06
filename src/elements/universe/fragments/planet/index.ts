@@ -22,12 +22,19 @@ export type PlanetRuntime = {
 
 export class Planet {
   readonly body: THREE.Group
+  /** 球体 / GLB 挂在下述节点上自转；碰撞体与星环/卫星仍在 `body` */
+  readonly coreSlot: THREE.Group
   readonly mesh: THREE.Mesh
   private visual: Nullable<THREE.Mesh> = null
   private glbRoot: Nullable<THREE.Object3D> = null
+  private readonly spinSpeed: number
+  private readonly spinPhase: number
 
   constructor(config: PlanetConfig) {
     this.body = new THREE.Group()
+    this.coreSlot = new THREE.Group()
+    this.spinSpeed = config.spinSpeed * (0.88 + Math.random() * 0.28)
+    this.spinPhase = Math.random() * Math.PI * 2
 
     const color = new THREE.Color(pickColor(config.palette.surfaceColorPool))
     const sphere = new THREE.SphereGeometry(config.planetRadius, config.segments, config.segments)
@@ -53,7 +60,12 @@ export class Planet {
       }),
     )
 
-    this.body.add(this.visual, this.mesh)
+    this.coreSlot.add(this.visual)
+    this.body.add(this.coreSlot, this.mesh)
+  }
+
+  update(elapsed: number) {
+    this.coreSlot.rotation.y = elapsed * this.spinSpeed + this.spinPhase
   }
 
   /**
@@ -61,12 +73,12 @@ export class Planet {
    */
   attachGlbRoot(root: THREE.Object3D) {
     if (this.glbRoot) {
-      this.body.remove(this.glbRoot)
+      this.coreSlot.remove(this.glbRoot)
       Planet.disposeObject3DResources(this.glbRoot)
       this.glbRoot = null
     }
     if (this.visual) {
-      this.body.remove(this.visual)
+      this.coreSlot.remove(this.visual)
       this.visual.geometry.dispose();
       const material = this.visual.material as THREE.Material
       if (material) material.dispose()
@@ -74,7 +86,8 @@ export class Planet {
     }
     this.body.remove(this.mesh)
     this.glbRoot = root
-    this.body.add(root, this.mesh)
+    this.coreSlot.add(root)
+    this.body.add(this.mesh)
   }
 
   private static disposeObject3DResources(obj: THREE.Object3D) {

@@ -7,6 +7,7 @@ const DEFAULT_PALETTE: PlanetPalette = {
 const DEFAULTS: PlanetConfig = {
   planetRadius: 1,
   segments: 24,
+  spinSpeed: 0.32,
   palette: DEFAULT_PALETTE,
   isLight: false,
   surface: { roughness: 0.34, metalness: 0.12, emissive: { off: 0.6, on: 1.2 } },
@@ -26,6 +27,11 @@ export class PlanetBuilder {
 
   segments(value: number) {
     this.config.segments = value
+    return this
+  }
+
+  spinSpeed(value: number) {
+    this.config.spinSpeed = value
     return this
   }
 

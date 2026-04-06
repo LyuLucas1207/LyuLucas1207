@@ -66,4 +66,6 @@ export const UNIVERSE_SYSTEM_FOCUS = {
 export const UNIVERSE_PLANET_FOCUS = {
   heightOffset: 26,
   lerp: 0.08,
+  /** 行星局部 +Z 视距 = planetRadius × 该系数（原先用 1.5 过近） */
+  radiusToCameraFactor: 3.45,
 }

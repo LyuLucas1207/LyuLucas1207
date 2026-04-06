@@ -216,6 +216,7 @@ export function createUniverseScene({
       )
       runtime.planets.forEach((planet) => {
         planet.orbitCarrier.rotation.z += planet.speed
+        planet.planet.update(elapsed)
         const hovered = Boolean(planet.mesh.userData.hovered)
         const targetScale = hovered ? planet.baseScale * 1.2 : planet.baseScale
         planet.body.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.18)
