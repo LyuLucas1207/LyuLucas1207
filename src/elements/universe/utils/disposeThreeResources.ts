@@ -2,8 +2,9 @@ import * as THREE from 'three'
 
 /** 释放材质上的 `map`（若存在）；用 `in` 收窄，避免对 `Material` 做无意义交叉类型断言。 */
 export function disposeMaterialMap(material: THREE.Material): void {
-  if ('map' in material && material.map) {
-    material.map.dispose()
+  const map = 'map' in material ? material.map : undefined
+  if (map instanceof THREE.Texture) {
+    map.dispose()
   }
 }
 

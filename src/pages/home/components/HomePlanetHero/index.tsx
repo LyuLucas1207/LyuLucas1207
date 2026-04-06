@@ -52,7 +52,7 @@ function HomePlanetHero({ starshipCount = 5 }: HomePlanetHeroProps) {
   const sceneControllerRef = useRef<Nullable<ReturnType<typeof createUniverseScene>>>(null)
   const [, setDragging] = useState(false)
   const palette = useMemo(
-    () => buildUniversePalette(currentTheme.colors.name as ThemeEnum, currentTheme.colors.variables),
+    () => buildUniversePalette(currentTheme.colors.name as ThemeEnum),
     [currentTheme],
   )
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
