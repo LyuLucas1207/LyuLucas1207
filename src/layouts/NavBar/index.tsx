@@ -1,7 +1,7 @@
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { NavLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { navigationItems } from '@/constants/siteContent'
 import { WorldMark } from '@/elements/world/components/WorldMark'
@@ -33,17 +33,28 @@ function NavBar() {
     })
   }
 
+  const handleBrandWorld = () => {
+    if (location.pathname === ROUTES.WORLD) return
+    playWorldTransition({
+      type: 'page',
+      page: ROUTES.WORLD,
+      title: t('navigation.world'),
+      subtitle: t('labels.worldShift'),
+      action: () => routerEventEmitter.navigate({ to: ROUTES.WORLD }),
+    })
+  }
+
   return (
     <>
       <header className={styles.header}>
-        <NavLink to={ROUTES.WORLD} className={styles.brand}>
+        <button type="button" className={styles.brand} onClick={handleBrandWorld}>
           <span className={styles.brandMark}>
             <WorldMark />
           </span>
           <span className={styles.brandCopy}>
             <strong>{t('brand.title')}</strong>
           </span>
-        </NavLink>
+        </button>
 
         <nav className={styles.nav} aria-label="Primary">
           {navigationItems.map((item) => (

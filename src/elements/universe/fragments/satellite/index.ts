@@ -17,18 +17,26 @@ export class Satellite {
     this.carrier = new THREE.Group()
 
     const color = new THREE.Color(pickColor(config.palette.surfaceColorPool))
+    const emissiveIntensity = config.isLight ? config.emissive.on : config.emissive.off
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(config.radius, config.segments, config.segments),
       new THREE.MeshStandardMaterial({
         color,
-        emissive: color,
-        // `isLight` means `glowOn` -> stronger emissive when glow is on.
-        emissiveIntensity: config.isLight ? config.emissive.on : config.emissive.off,
+        emissive: color.clone(),
+        emissiveIntensity,
         roughness: config.surface.roughness,
         metalness: config.surface.metalness,
       }),
     )
     mesh.position.set(config.orbitRadius, 0, 0)
+
+    const point = new THREE.PointLight(
+      color,
+      config.isLight ? emissiveIntensity * 0.62 : emissiveIntensity * 0.5,
+      Math.max(18, config.orbitRadius * 4.5),
+      2,
+    )
+    mesh.add(point)
 
     this.carrier.add(mesh)
     this.group.add(this.carrier)

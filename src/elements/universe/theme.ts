@@ -7,6 +7,7 @@ import deepVoid from './themes/deepVoid'
 import dreamBloom from './themes/dreamBloom'
 import emeraldExpanse from './themes/emeraldExpanse'
 import frostRift from './themes/frostRift'
+import mahogany from './themes/mahogany'
 import neonAbyss from './themes/neonAbyss'
 import solarEmpire from './themes/solarEmpire'
 
@@ -31,7 +32,7 @@ export function buildUniversePalette(themeEnum: ThemeEnum, _vars: ColorVariables
     case ThemeEnum.COSMIC:
       return dreamBloom
     case ThemeEnum.COFFEE:
-      return solarEmpire
+      return mahogany
     case ThemeEnum.WINE:
       return crimsonDominion
     default:

@@ -63,8 +63,15 @@
   display: inline-flex;
   gap: 1rem;
   align-items: center;
+  padding: 0;
+  border: none;
+  margin: 0;
+  font: inherit;
+  text-align: inherit;
   text-decoration: none;
   color: inherit;
+  background: transparent;
+  cursor: pointer;
 }
 
 .brandMark {

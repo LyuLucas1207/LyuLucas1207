@@ -11,7 +11,8 @@ const DEFAULTS: SatelliteConfig = {
   orbitRadius: 1.8,
   speed: 0.02,
   palette: DEFAULT_PALETTE,
-  emissive: { off: 0.4, on: 1.8 },
+  /** 卫星体积小且多为深色，默认自发光需明显高于行星，否则几乎看不见 */
+  emissive: { off: 3.65, on: 6.85 },
   isLight: false,
   surface: { roughness: 0.34, metalness: 0.12 },
 }

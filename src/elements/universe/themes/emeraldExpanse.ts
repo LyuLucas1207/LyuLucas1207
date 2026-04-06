@@ -1,97 +1,110 @@
 export default {
-    label: {
-      startColor: "#F1FFF8",
-      endColor: "#6FD3A7"
-    },
-    isLabelLight: true,
-  
-    nebula: {
-      colorPool: [
-        "#0A1712",
-        "#10241C",
-        "#163328",
-        "#1D4A38",
-        "#276A50",
-        "#2F8A64"
-      ]
-    },
-    isNebulaLight: true,
-  
-    orbit: {
-      colorPool: [
-        "#2F8A64",
-        "#45A37C",
-        "#5FC79A",
-        "#7BE0B2"
-      ]
-    },
-    isOrbitLight: true,
-  
-    planet: {
-      surfaceColorPool: [
-        "#163328",
-        "#1D4A38",
-        "#276A50",
-        "#2F8A64",
-        "#225843",
-        "#3A7A5C"
-      ]
-    },
-    isPlanetLight: true,
-  
-    ring: {
-      bandColorPool: [
-        "#45A37C",
-        "#5FC79A",
-        "#7BE0B2",
-        "#A2F5CD"
-      ]
-    },
-    isRingLight: true,
-  
-    satellite: {
-      surfaceColorPool: [
-        "#1D4A38",
-        "#276A50",
-        "#3A7A5C",
-        "#4E9A76"
-      ]
-    },
-    isSatelliteLight: true,
-  
-    stellar: {
-      coreColor: "#F4FFE1",
-      shellColor: "#B7F07A",
-      shellFallbackColor: "#7BE0B2",
-      haloColor: "#D9FFC7",
-      keyLightColor: "#E9FFD4",
-      rimLightColor: "#5FC79A"
-    },
-    isStellarLight: true,
-  
-    stream: {
-      particleColorPool: [
-        "#A2F5CD",
-        "#7BE0B2",
-        "#5FC79A",
-        "#E8FFF3"
-      ]
-    },
-    isStreamLight: true,
-  
-    vortex: {
-      particleColorPool: [
-        "#45A37C",
-        "#7BE0B2",
-        "#B7F07A",
-        "#D9FFC7"
-      ]
-    },
-    isVortexLight: true,
-  
-    sceneBg: "#040A07",
-    sceneFogColor: "#0B1712",
-    sceneIsLight: false,
-    sceneGlowPrimaryColor: "#5FC79A",
-    sceneGlowAccentColor: "#B7F07A"
-  }
+  label: {
+    startColor: "#B7CDB0",
+    endColor: "#355C3A"
+  },
+  isLabelLight: true,
+
+  nebula: {
+    colorPool: [
+      "#040604",
+      "#081009",
+      "#0C170F",
+      "#112015",
+      "#17291B",
+      "#1E3322",
+      "#27402B",
+      "#315036"
+    ]
+  },
+  isNebulaLight: false,
+
+  orbit: {
+    colorPool: [
+      "#2F4F34",
+      "#355C3A",
+      "#3F6B43",
+      "#4A7A4D",
+      "#5A8A5A",
+      "#6F9B6A"
+    ]
+  },
+  isOrbitLight: false,
+
+  planet: {
+    surfaceColorPool: [
+      "#0E1A11",
+      "#142318",
+      "#1A2D1F",
+      "#213826",
+      "#29452E",
+      "#355C3A",
+      "#467148"
+    ]
+  },
+  isPlanetLight: false,
+
+  ring: {
+    bandColorPool: [
+      "#243B28",
+      "#2F4F34",
+      "#3A623F",
+      "#467148",
+      "#5A8A5A",
+      "#729F70"
+    ]
+  },
+  isRingLight: false,
+
+  satellite: {
+    surfaceColorPool: [
+      "#142319",
+      "#1B2D21",
+      "#23392A",
+      "#2C4733",
+      "#395A40",
+      "#4A714E"
+    ]
+  },
+  isSatelliteLight: false,
+
+  stellar: {
+    coreColor: "#F2F7EE",
+    shellColor: "#8AA35A",
+    shellFallbackColor: "#667F3C",
+    haloColor: "#78924B",
+    keyLightColor: "#BFD2AE",
+    rimLightColor: "#DCE8D6"
+  },
+  isStellarLight: true,
+
+  stream: {
+    particleColorPool: [
+      "#DCE8D6",
+      "#AFC79D",
+      "#8AA35A",
+      "#6E8A3C",
+      "#4E7A52",
+      "#355C3A"
+    ]
+  },
+  isStreamLight: true,
+
+  vortex: {
+    particleColorPool: [
+      "#E7F0E2",
+      "#BFD2AE",
+      "#93A85F",
+      "#6E8A3C",
+      "#4E7A52",
+      "#2F4F34"
+    ]
+  },
+  isVortexLight: true,
+
+  sceneBg: "#020403",
+  sceneFogColor: "#081009",
+  sceneIsLight: false,
+  sceneGlowPrimaryColor: "#3F6B43",
+  sceneGlowAccentColor: "#78924B"
+}
