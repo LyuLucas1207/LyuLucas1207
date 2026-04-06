@@ -96,35 +96,38 @@ function pickNextDestinationWaypoint(
   return pickFarthestWaypointFromPoint(from, waypoints, preferExclude)
 }
 
-function pickFarthestPair(waypoints: THREE.Object3D[]): [THREE.Object3D, THREE.Object3D] | null {
+function pickRandomBootstrapPair(waypoints: THREE.Object3D[]): [THREE.Object3D, THREE.Object3D] | null {
   if (waypoints.length < 2) return null
-  let bestI = 0
-  let bestJ = 1
-  let bestD = -1
-  for (let i = 0; i < waypoints.length; i++) {
-    for (let j = i + 1; j < waypoints.length; j++) {
-      const d = chordDistance(waypoints[i]!, waypoints[j]!)
-      if (d > bestD) {
-        bestD = d
-        bestI = i
-        bestJ = j
-      }
-    }
+  const minLen = UNIVERSE_STARSHIP_LANES.minChord * 1.35
+  for (let k = 0; k < 26; k++) {
+    const pair = pickTwoDistinct(waypoints)
+    if (!pair) return null
+    if (chordDistance(pair[0]!, pair[1]!) >= minLen) return pair
   }
-  return [waypoints[bestI]!, waypoints[bestJ]!]
+  return pickTwoDistinct(waypoints)
 }
 
-/** 首次生成：选一目标 + 另一颗上作为出生点；无「起点」状态，仅首帧坐标 */
+function applySpawnJitter(pos: THREE.Vector3): void {
+  const { spawnJitterMin, spawnJitterMax } = UNIVERSE_STARSHIP_LANES
+  const r = spawnJitterMin + Math.random() * Math.max(0, spawnJitterMax - spawnJitterMin)
+  const a = Math.random() * Math.PI * 2
+  pos.x += Math.cos(a) * r
+  pos.z += Math.sin(a) * r
+  pos.y += (Math.random() - 0.5) * r * 0.55
+}
+
+/** 首次生成：**每条 lane 随机**起点行星 + 终点（尽量满足最短弦长）；出生点在球心附近抖动 */
 function bootstrapLane(lane: LaneState, waypoints: THREE.Object3D[]): void {
   const ship = lane.starship
   if (!ship || waypoints.length < 2) return
 
-  const pair = pickFarthestPair(waypoints) ?? pickTwoDistinct(waypoints)
+  const pair = pickRandomBootstrapPair(waypoints)
   if (!pair) return
   const [spawnWp, endWp] = Math.random() < 0.5 ? pair : [pair[1], pair[0]]
 
   lane.endBody = endWp
   spawnWp.getWorldPosition(lane.launchHold)
+  applySpawnJitter(lane.launchHold)
   ship.group.position.copy(lane.launchHold)
   lane.alongSpeed = ship.cruiseSpeed
 }

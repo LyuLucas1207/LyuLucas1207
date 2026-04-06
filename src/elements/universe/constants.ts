@@ -77,6 +77,9 @@ export const UNIVERSE_PLANET_FOCUS = {
 export const UNIVERSE_STARSHIP_LANES = {
   /** 过短弦长重抽（从飞船当前世界坐标到候选目标球心） */
   minChord: 7,
+  /** 每条船首曝时在世界水平面内相对行星球心的随机偏移（世界单位），避免多船叠在同一点 */
+  spawnJitterMin: 0.6,
+  spawnJitterMax: 3.2,
   /** 与目标行星球心距离 ≤ 此值（世界单位）视为进入到达范围，开始休息计时；休息内仍朝球心飞 */
   arrivalZoneRadius: 5,
   /** 进入到达范围后的休息时长区间（秒）；到时无论如何换下一目标，不吸附球心 */

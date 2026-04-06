@@ -23,7 +23,13 @@ export interface StarshipPoseConfig {
   headingSlerp: number
   bankSlerp: number
   maxBank: number
+  /**
+   * 横滚强度：由**瞬时弦线方向**在水平面内的转弯角速度（rad/s）映射到目标横滚角。
+   * 机头仍用 `smoothedFlightDir` 柔顺，横滚用瞬时方向才能在大弯时明显压坡。
+   */
   bankGain: number
+  /** 转弯角速度 → `smoothedTurnRate` 的指数平滑，越大毛刺越少、横滚略滞后 */
+  bankTurnRateSmoothing: number
   /** `Matrix4.lookAt` 世界 up */
   worldUp: readonly [number, number, number]
   modelYawCorrection: number

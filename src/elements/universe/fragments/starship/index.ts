@@ -12,7 +12,6 @@ const scratch = {
   dir: new THREE.Vector3(),
   lookAt: new THREE.Vector3(),
   m: new THREE.Matrix4(),
-  planarA: new THREE.Vector3(),
   planarB: new THREE.Vector3(),
   cross: new THREE.Vector3(),
   worldUp: new THREE.Vector3(),
@@ -45,8 +44,11 @@ export class Starship {
   private readonly targetQuat = new THREE.Quaternion()
   /** 和弦线方向做指数趋近，避免换终点时机头/横滚一帧拧死 */
   private readonly smoothedFlightDir = new THREE.Vector3(0, 0, 1)
-  private readonly lastPlanarDir = new THREE.Vector3(0, 0, 1)
+  /** 上一帧**瞬时**水平航向，用于算转弯角速度并驱动横滚（与机头平滑解耦） */
+  private readonly lastInstantPlanar = new THREE.Vector3(0, 0, 1)
   private readonly lastFlightDir = new THREE.Vector3(0, 0, 1)
+  private instantPlanarReady = false
+  private smoothedTurnRate = 0
   private bankAngle = 0
   private targetBank = 0
 
@@ -213,7 +215,14 @@ export class Starship {
   }
 
   private applyFacingAndBank(dir: THREE.Vector3, delta: number) {
-    const { headingSlerp, bankSlerp, maxBank, bankGain, worldUp: wu } = this.config.pose
+    const {
+      headingSlerp,
+      bankSlerp,
+      maxBank,
+      bankGain,
+      bankTurnRateSmoothing,
+      worldUp: wu,
+    } = this.config.pose
     const ht = 1 - Math.exp(-delta * headingSlerp)
     if (dir.lengthSq() > 1e-10) {
       this.smoothedFlightDir.lerp(dir, ht)
@@ -231,16 +240,30 @@ export class Starship {
     this.targetQuat.setFromRotationMatrix(scratch.m)
     this.attitude.quaternion.copy(this.targetQuat)
 
-    scratch.planarA.copy(this.smoothedFlightDir)
-    scratch.planarA.y = 0
-    if (scratch.planarA.lengthSq() < 1e-8) {
+    // 横滚：由**瞬时**弦线在水平面内的转弯角速度驱动；机头仍只靠 smoothedFlightDir 柔顺。
+    scratch.planarB.copy(dir)
+    scratch.planarB.y = 0
+    if (scratch.planarB.lengthSq() < 1e-8) {
+      this.smoothedTurnRate = THREE.MathUtils.lerp(this.smoothedTurnRate, 0, 1 - Math.exp(-delta * bankTurnRateSmoothing))
       this.targetBank = THREE.MathUtils.lerp(this.targetBank, 0, 1 - Math.exp(-delta * bankSlerp))
     } else {
-      scratch.planarA.normalize()
-      scratch.cross.crossVectors(this.lastPlanarDir, scratch.planarA)
-      const turn = scratch.cross.y
-      this.targetBank = THREE.MathUtils.clamp(-turn * bankGain, -maxBank, maxBank)
-      this.lastPlanarDir.copy(scratch.planarA)
+      scratch.planarB.normalize()
+      if (!this.instantPlanarReady) {
+        this.lastInstantPlanar.copy(scratch.planarB)
+        this.instantPlanarReady = true
+        this.smoothedTurnRate = 0
+        this.targetBank = 0
+      } else {
+        scratch.cross.crossVectors(this.lastInstantPlanar, scratch.planarB)
+        const dot = THREE.MathUtils.clamp(this.lastInstantPlanar.dot(scratch.planarB), -1, 1)
+        const signedAngle = Math.atan2(scratch.cross.y, dot)
+        const omegaRaw = signedAngle / Math.max(delta, 1e-6)
+        const omega = THREE.MathUtils.clamp(omegaRaw, -5.5, 5.5)
+        const tr = 1 - Math.exp(-delta * bankTurnRateSmoothing)
+        this.smoothedTurnRate = THREE.MathUtils.lerp(this.smoothedTurnRate, omega, tr)
+        this.lastInstantPlanar.copy(scratch.planarB)
+        this.targetBank = THREE.MathUtils.clamp(-this.smoothedTurnRate * bankGain, -maxBank, maxBank)
+      }
     }
 
     const tB = 1 - Math.exp(-delta * bankSlerp)
