@@ -7,6 +7,8 @@ import { useReducedMotion } from '@/hooks'
 import type { TransitionRequest } from '@/stores/transitionStore'
 import gsap from 'gsap'
 
+import { scheduleBrowserIdleTask } from '../../scheduleBrowserIdle'
+import { wrapGsapContextSafe } from '../../wrapGsapContextSafe'
 import styles from './styles.module.css'
 import { getThemeMoodShellBackground, ThemeMoodGraphics } from '../ThemeMoodGraphics'
 
@@ -28,7 +30,7 @@ export function ThemeTransitionOverlay({ request, onMidpoint, onComplete }: Prop
   }, [themeRequest?.id, themeRequest?.theme])
 
   useGSAP(
-    () => {
+    (_ctx, contextSafe) => {
       const node = ref.current
       if (!node || !themeRequest) return
 
@@ -49,8 +51,26 @@ export function ThemeTransitionOverlay({ request, onMidpoint, onComplete }: Prop
         gsap.set(path, { strokeDasharray: length, strokeDashoffset: length })
       })
 
+      const runExit = wrapGsapContextSafe(contextSafe)(() => {
+        gsap
+          .timeline({ onComplete })
+          .to(
+            copy,
+            { opacity: 0, y: -16, duration: 0.32, stagger: 0.04, ease: 'power2.in' },
+            '+=0.05',
+          )
+          .to(
+            shell,
+            { clipPath: 'circle(0% at 50% 50%)', opacity: 0, duration: 0.82, ease: 'power4.inOut' },
+            '-=0.08',
+          )
+          .set(node, { autoAlpha: 0 })
+      })
+
+      let idleExit: { cancel: () => void } | null = null
+
       gsap
-        .timeline({ onComplete })
+        .timeline()
         .set(node, { autoAlpha: 1 })
         .fromTo(
           shell,
@@ -80,18 +100,14 @@ export function ThemeTransitionOverlay({ request, onMidpoint, onComplete }: Prop
           { opacity: 0.22, scale: 1.06, transformOrigin: 'center center', duration: 0.7, ease: 'sine.inOut' },
           '<',
         )
-        .add(onMidpoint)
-        .to(
-          copy,
-          { opacity: 0, y: -16, duration: 0.32, stagger: 0.04, ease: 'power2.in' },
-          '+=0.05',
-        )
-        .to(
-          shell,
-          { clipPath: 'circle(0% at 50% 50%)', opacity: 0, duration: 0.82, ease: 'power4.inOut' },
-          '-=0.08',
-        )
-        .set(node, { autoAlpha: 0 })
+        .add(() => {
+          onMidpoint()
+          idleExit = scheduleBrowserIdleTask(runExit)
+        })
+
+      return () => {
+        idleExit?.cancel()
+      }
     },
     { scope: ref, dependencies: [themeRequest?.id, reducedMotion, onMidpoint, onComplete] },
   )

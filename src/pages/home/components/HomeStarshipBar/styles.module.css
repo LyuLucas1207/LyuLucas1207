@@ -89,6 +89,11 @@
 .segments {
   position: relative;
   z-index: 1;
+  /* 父级 .panel 为 flex + align-items:center，子项默认随内容变宽，overflow-x 永远不触发；拉满宽度并允许收缩才能出现横向滚动条 */
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
   gap: 0.35rem;

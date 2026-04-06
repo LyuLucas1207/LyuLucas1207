@@ -63,14 +63,3 @@ export const UNIVERSE_BACKGROUND_URLS: string[] = [
 ]
 
 export const STARSHIP_GLB_URLS: string[] = ['/textures/starship/StellarWing.glb']
-
-export const UNIVERSE_SHADERS = {
-  starfield: {
-    vertex: '/shaders/starfield.vert.glsl',
-    fragment: '/shaders/starfield.frag.glsl',
-  },
-  coreShell: {
-    vertex: '/shaders/coreShell.vert.glsl',
-    fragment: '/shaders/coreShell.frag.glsl',
-  },
-} as const

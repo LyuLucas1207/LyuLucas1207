@@ -1,5 +1,15 @@
 import type { Nullable } from 'nfx-ui/types'
-import { UNIVERSE_SHADERS } from '../textures/universeAssets'
+
+const UNIVERSE_SHADERS = {
+  starfield: {
+    vertex: '/shaders/starfield.vert.glsl',
+    fragment: '/shaders/starfield.frag.glsl',
+  },
+  coreShell: {
+    vertex: '/shaders/coreShell.vert.glsl',
+    fragment: '/shaders/coreShell.frag.glsl',
+  },
+}
 
 export type UniverseShaders = {
   starfieldVertex: string

@@ -10,6 +10,7 @@ import { ROUTES } from '@/navigations/routes'
 import { consumeWorldEntryHandledByPageTransition, useTransitionStore } from '@/stores/transitionStore'
 import gsap from 'gsap'
 
+import { scheduleBrowserIdleTask } from '../../scheduleBrowserIdle'
 import { PageMoodGraphics } from '../PageMoodGraphics'
 import styles from '../PageTransitionOverlay/styles.module.css'
 
@@ -64,6 +65,7 @@ export function EnteringTransition() {
 
     let cancelled = false
     let exitTween: Nullable<gsap.core.Tween | gsap.core.Timeline> = null
+    let idleExit: { cancel: () => void } | null = null
 
     paths.forEach((path) => {
       const length = path.getTotalLength()
@@ -100,11 +102,12 @@ export function EnteringTransition() {
     void (async () => {
       await prefetchWorldEntryAssets()
       if (cancelled) return
-      playExit()
+      idleExit = scheduleBrowserIdleTask(playExit)
     })()
 
     return () => {
       cancelled = true
+      idleExit?.cancel()
       if (exitTween) exitTween.kill()
     }
   }, [showOverlay, reducedMotion])
