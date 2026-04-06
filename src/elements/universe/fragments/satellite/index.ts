@@ -62,7 +62,7 @@ export class Satellite {
    * 漫反射 `map` + 同步 `emissiveMap`：自发光带贴图细节，不像纯色 emissive 糊成一块。
    * 无金属 / 无 envMap。共享纹理勿 dispose。
    */
-  applyAtlasMap(map: THREE.Texture) {
+  applySurfaceMap(map: THREE.Texture) {
     if (!this.visualMesh) return
 
     const mat = this.visualMesh.material as THREE.MeshStandardMaterial

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
-import type { Nilable } from 'nfx-ui/types'
+import type { Nilable, Nullable } from 'nfx-ui/types'
+import { safeNullable } from 'nfx-ui/utils'
 
 export type HoverInfo = {
   systemName: string
@@ -27,7 +28,7 @@ export class SceneInput {
   }
 
   isDragging = false
-  hoveredObject: Nilable<THREE.Object3D> = null
+  hoveredObject: Nullable<THREE.Object3D> = null
 
   onDraggingChange?: (dragging: boolean) => void
   onHoverChange?: (info: Nilable<HoverInfo>) => void
@@ -104,7 +105,7 @@ export class SceneInput {
     this.pointer.x = ((clientX - bounds.left) / bounds.width) * 2 - 1
     this.pointer.y = -((clientY - bounds.top) / bounds.height) * 2 + 1
     this.raycaster.setFromCamera(this.pointer, this.getCamera())
-    const hit = this.raycaster.intersectObjects(this.interactiveObjects, false)[0]?.object ?? null
+    const hit = safeNullable(this.raycaster.intersectObjects(this.interactiveObjects, false)[0]?.object)
 
     if (this.hoveredObject !== hit) {
       if (this.hoveredObject) this.hoveredObject.userData.hovered = false

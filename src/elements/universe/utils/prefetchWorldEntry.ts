@@ -1,10 +1,10 @@
 import { loadGltfRoot, loadGltfSceneAndClips } from './loadGltf'
 import { loadUniverseShaders } from './shaders'
+import { STARSHIP_GLB_URLS } from '../textures/starshipGlb'
 import {
   PLANET_GLB_URLS,
   RING_RADIAL_STRIP_URLS,
   SATELLITES_TEXTURE_URLS,
-  STARSHIP_GLB_URLS,
   STELLAR_GLB_URLS,
   UNIVERSE_BACKGROUND_URLS,
 } from './universeAssets'

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import { Satellite } from '../fragments/satellite'
-import { SATELLITES_TEXTURE_URLS } from './universeAssets'
+import { SATELLITES_TEXTURE_URLS } from '../utils/universeAssets'
 
 const textureByUrl = new Map<string, Promise<THREE.Texture>>()
 
@@ -12,7 +12,7 @@ function shuffleInPlace<T>(xs: T[]): void {
   }
 }
 
-/** 为同一行星上的多颗卫星尽量分配不同贴图（池不够大时在洗牌批次中复用） */
+/** 为同一行星上的多颗卫星尽量分配不同贴图 URL（池不够大时在洗牌批次中复用） */
 export function pickDistinctSatelliteTextureUrls(count: number): string[] {
   const pool = [...SATELLITES_TEXTURE_URLS]
   if (!pool.length || count <= 0) return []
@@ -50,7 +50,8 @@ function loadSharedSatelliteTexture(url: string): Promise<THREE.Texture> {
   return p
 }
 
-export async function attachSatelliteAtlasTexture(satellite: Satellite, textureUrl?: string) {
+/** 随机（或指定 URL）加载 **整张球面** 漫反射贴图，不是 texture atlas 图集 */
+export async function attachSatelliteSurfaceTexture(satellite: Satellite, textureUrl?: string) {
   const urls = SATELLITES_TEXTURE_URLS
   if (!urls.length) return
 
@@ -60,7 +61,7 @@ export async function attachSatelliteAtlasTexture(satellite: Satellite, textureU
       : urls[Math.floor(Math.random() * urls.length)]!
   try {
     const map = await loadSharedSatelliteTexture(url)
-    satellite.applyAtlasMap(map)
+    satellite.applySurfaceMap(map)
   } catch (err) {
     console.warn('[universe] satellite texture failed', url, err)
   }

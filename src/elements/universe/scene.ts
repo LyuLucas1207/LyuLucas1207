@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import type { Nilable } from 'nfx-ui/types'
+import { safeNullable, safeOr } from 'nfx-ui/utils'
 
 import { CameraRig } from './libs/camera'
 import type { CameraFocusTarget } from './libs/camera'
@@ -18,17 +19,17 @@ import {
   Stream, StreamBuilder,
   Vortex, VortexBuilder,
 } from './fragments'
-import { attachRandomPlanetGlb } from './utils/planetGlb'
-import { attachSatelliteAtlasTexture } from './utils/satelliteAtlas'
-import { attachRandomRingStripTexture } from './utils/ringTextures'
-import { attachRandomSystemStellarGlb } from './utils/stellarGlb'
+import { attachRandomPlanetGlb } from './textures/planetGlb'
+import { attachSatelliteSurfaceTexture } from './textures/satelliteTexture'
+import { attachRandomRingStripTexture } from './textures/ringTextures'
+import { attachRandomSystemStellarGlb } from './textures/stellarGlb'
 import {
-  attachRandomUniverseBackground,
-  disposeSceneBackground,
-  spinUniverseBackground,
-} from './utils/universeBackground'
+  attachRandomUniverseTexture,
+  disposeUniverseTexture,
+  spinUniverseTexture,
+} from './textures/universeTextures'
 import { createStarSystem, createSystemAnchors } from './systems'
-import { createStarshipLanes } from './utils/starshipLanes'
+import { createStarshipFleet } from './textures/starshipGlb'
 import type { StarSystemConfig, UniversePalette } from './types'
 import type { UniverseShaders } from './utils/shaders'
 
@@ -41,8 +42,8 @@ type CreateSceneOptions = {
   prefersReducedMotion: boolean
   onDraggingChange: (dragging: boolean) => void
   systems: StarSystemConfig[]
-  /** 航线飞船数量，由 Home / World 页面传入 */
-  starshipLaneCount: number
+  /** 飞船数量，由 Home / World 页面传入 */
+  starshipCount: number
   onFocusSystemChange?: (systemId?: string) => void
   /** 用户拖拽打断跟焦时触发（清空 React 里的跟船状态等） */
   onBreakCameraFollow?: () => void
@@ -53,8 +54,8 @@ export type UniverseSceneController = {
   destroy: () => void
   setFocusSystem: (systemId?: string) => void
   setFocusPlanet: (systemId: string, planetId: string) => void
-  /** `laneIndex` 对应 `STARSHIP_GLB_URLS`；`null` 取消跟船 */
-  setFollowStarshipLane: (laneIndex: number | null) => void
+  /** `shipIndex` 对应 `STARSHIP_GLB_URLS` 循环；`null` 取消跟船 */
+  setFollowStarship: (shipIndex: number | null) => void
 }
 
 export function createUniverseScene({
@@ -64,7 +65,7 @@ export function createUniverseScene({
   prefersReducedMotion,
   onDraggingChange,
   systems,
-  starshipLaneCount,
+  starshipCount,
   onFocusSystemChange,
   onBreakCameraFollow,
   onHoverChange,
@@ -82,7 +83,7 @@ export function createUniverseScene({
   host.replaceChildren(renderer.domElement)
 
   const scene = new THREE.Scene()
-  attachRandomUniverseBackground(scene)
+  attachRandomUniverseTexture(scene)
   // Keep fog density as "dark-universe" baseline; colors come from the theme.
   scene.fog = new THREE.FogExp2(palette.sceneFogColor, UNIVERSE_FOG.dark)
 
@@ -123,7 +124,7 @@ export function createUniverseScene({
   // slightly scale up the whole group (planets, orbits, label sprites, etc.).
   const SYSTEM_GROUP_SCALE = 1.98
   const systemRuntimes = systems.slice(0, 3).map((system, index) => {
-    const runtime = createStarSystem(system, palette, systemAnchors[index] ?? new THREE.Vector3())
+    const runtime = createStarSystem(system, palette, safeOr(systemAnchors[index], new THREE.Vector3()))
     runtime.group.scale.multiplyScalar(SYSTEM_GROUP_SCALE)
     return runtime
   })
@@ -139,7 +140,7 @@ export function createUniverseScene({
     })
     runtime.satellites.forEach((sat) => {
       const u = sat.group.userData.satelliteTextureUrl
-      void attachSatelliteAtlasTexture(sat, typeof u === 'string' ? u : undefined)
+      void attachSatelliteSurfaceTexture(sat, typeof u === 'string' ? u : undefined)
     })
   })
 
@@ -157,18 +158,18 @@ export function createUniverseScene({
     }
   }
 
-  const starshipLanes = createStarshipLanes(systemRuntimes, {
-    laneCount: starshipLaneCount,
+  const starshipFleet = createStarshipFleet(systemRuntimes, {
+    shipCount: starshipCount,
     onAllShipsLoaded: () => {
       requestAnimationFrame(() => {
-        starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
+        starshipFleet.resizeChaseCameras(host.clientWidth, host.clientHeight)
         warmRendererPrograms()
       })
     },
     getChaseViewport: () => ({ width: host.clientWidth, height: host.clientHeight }),
   })
-  scene.add(nebula.group, galaxyCore, starshipLanes.group)
-  starshipLanes.resizeChaseCameras(host.clientWidth, host.clientHeight)
+  scene.add(nebula.group, galaxyCore, starshipFleet.group)
+  starshipFleet.resizeChaseCameras(host.clientWidth, host.clientHeight)
 
   requestAnimationFrame(() => {
     requestAnimationFrame(warmRendererPrograms)
@@ -211,7 +212,7 @@ export function createUniverseScene({
       cameraRig.clearFocus()
       return
     }
-    const rt = systemRuntimeMap.get(systemId) ?? null
+    const rt = safeNullable(systemRuntimeMap.get(systemId))
     if (!rt) return
     cameraRig.setFocus({
       group: rt.group,
@@ -233,12 +234,12 @@ export function createUniverseScene({
     })
   }
 
-  const setFollowStarshipLane = (laneIndex: number | null) => {
-    if (laneIndex === null) {
+  const setFollowStarship = (shipIndex: number | null) => {
+    if (shipIndex === null) {
       cameraRig.clearFocus()
       return
     }
-    const ship = starshipLanes.getStarship(laneIndex)
+    const ship = starshipFleet.getStarship(shipIndex)
     if (!ship) return
     ship.resizeChaseCamera(host.clientWidth, host.clientHeight)
     cameraRig.setFocus({
@@ -261,7 +262,7 @@ export function createUniverseScene({
   const animate = () => {
     timer.update()
     const elapsed = timer.getElapsed()
-    spinUniverseBackground(scene, timer.getDelta(), !prefersReducedMotion)
+    spinUniverseTexture(scene, timer.getDelta(), !prefersReducedMotion)
 
     coreStarInstance.update(elapsed)
     vortex.update(elapsed)
@@ -293,7 +294,7 @@ export function createUniverseScene({
     })
 
     /* 航线端点必须用 **本帧** galaxyCore + 轨道角更新后的 world 矩阵，否则船会相对行星中心漂移 */
-    starshipLanes.update(timer.getDelta(), prefersReducedMotion)
+    starshipFleet.update(timer.getDelta(), prefersReducedMotion)
 
     nebula.group.children.forEach((child: THREE.Object3D, index: number) => {
       child.position.x += Math.sin(elapsed * 0.08 + index) * 0.014
@@ -316,7 +317,7 @@ export function createUniverseScene({
     const height = host.clientHeight
     renderer.setSize(width, height)
     cameraRig.resize(width, height)
-    starshipLanes.resizeChaseCameras(width, height)
+    starshipFleet.resizeChaseCameras(width, height)
   })
   resizeObserver.observe(host)
 
@@ -325,8 +326,8 @@ export function createUniverseScene({
     resizeObserver.disconnect()
     timer.dispose()
     input.destroy()
-    starshipLanes.destroy()
-    disposeSceneBackground(scene)
+    starshipFleet.destroy()
+    disposeUniverseTexture(scene)
     scene.traverse((child) => {
       const target = child as THREE.Mesh | THREE.Points | THREE.Sprite
       if ('geometry' in target && target.geometry) {
@@ -349,6 +350,6 @@ export function createUniverseScene({
     destroy,
     setFocusSystem,
     setFocusPlanet,
-    setFollowStarshipLane,
+    setFollowStarship,
   } satisfies UniverseSceneController
 }

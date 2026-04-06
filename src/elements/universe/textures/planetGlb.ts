@@ -1,12 +1,13 @@
 import type { PlanetRuntime } from '../fragments/planet'
 
-import { loadGltfRoot, scaleAndCenterModelToRadius } from './loadGltf'
-import { PLANET_GLB_URLS } from './universeAssets'
+import { safeNum, safeOr } from 'nfx-ui/utils'
+import { loadGltfRoot, scaleAndCenterModelToRadius } from '../utils/loadGltf'
+import { PLANET_GLB_URLS } from '../utils/universeAssets'
 
 export async function attachRandomPlanetGlb(planet: PlanetRuntime) {
   const url = PLANET_GLB_URLS[Math.floor(Math.random() * PLANET_GLB_URLS.length)]!
   const raw = planet.mesh.userData.planetRadius
-  const targetR = typeof raw === 'number' && Number.isFinite(raw) ? raw : 1
+  const targetR = safeOr(safeNum(typeof raw === 'number' ? raw : undefined), 1)
   try {
     const template = await loadGltfRoot(url)
     const root = template.clone(true)

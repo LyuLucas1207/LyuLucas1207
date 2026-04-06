@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import type { Nilable } from 'nfx-ui/types'
+import { safeOr } from 'nfx-ui/utils'
 
 import {
   UNIVERSE_CAMERA_DRIFT,
@@ -156,7 +157,7 @@ export class CameraRig {
       this.focusPitchOffset -= dy * 0.0021
       const orbitPitchCap =
         this.focusTarget.followRole === 'starship'
-          ? (this.focusTarget.starshipOrbitPitchLimit ?? 1.18)
+          ? safeOr(this.focusTarget.starshipOrbitPitchLimit, 1.18)
           : 0.95
       this.focusPitchOffset = THREE.MathUtils.clamp(this.focusPitchOffset, -orbitPitchCap, orbitPitchCap)
     } else {
@@ -176,17 +177,17 @@ export class CameraRig {
       const follow = this.focusTarget.follow
       const planetFollow = follow != null
       const frameR = planetFollow
-        ? (this.focusTarget.followFrameRadius ?? this.focusTarget.maxOrbitRadius)
+        ? safeOr(this.focusTarget.followFrameRadius, this.focusTarget.maxOrbitRadius)
         : this.focusTarget.maxOrbitRadius
 
       if (planetFollow) {
-        const role = this.focusTarget.followRole ?? 'planet'
+        const role = safeOr(this.focusTarget.followRole, 'planet')
 
         if (role === 'starship') {
           const chaseCam = this.focusTarget.starshipChaseCamera
           if (chaseCam) {
             chaseCam.rotation.order = 'YXZ'
-            const pitchCap = this.focusTarget.starshipOrbitPitchLimit ?? 1.18
+            const pitchCap = safeOr(this.focusTarget.starshipOrbitPitchLimit, 1.18)
             chaseCam.rotation.y = this.focusYawOffset
             chaseCam.rotation.x = THREE.MathUtils.clamp(this.focusPitchOffset, -pitchCap, pitchCap)
             chaseCam.rotation.z = 0
@@ -255,7 +256,7 @@ export class CameraRig {
     const useShipChaseCamera =
       this.followingFocus &&
       this.focusTarget != null &&
-      (this.focusTarget.followRole ?? 'planet') === 'starship'
+      safeOr(this.focusTarget.followRole, 'planet') === 'starship'
 
     if (!useShipChaseCamera) {
       this.movement.yaw = THREE.MathUtils.lerp(this.movement.yaw, this.movement.targetYaw, UNIVERSE_MOTION.yawLerp)

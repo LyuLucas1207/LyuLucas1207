@@ -37,11 +37,11 @@ const themeOptions: ThemeEnum[] = [
 ]
 
 type HomePlanetHeroProps = {
-  /** 航线飞船数量，与舰队面板、场景 `createStarshipLanes` 一致 */
-  starshipLaneCount?: number
+  /** 飞船数量，与舰队面板、场景 `createStarshipFleet` 一致 */
+  starshipCount?: number
 }
 
-function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
+function HomePlanetHero({ starshipCount = 5 }: HomePlanetHeroProps) {
   const location = useLocation()
   const { t, i18n } = useTranslation(['components', 'WorldPage'])
   const { currentTheme, setTheme } = useTheme()
@@ -56,38 +56,38 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
     [currentTheme],
   )
   const [focusedSystemId, setFocusedSystemId] = useState<string | undefined>(undefined)
-  const [followStarshipLane, setFollowStarshipLane] = useState<number | null>(null)
+  const [followStarship, setFollowStarship] = useState<number | null>(null)
   const [hoverInfo, setHoverInfo] = useState<Nilable<HoverInfo>>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const setGalaxyFocus = useCallback<Dispatch<SetStateAction<string | undefined>>>((id) => {
-    setFollowStarshipLane(null)
+    setFollowStarship(null)
     setFocusedSystemId(id)
   }, [])
 
   const starshipShipLabels = useMemo(
     () =>
-      Array.from({ length: starshipLaneCount }, (_, i) => {
+      Array.from({ length: starshipCount }, (_, i) => {
         const key = STARSHIP_SCENE_I18N_KEYS[i]
         return key ? t(`WorldPage:scene.${key}`) : `${t('WorldPage:scene.starshipBarTitle')} ${i + 1}`
       }),
-    [starshipLaneCount, t],
+    [starshipCount, t],
   )
 
-  const handleStarshipLaneClick = useCallback((lane: number) => {
+  const handleStarshipClick = useCallback((shipIndex: number) => {
     setFocusedSystemId(undefined)
-    setFollowStarshipLane((prev) => (prev === lane ? null : lane))
+    setFollowStarship((prev) => (prev === shipIndex ? null : shipIndex))
   }, [])
 
   const handleFocusSystemChange = useCallback((systemId?: string) => {
     if (systemId !== undefined) {
-      setFollowStarshipLane(null)
+      setFollowStarship(null)
     }
     setFocusedSystemId(systemId)
   }, [])
 
   const handleBreakCameraFollow = useCallback(() => {
-    setFollowStarshipLane(null)
+    setFollowStarship(null)
   }, [])
 
   const systemDescriptions = useMemo<Record<string, string>>(
@@ -275,7 +275,7 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
         prefersReducedMotion,
         onDraggingChange: setDragging,
         systems,
-        starshipLaneCount,
+        starshipCount,
         onFocusSystemChange: handleFocusSystemChange,
         onBreakCameraFollow: handleBreakCameraFollow,
         onHoverChange: setHoverInfo,
@@ -292,7 +292,7 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
     palette,
     prefersReducedMotion,
     systems,
-    starshipLaneCount,
+    starshipCount,
     location.pathname,
     handleFocusSystemChange,
     handleBreakCameraFollow,
@@ -301,12 +301,12 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
   useEffect(() => {
     const ctrl = sceneControllerRef.current
     if (!ctrl) return
-    if (followStarshipLane != null) {
-      ctrl.setFollowStarshipLane(followStarshipLane)
+    if (followStarship != null) {
+      ctrl.setFollowStarship(followStarship)
     } else {
       ctrl.setFocusSystem(focusedSystemId)
     }
-  }, [focusedSystemId, followStarshipLane])
+  }, [focusedSystemId, followStarship])
 
   return (
     <section className={styles.hero}>
@@ -326,8 +326,8 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
       <HomeStarshipBar
         title={t('WorldPage:scene.starshipBarTitle')}
         shipLabels={starshipShipLabels}
-        activeLaneIndex={followStarshipLane}
-        onSelectLane={handleStarshipLaneClick}
+        activeLaneIndex={followStarship}
+        onSelectLane={handleStarshipClick}
       />
 
       <HomeActionDock
@@ -342,7 +342,7 @@ function HomePlanetHero({ starshipLaneCount = 5 }: HomePlanetHeroProps) {
         followLabel={t('WorldPage:scene.followPlanet')}
         enterLabel={t('WorldPage:scene.enterPlanet')}
         onFollowPlanet={(planetId) => {
-          setFollowStarshipLane(null)
+          setFollowStarship(null)
           if (!focusedSystemId) return
           sceneControllerRef.current?.setFocusPlanet(focusedSystemId, planetId)
         }}

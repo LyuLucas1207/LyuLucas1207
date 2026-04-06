@@ -5,7 +5,7 @@ function WorldPage() {
   return (
     <div className={styles.page}>
       <section className={styles.heroStage}>
-        <HomePlanetHero starshipLaneCount={5} />
+        <HomePlanetHero starshipCount={5} />
       </section>
     </div>
   )

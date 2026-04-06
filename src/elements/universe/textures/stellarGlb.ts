@@ -1,7 +1,7 @@
 import type { Stellar } from '../fragments/stellar'
 
-import { loadGltfRoot, scaleAndCenterModelToRadius } from './loadGltf'
-import { STELLAR_GLB_URLS } from './universeAssets'
+import { loadGltfRoot, scaleAndCenterModelToRadius } from '../utils/loadGltf'
+import { STELLAR_GLB_URLS } from '../utils/universeAssets'
 
 export async function attachRandomSystemStellarGlb(stellar: Stellar) {
   const list = STELLAR_GLB_URLS

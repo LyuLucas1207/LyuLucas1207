@@ -71,8 +71,8 @@ export const UNIVERSE_PLANET_FOCUS = {
 }
 
 /**
- * 多船航线编排；条数由场景 `starshipLaneCount` / Home 传入决定。
- * 单艘飞船 `cruiseSpeed`、`alongAcceleration` 等在 `StarshipBuilder`。
+ * 多船舰队编排（选目标行星、到达、休息）；条数由场景 `starshipCount` / Home 传入。
+ * 单艘位移与姿态在 `Starship`；`cruiseSpeed`、`alongAcceleration` 等在 `StarshipBuilder`。
  */
 export const UNIVERSE_STARSHIP_LANES = {
   /** 过短弦长重抽（从飞船当前世界坐标到候选目标球心） */

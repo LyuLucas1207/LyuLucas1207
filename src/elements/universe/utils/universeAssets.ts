@@ -26,11 +26,6 @@ export const PLANET_GLB_URLS: string[] = [
   '/textures/planets/white/Nivalis.glb',
 ]
 
-/** 跨星系航线飞船 GLB（`laneIndex % length` 循环选用；条数由场景 `starshipLaneCount` 决定） */
-export const STARSHIP_GLB_URLS: string[] = [
-  '/textures/starship/StellarWing.glb',
-]
-
 /** 与 UI 舰队条数对应；文案键为 `WorldPage:scene.${key}` */
 export const STARSHIP_SCENE_I18N_KEYS = [
   'starshipAstralDrift',
@@ -38,7 +33,7 @@ export const STARSHIP_SCENE_I18N_KEYS = [
   'starshipStellarWing',
   'starshipHorizonRunner',
   'starshipVoidRelay',
-] as const
+]
 
 /** 卫星表面贴图（多图随机，`TextureLoader` + 球面 map） */
 export const SATELLITES_TEXTURE_URLS: string[] = [

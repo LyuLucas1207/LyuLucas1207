@@ -18,8 +18,8 @@ const scratch = {
 }
 
 /**
- * 航线飞船：与 `Planet` 同款两阶段 —— **`new Starship(config)`** 同步搭好 `group` / 追击相机 / 光，`attachGlbRoot` 再挂 GLB。
- * `group` → `attitude` → `bank` → **模型**；姿态与航线逻辑同前。
+ * 宇宙飞船：与 `Planet` 同款两阶段 —— **`new Starship(config)`** 搭好 `group` / 追击相机 / 光，`attachGlbRoot` 再挂 GLB。
+ * `group` → `attitude` → `bank` → **模型**；位移用 `updateSeekDestination` / `updateFlightChord`，停泊用 `updateParked`。
  */
 export class Starship {
   readonly group: THREE.Group
@@ -51,6 +51,10 @@ export class Starship {
   private smoothedTurnRate = 0
   private bankAngle = 0
   private targetBank = 0
+  /** 朝 `updateSeekDestination` 目标推进时的沿线速度（世界单位/秒） */
+  private alongSpeed = 0
+  private readonly seekPos = new THREE.Vector3()
+  private readonly seekDir = new THREE.Vector3()
 
   constructor(config: StarshipConfig) {
     this.config = config
@@ -178,6 +182,39 @@ export class Starship {
         mesh.material = upgrade(mat)
       }
     })
+  }
+
+  /**
+   * 换一段追击前把沿线速度拉回巡航初值（进入到达圈、换行星目标等时由编排层调用）。
+   */
+  prepareSeek() {
+    this.alongSpeed = this.cruiseSpeed
+  }
+
+  /**
+   * 每帧朝 **本帧世界坐标** `destinationWorld` 推进（终点可由调用方用行星 `getWorldPosition` 更新），
+   * 内部用加速度/减速与 `updateFlightChord` 对齐机头与横滚。
+   * @param arrivalCoast 为 true 时沿视线减速（到达圈内「靠泊滑行」）
+   * @returns 推进后船位到目标的距离
+   */
+  updateSeekDestination(destinationWorld: THREE.Vector3, delta: number, arrivalCoast: boolean): number {
+    this.seekPos.copy(this.group.position)
+    this.seekDir.subVectors(destinationWorld, this.seekPos)
+    const dist = this.seekDir.length()
+    if (dist < 1e-9) {
+      this.updateFlightChord(this.seekPos, destinationWorld, delta)
+      return 0
+    }
+    this.seekDir.multiplyScalar(1 / dist)
+    if (arrivalCoast) {
+      this.alongSpeed = Math.max(0, this.alongSpeed - this.alongDeceleration * delta)
+    } else {
+      this.alongSpeed += this.alongAcceleration * delta
+    }
+    const step = Math.min(dist, this.alongSpeed * delta)
+    this.seekPos.addScaledVector(this.seekDir, step)
+    this.updateFlightChord(this.seekPos, destinationWorld, delta)
+    return this.group.position.distanceTo(destinationWorld)
   }
 
   /**

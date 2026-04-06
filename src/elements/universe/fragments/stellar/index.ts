@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import type { Nullable } from 'nfx-ui/types'
+import { safeZeroable } from 'nfx-ui/utils'
 import type { StellarConfig } from './types'
 
 export type { StellarConfig, StellarPalette, StellarShellShaders } from './types'
@@ -160,7 +161,7 @@ export class Stellar {
         if (!(mat.emissive instanceof THREE.Color)) continue
         mat.emissive.copy(color)
         const boosted = intensity * 1.4
-        mat.emissiveIntensity = Math.max(mat.emissiveIntensity ?? 0, boosted)
+        mat.emissiveIntensity = Math.max(safeZeroable(mat.emissiveIntensity), boosted)
       }
     })
   }

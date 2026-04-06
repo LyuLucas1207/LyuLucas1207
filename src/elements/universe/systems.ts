@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import { UNIVERSE_SYSTEM_LAYOUT } from './constants'
-import { pickDistinctSatelliteTextureUrls } from './utils/satelliteAtlas'
+import { pickDistinctSatelliteTextureUrls } from './textures/satelliteTexture'
 import {
   Label, LabelBuilder,
   Orbit, OrbitBuilder,
