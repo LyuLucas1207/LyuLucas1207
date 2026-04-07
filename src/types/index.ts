@@ -1,7 +1,0 @@
-export * from './common'
-export * from './highlight'
-export * from './info'
-export * from './life'
-export * from './profile'
-export * from './project'
-export * from './timeline'

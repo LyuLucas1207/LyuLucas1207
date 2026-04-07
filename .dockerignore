@@ -1,7 +1,0 @@
-node_modules
-dist
-.git
-**/*.md
-.DS_Store
-coverage
-# 勿加入 *.local / .env* —— vite build --mode prod.local 需在上下文中有 .env.prod.local
