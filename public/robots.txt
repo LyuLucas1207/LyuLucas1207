@@ -1,0 +1,44 @@
+# Lyu Star Realm (LSR / Lsr-Web) - Robots.txt
+# Updated: 2026-04
+# Site: https://lucaslyu.com（规范域；www / lyulucas 镜像见 Traefik）
+# API: https://api.lucaslyu.com (见 .env.prod)
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+
+# Sitemap
+Sitemap: https://lucaslyu.com/sitemap.xml
+
+# Disallow internal or build directories
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /src/
+Disallow: /.git/
+Disallow: /.vscode/
+Disallow: /*.map$
+
+# Allow primary SPA routes
+Allow: /
+Allow: /intro
+Allow: /intro/
+Allow: /projects
+Allow: /projects/
+Allow: /life
+Allow: /life/
+Allow: /highlights
+Allow: /highlights/
+Allow: /contact
+Allow: /contact/
+
+# Static assets
+Allow: /favicon.svg
+Allow: /icons.svg
+Allow: /shaders/
+Allow: /*.css$
+Allow: /*.js$
+
+# Crawl delay for better server performance
+Crawl-delay: 1
