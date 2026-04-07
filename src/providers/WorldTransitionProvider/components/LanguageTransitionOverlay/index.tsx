@@ -1,13 +1,13 @@
 import { useGSAP } from '@gsap/react'
 import { useMemo, useRef } from 'react'
 import { useTheme } from 'nfx-ui/themes'
+import { scheduleBrowserIdleTask } from 'nfx-ui/utils'
 import type { Nullable } from 'nfx-ui/types'
 
 import { useReducedMotion } from '@/hooks'
 import type { TransitionRequest } from '@/stores/transitionStore'
 import gsap from 'gsap'
 
-import { scheduleBrowserIdleTask } from '../../scheduleBrowserIdle'
 import { wrapGsapContextSafe } from '../../wrapGsapContextSafe'
 import styles from '../PageTransitionOverlay/styles.module.css'
 import { LanguageMoodGraphics } from '../LanguageMoodGraphics'

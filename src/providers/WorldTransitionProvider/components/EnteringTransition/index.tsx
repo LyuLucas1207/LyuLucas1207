@@ -9,8 +9,8 @@ import { useReducedMotion } from '@/hooks'
 import { ROUTES } from '@/navigations/routes'
 import { consumeWorldEntryHandledByPageTransition, useTransitionStore } from '@/stores/transitionStore'
 import gsap from 'gsap'
+import { scheduleBrowserIdleTask } from 'nfx-ui/utils'
 
-import { scheduleBrowserIdleTask } from '../../scheduleBrowserIdle'
 import { PageMoodGraphics } from '../PageMoodGraphics'
 import styles from '../PageTransitionOverlay/styles.module.css'
 
