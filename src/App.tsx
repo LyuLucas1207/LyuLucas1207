@@ -24,7 +24,7 @@ export default function App() {
           bundles={{ RESOURCES, NAME_SPACES_MAP, NAME_SPACES }}
           fallbackLng={LanguageEnum.ZH}
         >
-          <ThemeProvider defaultTheme={ThemeEnum.WINE} defaultBase={BaseEnum.WINDOWS}>
+          <ThemeProvider defaultTheme={ThemeEnum.DEFAULT} defaultBase={BaseEnum.WINDOWS}>
             <LayoutProvider>
               <BrowserRouterProvider>
                 <WorldTransitionProvider>
